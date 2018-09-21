@@ -1,0 +1,78 @@
+---
+title: "Tools for identifying implausible counts"
+author: |
+  | Richard J. Telford 
+  | Department of Biological Sciences, University of Bergen, Postboks 7803, N-5020 Bergen, Norway
+  | email: richard.telford@uib.no
+date: "`r format(Sys.Date(), '%d %B %Y')`"
+header-includes:
+   - \usepackage{lineno}
+   - \linenumbers
+   - \usepackage{pdflscape}
+   - \newcommand{\blandscape}{\begin{landscape}}
+   - \newcommand{\elandscape}{\end{landscape}}   
+output:
+  bookdown::pdf_document2:
+      latex_engine: xelatex
+      number_sections: true
+documentclass: article
+classoption: a4paper
+bibliography: extra/chironomid2.bib
+csl: extra/journal-of-paleolimnology.csl
+toc: false
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, include = TRUE, warning = FALSE, message = FALSE)
+
+loadd(chiron_clean)
+loadd(chiron_air)
+loadd(plot_base)
+```
+
+# Abstract{-}
+
+
+
+**Keywords:** Quantitative reconstructions, transfer functions, performance statistics, chironomids
+
+# Introduction
+
+Six percent of papers published in _Molecular and Cellular Biology_ show evidence of inappropriate image duplication [@Bik2018] either due to error or, more rarely, misconduct. It would be reckless to assume that palaeoecological data does not have equivalent problems: the low rate of retractions in tha ecological and geological literature [@Grieneisen2012] may partially reflect our ability to detect errors and misconduct rather than their prevalence. 
+
+Databases
+
+Various tools have been developed to identify questionable data. Deviations from the expected distribution of digits from the Newcomb-Benford law has been used to detect issues with scientific and financial data [@Barabesi2017]. Carlisle [-@Carlisle2017] identified papers where the baseline differences in means for different treatments were surprisingly high or low given the variance of the data. Brown et al. [-@Brown2017] develop a simple test, GRIM, of whether means of integer data are consistent with the reported sample size. However none of these tests are directly applicable to microfossil assemblage data, one of the most common types of palaeoecological data.
+
+A common assertion in papers reporting microfossil assemblage data is that a minimum of _N_ microfossils were counted, where _N_ is often 50 for chironomids and several hundred for pollen and diatoms. This is important because larger count sums are associated with smaller uncertainties, both is in relative abundance of taxa and derived statistics such are transfer function reconstructions. However, given the time-consuming nature of microfossil counting, especially when preservation is poor or concentrations are low, there is an insentive to misreport the minimum count sum. This paper develops a method, related to GRIM [@Brown2017], that can test if the count sums are probably as large as reported.
+
+If the raw assemblage counts are archived, it is trivial to identify undercounts. Unfortunately, many palaeoecologists archive percent data without an indication of the count sum. The problem of estimating the count sum from just the percent data occupies most of this paper. 
+
+
+# Methods
+
+
+
+
+
+All analyses were done in R version `r getRversion()` [@R]. Ordinations were fitted with vegan version `r packageVersion("vegan")` [@vegan] with square-root transformed assemblage data. Transfer functions were fitted with rioja version `r packageVersion("rioja")` [@rioja] using square-root transformed species data. Some diagnostics were performed using analogue version `r packageVersion("analogue")` [@analogue1]. 
+
+Simulations ... 
+
+Code to replicate all the analyses shown above is archived at [https://github.com/richardjtelford/count.check.ms](https://github.com/richardjtelford/count.check.ms).
+
+# Results and discussion
+
+
+
+
+# Conclusions
+
+
+
+## Acknowledgements{-}
+
+This work was partially funded by the Norwegian Research Council FriMedBio project palaeoDrivers (213607). 
+
+## References{-}
