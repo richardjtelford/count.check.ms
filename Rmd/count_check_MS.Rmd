@@ -17,7 +17,7 @@ output:
       number_sections: true
 documentclass: article
 classoption: a4paper
-bibliography: extra/chironomid2.bib
+bibliography: extra/countMS2.bib
 csl: extra/journal-of-paleolimnology.csl
 toc: false
 ---
@@ -39,40 +39,82 @@ loadd(plot_base)
 
 # Introduction
 
-Six percent of papers published in _Molecular and Cellular Biology_ show evidence of inappropriate image duplication [@Bik2018] either due to error or, more rarely, misconduct. It would be reckless to assume that palaeoecological data does not have equivalent problems: the low rate of retractions in tha ecological and geological literature [@Grieneisen2012] may partially reflect our ability to detect errors and misconduct rather than their prevalence. 
+Six percent of papers published in _Molecular and Cellular Biology_ show evidence of inappropriate image duplication [@Bik2018] either due to error or, more rarely, misconduct. It would be reckless to assume that the palaeoecological literature does not have equivalent problems: the low rate of retractions in tha ecological and geological literature [@Grieneisen2012] may partially reflect our ability to detect errors and misconduct rather than their prevalence. 
 
-Databases
+Several numerical tools have been developed to identify questionable data. Deviations from the expected distribution of digits from the Newcomb-Benford law has been used to detect issues with scientific and financial data [@Barabesi2017]. Carlisle [-@Carlisle2017] identified papers where the baseline differences in means for different treatments were surprisingly high or low given the variance of the data. Brown et al. [-@Brown2017] develop a simple test, GRIM, of whether means of integer data are consistent with the reported sample size. However none of these tests are directly applicable to microfossil assemblage data, one of the most common types of palaeoecological data.
 
-Various tools have been developed to identify questionable data. Deviations from the expected distribution of digits from the Newcomb-Benford law has been used to detect issues with scientific and financial data [@Barabesi2017]. Carlisle [-@Carlisle2017] identified papers where the baseline differences in means for different treatments were surprisingly high or low given the variance of the data. Brown et al. [-@Brown2017] develop a simple test, GRIM, of whether means of integer data are consistent with the reported sample size. However none of these tests are directly applicable to microfossil assemblage data, one of the most common types of palaeoecological data.
+A common assertion in papers reporting microfossil assemblage data is that a minimum of _N_ microfossils were counted, where _N_ is often 50 for chironomids and several hundred for pollen and diatoms. This is important because larger count sums are associated with smaller uncertainties, both is in relative abundance of taxa and derived statistics such are transfer function reconstructions [@REFS]. However, given the time-consuming nature of microfossil counting, especially when preservation is poor or concentrations are low, there is an insentive to misreport the minimum count sum. 
 
-A common assertion in papers reporting microfossil assemblage data is that a minimum of _N_ microfossils were counted, where _N_ is often 50 for chironomids and several hundred for pollen and diatoms. This is important because larger count sums are associated with smaller uncertainties, both is in relative abundance of taxa and derived statistics such are transfer function reconstructions. However, given the time-consuming nature of microfossil counting, especially when preservation is poor or concentrations are low, there is an insentive to misreport the minimum count sum. This paper develops a method, related to GRIM [@Brown2017], that can test if the count sums are probably as large as reported.
+If the genuine assemblage counts are archived, it is trivial to identify undercounts. Unfortunately, count data may be falsified so that it appears to meet the reported count sum. A more common problem is that, regretably, many palaeoecologists archive percent data without an indication of the count sum. This paper develops simple tests that can flag if the count data might have been misrepresented, or if the count sum of percent data is perhaps lower than was been reported.
 
-If the raw assemblage counts are archived, it is trivial to identify undercounts. Unfortunately, many palaeoecologists archive percent data without an indication of the count sum. The problem of estimating the count sum from just the percent data occupies most of this paper. 
+The key observation that there are many rare taxa in most communities [@Darwin18XX]. A direct consequence of these rare taxa is that most community or assemblage samples will include taxa represented by a single individual [@Coddlington2009], hereafter singletons, unless the sampling effort is high relative to the species richness. Given this, we can estimate the count sum _N_ as $1/p * 100$ where _p_ is the percent abundance of the rarest taxon. 
 
+<!-- Since it is not normally possible to estimate the count sum from percent data, we need to use some extra information.   -->
+
+<!-- This paper develops a method, related to GRIM [@Brown2017], that can test if the count sums are probably as large as reported. -->
+
+This paper first estimates the prevalance of microfossil assembages without singletons, and develops additional tests for samples without singletons. Next, these tests are applied to percent data where the count sums are known, and then to percent data where the count sums are not known. Finally, some caveats and problems are discussed.
 
 # Methods
 
+Data sets were downloaded from the Palaeodata center, Neotoma and Pangaea and other sources. A range of microfossil data were sought to allow for difference in typical count sum and species richness. This paper does not attempt to be an exhaustive survey of all the data available.
+
+All analyses were done in R version `r getRversion()` [@R]. Code to replicate all the analyses shown above is archived at [https://github.com/richardjtelford/count.check.ms](https://github.com/richardjtelford/count.check.ms).
+
+# Results 
+
+## Prevalence of singletons
+
+Dataset 1 consists of `r #nrow(d1)` chironomid samples from REF [-@REF]. As the count sums are given for each sample, the data have been backtransformed to count data. Each sample `r #stopifnot(FALSE)` has at least one singleton (whole or half chironomid head capsule). The mean number of singletons is `r "##MEAN"`. Assuming that the number of singletons comes from an approximately Poisson distribution (Fig \@ref(fig:singleton-hist)), the expected proportion of samples without singletons is `r #estnos`.
+
+Dataset 2 is the `r #nrow(d2)` sample North American testate amoeba training set collated by REF [-@REF]. `r #prop` of the assemblages have at least one singleton (mean `r #mean`). In the samples that lack singletons, the taxa are not multiples of the rarest taxon.
+
+Dataset 3 is a `r #nrow(d3)` pollen stratigraphy extracted from Neotoma. The associated paper (anonymsed here) reports that count sums are at least ###. All counts in dataset 3 sum to ###-###... No singletons.
+
+Dataset 1. reconstructing reported percent. Problem with halves.
+
+Dataset 4. Larocque-Tobler et al (2015) originally archived counts
+
+Dataset 5 diatoms sibera
+
+Dataset 6 diatoms Bianca
+
+Dataset 7??? Percent checker
 
 
 
 
-All analyses were done in R version `r getRversion()` [@R]. Ordinations were fitted with vegan version `r packageVersion("vegan")` [@vegan] with square-root transformed assemblage data. Transfer functions were fitted with rioja version `r packageVersion("rioja")` [@rioja] using square-root transformed species data. Some diagnostics were performed using analogue version `r packageVersion("analogue")` [@analogue1]. 
+# Discussion
 
-Simulations ... 
+relationship to GRIM
 
-Code to replicate all the analyses shown above is archived at [https://github.com/richardjtelford/count.check.ms](https://github.com/richardjtelford/count.check.ms).
+Caveats
 
-# Results and discussion
+decimal places -- precision
 
+Unused/unmerged samples - care taken here
 
+Low diversity 
 
+Large counts
+
+Some taxonomic groups have microfossils that often come in groups of attached individuals. For example, for diatoms valves are counted, but these are commonly paired or in long chains. 
+
+Assemblages vs communities
+
+Consequences
+
+Small undercounts in a few samples will have minimal impact on the precision of any palaeoenvironmental reconstruction or other statistics derived from the assemblage. Consequently, such undercounts can be regarded as bad practice that do not necessarily require correcting.
+
+Substantial or pervasive undercounts will potentially seriously effect the precision of the results. Such undercounts might either constitute a data handling error (for example, if samples with low counts were supposed to be merged but that step was forgotton, or using boilerplate method text), or falsification. Action to correct the literature is probably required. 
+
+Some papers don't report count sums. When this important quality metric is omitted, the reader should be able to assume that the standard minimum count sum for the taxonomic group has been used (i.e. 50 for chironomids, several hundred for pollen and diatoms). If the actual count sum is materially below this, then this potentially constitutes falsification by omission [@Fanelli2013].
 
 # Conclusions
 
-
+non-negligable fraction of the literature
 
 ## Acknowledgements{-}
 
-This work was partially funded by the Norwegian Research Council FriMedBio project palaeoDrivers (213607). 
 
 ## References{-}
