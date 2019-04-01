@@ -8,7 +8,8 @@ library("broom")
 library("rjt.misc")
 
 #import scripts
-
+source("R/download_testates.R")
+source("R/summarise_counts.R")
 
 #drake configuration
 pkgconfig::set_config("drake::strings_in_dots" = "literals")
@@ -16,9 +17,10 @@ pkgconfig::set_config("drake::strings_in_dots" = "literals")
 #construct drake plan
 analyses <- drake_plan(
   
-  #import & clean data
-  
 
+  #run analyses
+  testate_summary = summarise_counts(testate_counts),
+  
   #make plots
   
   #add extra packages to bibliography
@@ -29,16 +31,23 @@ analyses <- drake_plan(
   
   #knit manuscript
   #knit manuscript
-  manuscript = target(
-    command = rmarkdown::render(input = knitr_in("Rmd/count_check_MS.Rmd"), output_dir = "./output", output_file = file_out("output/count_check_MS.pdf")), 
-    trigger = trigger(change =list(biblio2))
-  )
+  manuscript = {
+    file_in("Rmd/extra/countMS2.bib")
+    rmarkdown::render(input = knitr_in("Rmd/count_check_MS.Rmd"), output_dir = "./output", output_file = file_out("output/count_check_MS.pdf"))
+  }
 )
 
+#put plans together
+plans <- bind_rows(testate_plan, analyses)
+
 #configure and make drake plan
-config <- drake_config(analyses)
-outdated(config)        # Which targets need to be (re)built?
-make(analyses)          # Build the right things.
+config <- drake_config(plans)
+
+#set up parallel processing for drake
+future::plan(future::multiprocess) 
+
+#Build the right things
+make(plans, jobs = 2, parallelism = "future")
 
 system("evince output/count_check_MS.pdf", wait = FALSE)#display pdf - only linux
 
