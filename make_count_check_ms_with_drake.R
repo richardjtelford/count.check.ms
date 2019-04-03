@@ -6,9 +6,12 @@ library("gridExtra")
 library("broom")
 #devtools::install_github("richardjtelford/rjt.misc")
 library("rjt.misc")
+library("countChecker")
 
 #import scripts
+source("R/download_birds.R")
 source("R/download_testates.R")
+source("R/download_chironomids.R")
 source("R/summarise_counts.R")
 
 #drake configuration
@@ -25,7 +28,7 @@ analyses <- drake_plan(
   
   #add extra packages to bibliography
   biblio2 = package_citations(
-    packages = c("rioja"), 
+    packages = c("extraDistr"), 
     old_bib = file_in("Rmd/extra/countMS.bib"), 
     new_bib = file_out("Rmd/extra/countMS2.bib")),
   
@@ -38,7 +41,7 @@ analyses <- drake_plan(
 )
 
 #put plans together
-plans <- bind_rows(testate_plan, analyses)
+plans <- bind_rows(bird_plan, testate_plan, chironomid_plan, analyses)
 
 #configure and make drake plan
 config <- drake_config(plans)
