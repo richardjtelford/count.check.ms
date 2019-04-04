@@ -44,9 +44,6 @@ vignettes/*.pdf
 #output
 output/
 
-#extra
-Rmd/extra/
-
 #data
 *.bil
 *.hdr
