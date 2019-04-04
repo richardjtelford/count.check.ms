@@ -7,11 +7,13 @@ library("broom")
 #devtools::install_github("richardjtelford/rjt.misc")
 library("rjt.misc")
 library("countChecker")
+library("english")
 
 #import scripts
 source("R/download_birds.R")
 source("R/download_testates.R")
 source("R/download_chironomids.R")
+source("R/download_pollen.R")
 source("R/summarise_counts.R")
 
 #drake configuration
@@ -41,7 +43,7 @@ analyses <- drake_plan(
 )
 
 #put plans together
-plans <- bind_rows(bird_plan, testate_plan, chironomid_plan, analyses)
+plans <- bind_rows(bird_plan, testate_plan, chironomid_plan, analyses, pollen_plan)
 
 #configure and make drake plan
 config <- drake_config(plans)
@@ -50,7 +52,7 @@ config <- drake_config(plans)
 future::plan(future::multiprocess) 
 
 #Build the right things
-make(plans, jobs = 2, parallelism = "future")
+make(plans, jobs = 2, parallelism = "future", session = callr::r_vanilla())
 
 system("evince output/count_check_MS.pdf", wait = FALSE)#display pdf - only linux
 

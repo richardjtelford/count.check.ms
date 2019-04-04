@@ -36,6 +36,8 @@ loadd(plot_base)
 loadd(bird_singleton_summary)
 loadd(testate_counts, testate_summary)
 loadd(last_chance_meta)
+loadd(pollen1_summary)
+
 ```
 
 # Abstract{-}
@@ -107,7 +109,7 @@ readd(last_chance_plot)
 
 ## Unexpected count data
 
-Dataset 3 is a `r #nrow(d3)` pollen stratigraphy extracted from Neotoma. The associated paper (anonymsed here) reports that count sums are at least ###. All counts in dataset 3 sum to ###-###... No singletons.
+Dataset 3 is a `r n_groups(readd(pollen1_counts))` count pollen stratigraphy extracted from Neotoma. The associated paper (anonymised here) reports that count sums are 200 (excluding fern spores). Unexpectedly, only `r pollen1_summary$count$has_singletons %>% insist(. == 1) %>% as.english()` of the counts has a singleton. The other counts have minimum abundances of two or four pollen grains. With the exception of the single singleton, all `r pollen1_summary$individual$n %>% invisible()` species counts are divisible by two`r pollen1_summary$individual$not_two %>% insist(. == 1) %>% invisible()`. The probablility that these counts reflects the true nature of the pollen assemblages is exceedingly low; it is far more likely that the data have been mishandled in some way.
 
 ## Unexpected percent data
 Dataset 5 diatoms Siberia
