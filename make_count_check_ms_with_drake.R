@@ -9,6 +9,9 @@ library("rjt.misc")
 library("countChecker")
 library("english")
 
+#drake configuration
+pkgconfig::set_config("drake::strings_in_dots" = "literals")
+
 #import scripts
 source("R/download_birds.R")
 source("R/download_testates.R")
@@ -16,12 +19,13 @@ source("R/download_chironomids.R")
 source("R/download_pollen.R")
 source("R/summarise_counts.R")
 
-#drake configuration
-pkgconfig::set_config("drake::strings_in_dots" = "literals")
 
 #construct drake plan
 analyses <- drake_plan(
   
+  #secrets
+  secrets = readRDS("data/secrets.RDS") %>%
+      encryptr::decrypt(secret),
 
   #run analyses
   testate_summary = summarise_counts(testate_counts),

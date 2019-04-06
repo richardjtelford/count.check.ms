@@ -2,7 +2,13 @@
 
 pollen_plan <- drake_plan(
  #download
- pollen1_data = neotoma::get_download(3132),
+ pollen1_data = {
+   target <- secrets %>% 
+     filter(dataset == "pollen1") %>% 
+     pull(secret) %>% 
+     as.numeric()
+   neotoma::get_download(target)
+   },
  #reformat
  pollen1_counts = neotoma::counts(pollen1_data)[[1]] %>%
    as_tibble(rownames = ".id") %>% 
