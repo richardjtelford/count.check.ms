@@ -1,9 +1,16 @@
 ---
 title: "Tools for identifying implausible counts"
-author: |
-  | Richard J. Telford 
-  | Department of Biological Sciences, University of Bergen, Postboks 7803, N-5020 Bergen, Norway
-  | email: richard.telford@uib.no
+author:
+  - name: Richard J. Telford
+    email: richard.telford@uib.no
+    affiliation: University of Bergen
+    footnote: Corresponding Author
+address:
+  - code: University of Bergen
+    address: Department of Biological Sciences, University of Bergen and Bjerknes Centre for Climate Research, Postboks 7803, N-5020 Bergen, Norway
+abstract: |
+  Astract goes here
+journal: "Quaternary Science Reviews"
 date: "`r format(Sys.Date(), '%d %B %Y')`"
 header-includes:
    - \usepackage{lineno}
@@ -12,14 +19,14 @@ header-includes:
    - \newcommand{\blandscape}{\begin{landscape}}
    - \newcommand{\elandscape}{\end{landscape}}   
 output:
-  bookdown::pdf_document2:
-      latex_engine: xelatex
-      number_sections: true
+  bookdown::pdf_book:
+    base_format: 
+      rticles::elsevier_article
+    number_sections: true
 documentclass: article
 classoption: a4paper
 bibliography: extra/countMS2.bib
 csl: extra/journal-of-paleolimnology.csl
-toc: false
 ---
 
 ```{r setup, include=FALSE}
@@ -39,10 +46,6 @@ loadd(last_chance_meta)
 loadd(pollen1_summary)
 
 ```
-
-# Abstract{-}
-
-
 
 **Keywords:** Quantitative reconstructions, transfer functions, performance statistics, chironomids
 
@@ -69,7 +72,7 @@ This paper aims to test the methods presented above, and discusses some complica
 
 # Methods
 
-Data sets were downloaded from the Palaeodata Center, Neotoma, Pangaea and other sources. A range of ecological and palaeoecological data were sought to allow for difference in typical count sum and species richness. This paper does not attempt to be an exhaustive survey of all the data available.
+Data sets were downloaded from the Palaeodata Center, Neotoma, Pangaea and other sources. A range of ecological and palaeoecological data were sought to allow for difference in typical count sum and species richness. Datasets with possible data mishandling are anonymised. This paper does not attempt to be an exhaustive survey of all the data available.
 
 All analyses were done in R version `r getRversion()` [@R]. Code to replicate all the analyses shown above is archived at [https://github.com/richardjtelford/count.check.ms](https://github.com/richardjtelford/count.check.ms).
 
@@ -109,7 +112,7 @@ readd(last_chance_plot)
 
 ## Unexpected count data
 
-Dataset 3 is a `r n_groups(readd(pollen1_counts))` count pollen stratigraphy extracted from Neotoma. The associated paper (anonymised here) reports that count sums are 200 (excluding fern spores). Unexpectedly, only `r pollen1_summary$count$has_singletons %>% insist(. == 1) %>% as.english()` of the counts has a singleton. The other counts have minimum abundances of two or four pollen grains. With the exception of the single singleton, all `r pollen1_summary$individual$n %>% invisible()` species counts are divisible by two`r pollen1_summary$individual$not_two %>% insist(. == 1) %>% invisible()`. The probablility that these counts reflects the true nature of the pollen assemblages is exceedingly low; it is far more likely that the data have been mishandled in some way.
+Dataset 3 is a `r n_groups(readd(pollen1_counts))` count pollen stratigraphy. The associated paper reports that count sums are 200 (excluding fern spores). Unexpectedly, only `r pollen1_summary$count$has_singletons %>% insist(. == 1) %>% as.english()` of the counts has a singleton. The other counts have minimum abundances of two or four pollen grains. With the exception of the single singleton, all `r pollen1_summary$individual$n %>% invisible()` species counts are divisible by two`r pollen1_summary$individual$not_two %>% insist(. == 1) %>% invisible()`. The probablility that these counts reflects the true nature of the pollen assemblages is exceedingly low; it is far more likely that the data have been mishandled in some way.
 
 ## Unexpected percent data
 Dataset 5 diatoms Siberia
