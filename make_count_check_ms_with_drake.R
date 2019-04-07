@@ -12,6 +12,9 @@ library("english")
 #drake configuration
 pkgconfig::set_config("drake::strings_in_dots" = "literals")
 
+## askpass
+options(askpass = function(x)readLines("pw.txt"))
+
 #import scripts
 source("R/download_birds.R")
 source("R/download_testates.R")
@@ -42,7 +45,10 @@ analyses <- drake_plan(
   #knit manuscript
   manuscript = {
     file_in("Rmd/extra/countMS2.bib")
-    rmarkdown::render(input = knitr_in("Rmd/count_check_MS.Rmd"), output_dir = "./output", output_file = file_out("output/count_check_MS.pdf"))
+    rmarkdown::render(
+      input = knitr_in("Rmd/count_check_MS.Rmd"), 
+      knit_root_dir = "../", 
+      clean = FALSE)
   }
 )
 
@@ -56,9 +62,9 @@ config <- drake_config(plans)
 future::plan(future::multiprocess) 
 
 #Build the right things
-make(plans, jobs = 2, parallelism = "future", session = callr::r_vanilla())
+make(plans, jobs = 2, parallelism = "future")
 
-system("evince output/count_check_MS.pdf", wait = FALSE)#display pdf - only linux
+system("evince Rmd/count_check_MS.pdf", wait = FALSE)#display pdf - only linux
 
 #view dependency graph
 vis_drake_graph(config, targets_only = TRUE)
