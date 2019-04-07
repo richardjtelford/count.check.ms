@@ -51,59 +51,89 @@ loadd(pollen1_summary)
 
 # Introduction
 
-Six percent of papers published in _Molecular and Cellular Biology_ show evidence of inappropriate image duplication [@Bik2018] either due to error or, more rarely, misconduct. It would be reckless to assume that the palaeoecological literature does not have equivalent problems: the low rate of retractions in the ecological and geological literature [@Grieneisen2012] may partially reflect our limited ability to detect errors and misconduct rather than their prevalence. 
+Six percent of papers published in _Molecular and Cellular Biology_ show evidence of inappropriate image duplication [@Bik2018] either due to error or, more rarely, misconduct. 
+It would be reckless to assume that the palaeoecological literature does not have equivalent problems: the low rate of retractions in the ecological and geological literature [@Grieneisen2012] may partially reflect our limited ability to detect errors and misconduct rather than their prevalence. 
 
-Several numerical tools have been developed to identify questionable data. Deviations from the expected distribution of digits from the Newcomb-Benford law has been used to detect issues with scientific and financial data [@Barabesi2017]. Carlisle [-@Carlisle2017] identified papers where the baseline differences in means for different treatments were surprisingly high or low given the variance of the data. Brown et al. [-@Brown2017] developed a simple test, GRIM, of whether means of integer data are consistent with the reported sample size. However none of these tests are directly applicable to microfossil assemblage data, one of the most common types of palaeoecological data.
+Several numerical tools have been developed to identify questionable data. 
+Deviations from the expected distribution of digits from the Newcomb-Benford law has been used to detect issues with scientific and financial data [@Barabesi2017]. 
+Carlisle [-@Carlisle2017] identified papers where the baseline differences in means for different treatments were surprisingly high or low given the variance of the data. 
+Brown et al. [-@Brown2017] developed a simple test, GRIM, of whether means of integer data are consistent with the reported sample size. 
+However none of these tests are directly applicable to microfossil assemblage data, one of the most common types of palaeoecological data.
 
-A common assertion in papers reporting microfossil assemblage data is that a minimum of _N_ microfossils were counted, where _N_ is often 50 for chironomids and several hundred for pollen and diatoms. This is important because larger count sums are associated with smaller uncertainties, both is in relative abundance of taxa and derived statistics such are transfer function reconstructions [@Heiri2001]. However, given the time-consuming nature of microfossil counting, especially when preservation is poor or concentrations are low, there is an incentive to misreport the minimum count sum. There is a documented case of mis-reported count sums: Larocque-Tobler et al [@Larocque-Tobler2015] reported that their chironomid count sums were at least 50 head capsules, a subsequent corrigendum  [@Larocque-Tobler2016] acknowledged that count sums were actually as low as nineteen. Telford [-@Telford2019] reports some other cases where count sums may be much lower than reported.
+A common assertion in papers reporting microfossil assemblage data is that a minimum of _N_ microfossils were counted, where _N_ is often 50 for chironomids and several hundred for pollen and diatoms. 
+This is important because larger count sums are associated with smaller uncertainties, both is in relative abundance of taxa and derived statistics such are transfer function reconstructions [@Heiri2001]. 
+However, given the time-consuming nature of microfossil counting, especially when preservation is poor or concentrations are low, there is an incentive to misreport the minimum count sum. 
+The risk that count sums will be mis-reported is not just theoretical: Larocque-Tobler et al [@Larocque-Tobler2015] reported that their chironomid count sums were at least 50 head capsules, a subsequent corrigendum  [@Larocque-Tobler2016] acknowledged that count sums were actually as low as nineteen. 
+Telford [-@Telford2019] reports some other cases where count sums may be much lower than reported.
 
-If the genuine assemblage counts are archived, it is trivial to identify undercounts. Unfortunately, count data might be falsified so that it appears to meet the reported count sum. A more common problem is that, regrettably, many palaeoecologists archive percent data without an indication of the count sum. This paper develops simple tests that can flag if the count data might have been misrepresented, or if the count sum of percent data is perhaps lower than was been reported.
+If the genuine assemblage counts are archived, it is trivial to identify undercounts. 
+Unfortunately, count data might be falsified so that it appears to meet the reported count sum. 
+A more common problem is that, regrettably, many palaeoecologists archive percent data without an indication of the count sum. 
+This paper develops simple tests that can flag if the count data might have been misrepresented, or if the count sum of percent data is perhaps lower than was been reported.
 
-The key insight that allows inference about the count sum is that assemblage data are expected to follow the typical features of a rank abundance curve. In particular, because there are many rare taxa in most communities [@Darwin1859], most community or assemblage samples will include taxa represented by a single individual [@Coddington2009], hereafter singletons, unless the sampling effort is high relative to the species richness. In the occasional assemblages without singletons, the greatest common divisor should usually be one, especially if species richness is high.
+The key insight that allows inference about the count sum is that assemblage data are expected to follow the typical features of a rank abundance curve. 
+In particular, because there are many rare taxa in most communities [@Darwin1859], most community or assemblage samples will include taxa represented by a single individual [@Coddington2009], hereafter singletons, unless the sampling effort is high relative to the species richness. 
+In the occasional assemblages without singletons, the greatest common divisor should usually be one, especially if species richness is high.
 
-In general, it is not possible to estimate the sum from which percent were calculated, but given that we expect the rarest taxon to be a singleton, we can estimate the count sum _N_ as $1/p * 100$ where _p_ is the percent abundance of the rarest taxon. In cases where the rarest taxon is not a singleton, it is unlikely that all percent are integer multiples of _p_ (which they should be otherwise).
+In general, it is not possible to estimate the sum from which percent were calculated, but given that we expect the rarest taxon to be a singleton, we can estimate the count sum _N_ as $1/p * 100$ where _p_ is the percent abundance of the rarest taxon. 
+In cases where the rarest taxon is not a singleton, it is unlikely that all percent are integer multiples of _p_ (which they should be otherwise).
 
-
-<!-- This paper develops a method, related to GRIM [@Brown2017], that can test if the count sums are probably as large as reported. -->
-
-This paper aims to test the methods presented above, and discusses some complications and caveats.
-
-<!-- estimates the prevalence of microfossil assemblages without singletons, and develops additional tests for samples without singletons. Next, these tests are applied to percent data where the count sums are known, and then to percent data where the count sums are not known. -->
+This paper aims to test the methods presented above and present some cases with unexpected results. 
+Some complications and caveats are discussed.
 
 # Methods
 
-Data sets were downloaded from the Palaeodata Center, Neotoma, Pangaea and other sources. A range of ecological and palaeoecological data were sought to allow for difference in typical count sum and species richness. Datasets with possible data mishandling are anonymised. This paper does not attempt to be an exhaustive survey of all the data available.
+Datasets were downloaded from the Palaeodata Center, Neotoma, Pangaea and other sources. 
+A range of ecological and palaeoecological data were sought to allow for difference in typical count sum and species richness. 
+Datasets with possible data mis-reporting are anonymised, but no attempt is made to diagnose whether error or misconduct are responsible.
+This paper does not attempt to be an exhaustive survey of all the data available.
 
-All analyses were done in R version `r getRversion()` [@R]. Code to replicate all the analyses shown above is archived at [https://github.com/richardjtelford/count.check.ms](https://github.com/richardjtelford/count.check.ms).
+All analyses were done in R version `r getRversion()` [@R].
+Code to replicate all the analyses shown above is archived at [https://github.com/richardjtelford/count.check.ms](https://github.com/richardjtelford/count.check.ms).
 
 # Results 
 
 ## Prevalence of singletons
 
-The first dataset consists of over `r format(floor(bird_singleton_summary$n_routes[1]/1000) * 1000, big.mark = ",")` bird counts from the North American breeding bird survey [@NAmerican_Breeding_Bird2018]. The vast majority of counts have singletons species (Table \@ref(tab:bird-table))). To explore the effect of taxonomic richness on the prevalence of singletons, I aggregate the birds counts to progressively lower taxonomic resolution. As richness declines, the proportion of counts lacking singletons increases (Table \@ref(tab:bird-table))), reaching a moderate proportion at the order level, where most of the counts lacking singletons have fewer than five taxa.
+The first dataset consists of over `r format(floor(bird_singleton_summary$n_routes[1]/1000) * 1000, big.mark = ",")` bird counts from the North American breeding bird survey [@NAmerican_Breeding_Bird2018]. 
+The vast majority of counts have singletons species (Table \@ref(tab:bird-table))). 
+To explore the effect of taxonomic richness on the prevalence of singletons, I aggregate the birds counts to progressively lower taxonomic resolution. 
+As richness declines, the proportion of counts lacking singletons increases (Table \@ref(tab:bird-table))), reaching a moderate proportion at the order level, where most of the counts lacking singletons have fewer than five taxa.
 
-The vast majority of counts without singletons have a greatest common divisor of one, except when taxonomic richness is low. 
+The vast majority of counts without singletons have a greatest common divisor of one, except when taxonomic richness is low.
 
 ```{r bird-table}
 bird_singleton_summary %>%
-  select(`Taxonomic level` = taxonomic_level, `Percent without singletons` = pc_singletons, `Percent GCD > 1` = GCD, `Mean richness` = mean_richness) %>% 
+  select(`Taxonomic level` = taxonomic_level, `Percent without singletons` = pc_singletons, `Percent GCD > 1` = GCD, `Mean richness` = mean_richness) %>%
   knitr::kable(digits = c(0, 4, 4, 3), caption = "Percent of bird counts without singletons and of greatest common divisor (GCD) greater than one of counts without singletons, at different taxonomic levels.")
 ```
 
-To test the sensitivity of the prevalence of counts without singletons, I re-sample the counts with 400 or more observations to smaller count sums using the multivariate hypergeometric distribution in the extraDistr package version `r packageVersion("extraDistr")` [@extraDistr]. At the order level, the proportion of counts without singletons declines steeply until it reaches a minimum at about 200, thereafter is rises slowly (Fig. \@ref(fig:bird-recount)). The prevalence of counts without singleton is high for small counts because it is possible that only the common taxa are counted, with larger counts, the chance of counting a single individual of a rare taxon increases. With even larger counts the prevalence of counts without singletons increases due to saturation as singletons become doubletons and few new taxa are found.
+To test the sensitivity of the prevalence of counts without singletons, I re-sample the counts with 400 or more observations to smaller count sums using the multivariate hypergeometric distribution in the extraDistr package version `r packageVersion("extraDistr")` [@extraDistr]. 
+At the order level, the proportion of counts without singletons declines steeply until it reaches a minimum at about 200, thereafter is rises slowly (Fig. \@ref(fig:bird-recount)). 
+The prevalence of counts without singleton is high for small counts because it is possible that only the common taxa are counted, with larger counts, the chance of counting a single individual of a rare taxon increases. 
+With even larger counts the prevalence of counts without singletons increases due to saturation as singletons become doubletons and few new taxa are found.
 
 ```{r bird-recount, fig.cap="Effect of count sum on the proportion of samples without singletons. Results are the mean of ten trials, error bars are two standard errors.", fig.width = 90/25.4, fig.height = 90/25.4}
 readd(bird_recount_singleton_plot)
 ```
 
-The second dataset is the `r n_distinct(testate_counts$sampleID)` sample North American testate amoeba training set with available counts collated by Amesbury et al. [-@AMESBURY2018]. The count sums range between `r testate_summary$count_summary$sum %>% range() %>% paste(collapse = " and ")` (median = `r testate_summary$count_summary$sum %>% median()`) tests, and species richness ranges between `r testate_summary$count_summary$n %>% range() %>% paste(collapse = " and ")` (median = `r testate_summary$count_summary$n %>% median()`) species. `r testate_summary$prop_singletons * 100`% of the assemblages have at least one singleton (median `r testate_summary$median_singletons`). In the assemblages that lack singletons, `r testate_summary$gcd1 * 100`% have a greatest common divider of one.
+The second dataset is the `r n_distinct(testate_counts$sampleID)` sample North American testate amoeba training set with available counts collated by Amesbury et al. [-@AMESBURY2018]. 
+The count sums range between `r testate_summary$count_summary$sum %>% range() %>% paste(collapse = " and ")` (median = `r testate_summary$count_summary$sum %>% median()`) tests, and species richness ranges between `r testate_summary$count_summary$n %>% range() %>% paste(collapse = " and ")` (median = `r testate_summary$count_summary$n %>% median()`) species. 
+`r testate_summary$prop_singletons * 100`% of the assemblages have at least one singleton (median `r testate_summary$median_singletons`). 
+In the assemblages that lack singletons, `r testate_summary$gcd1 * 100`% have a greatest common divider of one.
 
 <!-- description of samples with gcd > 1 -->
 
 
 ## Estimating the percent sum
 
-The third dataset consists of `r nrow(last_chance_meta)` chironomid head capsule counts from Last Chance Lake [@Axford2017]. It includes both the count sums and the percentage of each taxa, allowing the count sums estimated from the rarest taxon to be checked. The percent are given to two decimal places: to account for rounding errors, I use the smallest and largest values consistent with the reported percentage and show this range as a error bar. All the estimated count sums are, within error, either identical to the reported count sum or twice as much (Fig. \@ref(fig:last-chance-plot)). The factor of two difference is because in some counts the rarest taxon is represented by a half head capsule. Reporting half microfossils is common for several microfossil groups, including chironomids and pollen (especially for bisaccate conifers), occasionally other fractions are reported. Fractional counts make the estimated count too high, so do no risk incorretly flagging counts as being too small.
+The third dataset consists of `r nrow(last_chance_meta)` chironomid head capsule counts from Last Chance Lake [@Axford2017]. 
+It includes both the count sums and the percentage of each taxa, allowing the count sums estimated from the rarest taxon to be checked. 
+The percent are given to two decimal places: to account for rounding errors, I use the smallest and largest values consistent with the reported percentage and show this range as a error bar. 
+All the estimated count sums are, within error, either identical to the reported count sum or twice as much (Fig. \@ref(fig:last-chance-plot)). 
+The factor of two difference is because in some counts the rarest taxon is represented by a half head capsule. 
+Reporting half microfossils is common for several microfossil groups, including chironomids and pollen (especially for bisaccate conifers), occasionally other fractions are reported.
+Fractional counts make the estimated count too high, so do no risk incorrectly flagging counts as being too small.
 
 
 ```{r last-chance-plot, fig.cap = "Estimated and reported chironomid count sums from Axford et al. [-@Axford2017]. Lines show the 1:1 and 2:1 relationships.", fig.width = 90/25.4, fig.height = 90/25.4}
@@ -112,7 +142,14 @@ readd(last_chance_plot)
 
 ## Unexpected count data
 
-Dataset 3 is a `r n_groups(readd(pollen1_counts))` count pollen stratigraphy. The associated paper reports that count sums are 200 (excluding fern spores). Unexpectedly, only `r pollen1_summary$count$has_singletons %>% insist(. == 1) %>% as.english()` of the counts has a singleton. The other counts have minimum abundances of two or four pollen grains. With the exception of the single singleton, all `r pollen1_summary$individual$n %>% invisible()` species counts are divisible by two`r pollen1_summary$individual$not_two %>% insist(. == 1) %>% invisible()`. The probablility that these counts reflects the true nature of the pollen assemblages is exceedingly low; it is far more likely that the data have been mishandled in some way.
+Dataset 4 is a `r n_groups(readd(pollen1_counts))` count pollen stratigraphy.
+The associated paper reports that count sums are 200 (excluding fern and fungal spores).
+The archived data have counts sums between `r pollen1_summary$count$min_count` and `r pollen1_summary$count$max2_count`, with the exception of one count of `r pollen1_summary$count$max_count` (which may be so high because of a possible data entry error).
+However, these counts sums include trilete spores, probably from a fern or fern ally, with an abundance as high as `r pollen1_summary$max_trilete`.
+Unexpectedly, only `r pollen1_summary$count$has_singletons %>% insist(. == 1) %>% as.english() %>% as.character()` of the counts has a singleton.
+The other counts have minimum abundances of two or four pollen grains.
+With the exception of the single singleton, all `r pollen1_summary$individual$n %>% invisible()` species counts are divisible by two`r pollen1_summary$individual$not_two %>% insist(. == 1) %>% invisible()`.
+The probability that these counts reflects the true nature of the pollen assemblages is exceedingly low; it is far more likely that the data have been mishandled in some way.
 
 ## Unexpected percent data
 Dataset 5 diatoms Siberia
@@ -142,17 +179,23 @@ Truncated diversity
 
 Large counts
 
-Some taxonomic groups have microfossils that often come in groups of attached individuals. For example, for diatoms valves are counted, but these are commonly paired or, for some taxa, in long chains. 
+Some taxonomic groups have microfossils that often come in groups of attached individuals. 
+For example, for diatoms valves are counted, but these are commonly paired or, for some taxa, in long chains. 
 
 Assemblages vs communities
 
 Consequences
 
-Small undercounts in a few samples will have minimal impact on the precision of any palaeoenvironmental reconstruction or other statistics derived from the assemblage. Consequently, such undercounts can be regarded as bad practice that do not necessarily require correcting.
+Small undercounts in a few samples will have minimal impact on the precision of any palaeoenvironmental reconstruction or other statistics derived from the assemblage. 
+Consequently, such undercounts can be regarded as bad practice that do not necessarily require correcting.
 
-Substantial or pervasive undercounts will potentially seriously effect the precision of the results. Such undercounts might either constitute a data handling error (for example, if samples with low counts were supposed to be merged but that step was forgotten, or using boilerplate method text), or falsification. Action to correct the literature is probably required. 
+Substantial or pervasive undercounts will potentially seriously effect the precision of the results. 
+Such undercounts might either constitute a data handling error (for example, if samples with low counts were supposed to be merged but that step was forgotten, or using boilerplate method text), or falsification. 
+Action to correct the literature is probably required. 
 
-Some papers don't report count sums. When this important quality metric is omitted, the reader should be able to assume that the standard minimum count sum for the taxonomic group has been used (i.e. 50 for chironomids, several hundred for pollen and diatoms). If the actual count sum is materially below this, then this potentially constitutes falsification by omission [@Fanelli2013].
+Some papers don't report count sums. 
+When this important quality metric is omitted, the reader should be able to assume that the standard minimum count sum for the taxonomic group has been used (i.e. 50 for chironomids, several hundred for pollen and diatoms). 
+If the actual count sum is materially below this, then this potentially constitutes falsification by omission [@Fanelli2013].
 
 # Conclusions
 
