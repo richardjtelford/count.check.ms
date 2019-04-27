@@ -2,15 +2,17 @@
 library("drake")
 library("tidyverse")
 library("readr")
-library("gridExtra")
-library("broom")
+#library("gridExtra")
+#library("broom")
 #devtools::install_github("richardjtelford/rjt.misc")
 library("rjt.misc")
+#devtools::install_github("richardjtelford/count_checker")#need to make package and repo names identical (_ not permitted)
 library("countChecker")
-library("english")
 
 #drake configuration
 pkgconfig::set_config("drake::strings_in_dots" = "literals")
+#set up parallel processing for drake
+future::plan(future::multiprocess) 
 
 ## askpass
 options(askpass = function(x)readLines("pw.txt"))
@@ -20,6 +22,8 @@ source("R/download_birds.R")
 source("R/download_testates.R")
 source("R/download_chironomids.R")
 source("R/download_pollen.R")
+source("R/download_diatoms.R")
+source("R/download_marine.R")
 source("R/summarise_counts.R")
 
 
@@ -27,17 +31,14 @@ source("R/summarise_counts.R")
 analyses <- drake_plan(
   
   #secrets
-  secrets = readRDS("data/secrets.RDS") %>%
+  secrets = readRDS(file_in("data/secrets.RDS")) %>%
       encryptr::decrypt(secret),
-
-  #run analyses
-  testate_summary = summarise_counts(testate_counts),
   
   #make plots
   
   #add extra packages to bibliography
   biblio2 = package_citations(
-    packages = c("extraDistr"), 
+    packages = c("extraDistr", "countChecker", "numbers"), 
     old_bib = file_in("Rmd/extra/countMS.bib"), 
     new_bib = file_out("Rmd/extra/countMS2.bib")),
   
@@ -53,18 +54,25 @@ analyses <- drake_plan(
 )
 
 #put plans together
-plans <- bind_rows(bird_plan, testate_plan, chironomid_plan, analyses, pollen_plan)
+plans <- bind_rows(
+  bird_plan, 
+  testate_plan, 
+  chironomid_plan, 
+  pollen_plan,
+  diatom_plan,
+  marine_plan,
+  analyses)
 
 #configure and make drake plan
 config <- drake_config(plans)
 
-#set up parallel processing for drake
-future::plan(future::multiprocess) 
-
 #Build the right things
-make(plans, jobs = 2, parallelism = "future")
+make(plans, jobs = 2, parallelism = "future", keep_going = TRUE)
+failed()
 
-system("evince Rmd/count_check_MS.pdf", wait = FALSE)#display pdf - only linux
+if(length(failed()) == 0) {
+  system("evince Rmd/count_check_MS.pdf", wait = FALSE)#display pdf - only linux
+}
 
 #view dependency graph
 vis_drake_graph(config, targets_only = TRUE)

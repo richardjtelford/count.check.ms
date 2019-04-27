@@ -5,7 +5,7 @@ summarise_counts <- function(counts){#columns sampleID/taxon/count
   
   results$count_summary <- counts %>% 
     group_by(sampleID) %>% 
-    summarise(min = min(count), n = n(), sum = sum(count), singletons = sum(count == 1))
+    summarise(min = min(count), n_taxa = n(), sum = sum(count), singletons = sum(count == 1))
   
   results$prop_singletons <- results$count_summary %>% 
     summarise(m = mean(min == 1)) %>% 
@@ -23,8 +23,10 @@ summarise_counts <- function(counts){#columns sampleID/taxon/count
     group_by(sampleID) %>%
     mutate(m = min(count)) %>%
     filter(m > 1) %>% #remove samples with singletons
-    summarise(gcd = numbers::mGCD(count)) #find greatest common divisor
+    summarise(gcd = numbers::mGCD(count), n_taxa = n()) #find greatest common divisor
     
+  results$gcd2plus <- results$no_singletons %>%
+    filter(gcd > 1)
   
   results$gcd1 <- results$no_singletons %>% 
     summarise(prop1 = mean(gcd == 1)) %>% 
@@ -33,19 +35,3 @@ summarise_counts <- function(counts){#columns sampleID/taxon/count
   return(results)
   
 }
-
-# 
-# 
-# loadd(testate_meta)
-# 
-# testate_meta %>% 
-#   filter(!readd(testate_has_percent)) %>% 
-#   left_join(
-#     testate_counts %>% 
-#       mutate(sampleID = as.numeric(sampleID)), 
-#     by =c("dataset.id" = "sampleID")) %>% 
-#   group_by(dataset.id) %>% 
-#   filter(min(count) > 1) %>% 
-#   slice(1)
-#                                                                                                                                                                                                     
-# 

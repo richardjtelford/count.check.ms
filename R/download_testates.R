@@ -32,9 +32,19 @@ testate_plan <- drake_plan(
       cnt[, names(cnt) %in% tl$taxon.name]
       })) %>%
     map_df(gather, key = taxon, value = count, .id = "sampleID") %>% 
-    mutate(sampleID = as.numeric(sampleID))
-
+    mutate(sampleID = as.numeric(sampleID)),
   
+  #run analyses
+  testate_summary = summarise_counts(testate_counts),
+
+  testate_summ = list(
+    nsamples = n_distinct(testate_counts$sampleID),
+    n_gcd2 = sum(testate_summary$gcd2plus$gcd == 2),
+    n_gcd3 = sum(testate_summary$gcd2plus$gcd == 3),
+    n_gcd4 = sum(testate_summary$gcd2plus$gcd > 3) %>% insist(. == 0),
+    n_gcd2_low_div = mean(testate_summary$gcd2plus$gcd < 5) * 100,    
+    n_gcd2_low_div = mean(testate_summary$gcd2plus$gcd < 5) * 100
+  )
 )
 
 # testate_config <- drake_config(testate_plan)

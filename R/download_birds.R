@@ -23,19 +23,32 @@ bird_plan <- drake_plan(
     rename(Latin_name = Spanish_Common_Name),
   
   #extract bird data
-  bird_data = list.files(path = "data/birds/", pattern = "\\.zip$", full.names = TRUE) %>% 
+  bird_data = {
+    bird_download # force dependency
+    list.files(path = "data/birds/", pattern = "\\.zip$", full.names = TRUE) %>% 
     map(read_csv) %>% 
     map(mutate, statenum  = as.numeric(statenum)) %>% 
     map(~mutate(., count = rowSums(select(., starts_with("Stop"))))) %>% 
-    map_df(select, -starts_with("Stop")),
+    map_df(select, -starts_with("Stop"))
+    },
   
   #aggregate to different taxonomic levels
   bird_singletons = bird_process(bird_data, bird_species),
 
-  bird_singleton_summary = bird_singletons %>% 
-    group_by(taxonomic_level) %>%   
-    summarise(pc_singletons = mean(singletons == 0) * 100, n_singletons = sum(singletons == 0), mean_richness = mean(n_taxa), n_routes = n(), GCD = mean(GCD > 1, na.rm = TRUE) * 100) %>% 
-    mutate(taxonomic_level = factor(taxonomic_level, levels = c("species", "genus", "family", "order"))) %>% 
+  bird_singleton_summary = bird_singletons %>%
+    group_by(taxonomic_level) %>%
+    summarise(
+      pc_singletons = mean(singletons == 0) * 100,
+      n_singletons = sum(singletons == 0),
+      mean_richness = mean(n_taxa),
+      n_routes = n(),
+      GCD2plus = mean(GCD > 1, na.rm = TRUE) * 100,
+      GCD_max = max(GCD, na.rm = TRUE)
+    ) %>%
+    mutate(taxonomic_level = factor(
+      taxonomic_level,
+      levels = c("species", "genus", "family", "order")
+    )) %>%
     arrange(taxonomic_level),
   
   #bird order GCD summary
