@@ -1,5 +1,5 @@
 ---
-title: "Tools for identifying unexpectely low microfossil counts"
+title: "Tools for identifying unexpectely low microfossil count sums"
 author:
   - name: Richard J. Telford
     email: richard.telford@uib.no
@@ -29,7 +29,6 @@ bibliography: extra/countMS2.bib
 csl: extra/journal-of-paleolimnology.csl
 ---
 
-
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE, include = TRUE, warning = TRUE, message = TRUE)
 
@@ -40,7 +39,7 @@ options(digits = 1)
 loadd(bird_singleton_summary)
 loadd(testate_summ, testate_summary)
 loadd(last_chance_summ, pollen1_summary)
-loadd(owens_summ, owens_summary2)
+loadd(owens_summ, owens_summary2, owens_est_summ)
 loadd(diatom1_summ, diatom2_summ, chironomid1_summ, marine1_summ)
 
 ```
@@ -72,15 +71,15 @@ This paper develops simple tests that can flag if the count data might have been
 
 The key insight that allows inference about the count sum is that assemblage data are expected to follow the typical features of a rank abundance curve.
 In particular, because there are many rare taxa in most communities [@Darwin1859], most community or assemblage samples will include taxa represented by a single individual [@Coddington2009], hereafter singletons, unless the sampling effort is high relative to the taxonomic richness.
-In the occasional assemblages without singletons, the greatest common divisor should usually be one, especially if species richness is high.
+In the occasional assemblages without singletons, the greatest common divisor should usually be one, i.e. few assemblages should have all counts divisable by an integer larger than one, especially if species richness is high.
 
-In general, it is not possible to estimate the sum from which percent were calculated, but the properties of community and assemblage counts make it possible.
+In general, it is not possible to determine the sum from which percent were calculated, but the properties of community and assemblage counts make it possible to estimate it.
 Given that we expect the rarest taxon to be a singleton, the count sum _N_ can be estimated as $1/p_{min} \times 100$ where _p~min~_ is the percent abundance of the rarest taxon.
 This method will fail for assemblages without singletons.
 We also expect the percent _p_ to be calculated from integer counts, therefore, there should be a count sum _N_ such that $p_i/100\times N$ is, within rounding error, an integer for all _i_ taxa.
 Possible values for _N_ can be found by a direct search algorithm over the range of plausible values of _N_.
 An infinite number of possible count sums that are consistent with the percent exist, but the lowest will give the correct value of _N_ except in cases where the greatest common divisor is greater than one.
-These tests can be viewed as special cases of GRIM [@Brown2017].
+These tests are closely related to GRIM [@Brown2017], as all rely on the granularity of percentages calculated from integer data.
 
 This paper aims to test the methods presented above and present some cases with unexpected results.
 Some complications and caveats are discussed.
@@ -90,7 +89,7 @@ Some complications and caveats are discussed.
 Publicly available datasets were downloaded from the Palaeodata Center, Neotoma, Pangaea and other sources.
 A range of ecological and palaeoecological data were sought to allow for difference in typical count sum and species richness.
 Datasets where the minimum count sum was not reported in the associated paper were excluded.
-Datasets from Lakes Zabinskie, Silvaplana and Seebergsee discussed by Telford [-@Telford2019] as possibly having under-reported count sums were also excluded to avoid double reporting.
+Datasets discussed by Telford [-@Telford2019] as possibly having under-reported count sums were also excluded to avoid double reporting.
 Datasets with possible mis-reporting are anonymised, but no attempt is made to diagnose whether errors or misconduct are responsible.
 This paper does not attempt to be an exhaustive survey of all the data available.
 
@@ -101,7 +100,7 @@ Code to replicate all the analyses shown above is archived at [https://github.co
 
 ## Prevalence of singletons
 
-The a tiny minority of the over `r format(floor(bird_singleton_summary$n_routes[1]/1000) * 1000, big.mark = ",")` bird counts from the North American breeding bird survey [@NAmerican_Breeding_Bird2018]
+A tiny minority of the over `r format(floor(bird_singleton_summary$n_routes[1]/1000) * 1000, big.mark = ",")` bird counts from the North American breeding bird survey [@NAmerican_Breeding_Bird2018]
 lack singletons at the species level (Table \@ref(tab:bird-table))).
 To explore the effect of taxonomic richness on the prevalence of singletons, I aggregate the birds counts to progressively lower taxonomic resolutions.
 As richness declines, the proportion of counts lacking singletons increases (Table \@ref(tab:bird-table)), reaching a moderate proportion at the order level, where most of the counts lacking singletons have fewer than five taxa.
@@ -118,31 +117,33 @@ At the order level, the proportion of counts without singletons declines steeply
 The prevalence of counts without singletons is high for small counts because it is possible that only the common taxa are counted; with larger counts, the chance of counting a single individual of a rare taxon increases.
 With even larger counts the prevalence of counts without singletons increases due to saturation as singletons become doubletons and few new taxa are found.
 
-```{r bird-recount, fig.cap="Effect of count sum on the proportion of bird counts without singleton orders. Results are the mean of ten trials, error bars are two standard errors.", fig.width = 90/25.4, fig.height = 90/25.4}
+```{r bird-recount, fig.cap="Effect of count sum on the proportion of bird counts without singleton orders. Results are the mean of ten trials, error bars are two standard errors.", fig.width = 70/25.4, fig.height = 70/25.4}
 readd(bird_recount_singleton_plot)
 ```
 
 The `r n_distinct(readd(owens)$SampleId)` diatoms counts from Owen's Lake span a wide range of count sums (`r range(owens_summ$sum) %>% paste(collapse = "--")`) as, if concentrations were low, the requirement that at least 300 valves were counted, was replaced by a minimum area of slide to count [@Platt1997].
-Discounting the `r sum(owens_summ$n_taxa == 1)` mono-specific assemblages (all with very low count sums`r max(owens_summ$sum[owens_summ$n_taxa == 1]) %>% insist(. <= 10) %>% invisible()`), the median number of singletons per count is `r owens_summary2$median_sing %>% as.english()` and only `r owens_summary2$no_singletons`% of counts lack singletons.
-Assemblages with counts below 50 have a higher chance of lacking singletons (`r owens_summary2$no_single_lt_50`% vs `r owens_summary2$no_single50_`%).
+Discounting the `r sum(owens_summ$n_taxa == 1)` mono-specific assemblages (all with very low count sums`r max(owens_summ$sum[owens_summ$n_taxa == 1]) %>% insist(. <= 10) %>% invisible()`), the median number of singletons per count is `r owens_summary2$median_sing %>% as.english()` and only `r owens_summary2$no_singletons`% of assemblages lack singletons.
+Assemblages with count sums below 50 have a higher chance of lacking singletons (`r owens_summary2$no_single_lt_50`% vs `r owens_summary2$no_single50_`%).
 Of the assemblages without singletons, `r owens_summary2$gcd2`% have a greatest common divisor of one.
 The maximum greatest common divisor is `r  owens_summary2$gcd_max %>% as.english()`.
 Assemblages with a greatest common divisor above one all have low taxonomic richness`r owens_summ %>% filter(gcd > 1) %>% pull(n_taxa) %>% max() %>%  insist(. <= 6) %>% invisible()`.
 
-The `r testate_summ$nsamples` assemblages in the North American testate amoeba training set with available count data [@AMESBURY2018] have count sums between `r testate_summary$count_summary$sum %>% range() %>% paste(collapse = " and ")` (median = `r testate_summary$count_summary$sum %>% median()`) tests, and taxonomic richness ranges between `r testate_summary$count_summary$n_taxa %>% range() %>% paste(collapse = " and ")` (median = `r testate_summary$count_summary$n_taxa %>% median()`) taxa.
+The `r testate_summ$nsamples` assemblages in the North American testate amoeba training set with available count data [@AMESBURY2018] have count sums between `r testate_summary$count_summary$sum %>% range() %>% paste(collapse = " and ")` tests (median = `r testate_summary$count_summary$sum %>% median()`), and taxonomic richness ranges between `r testate_summary$count_summary$n_taxa %>% range() %>% paste(collapse = " and ")` (median = `r testate_summary$count_summary$n_taxa %>% median()`) taxa.
 `r testate_summary$prop_singletons * 100`% of the assemblages have at least one singleton (median `r testate_summary$median_singletons`).
 In the assemblages that lack singletons, `r testate_summary$gcd1 * 100`% have a greatest common divisor of one.
-Of these assemblages, `r testate_summ$n_gcd2_low_div`% have fewer than five taxa; `r testate_summ$n_gcd2 %>% as.english()` have a greatest common divisor of two, and the other `r testate_summ$n_gcd3 %>% as.english()` has a greatest common divisor of three.
+Of the `r testate_summ$n_gcd2plus %>% as.english()` assemblages with a greatest common divisor above one, `r testate_summ$n_gcd2_low_div %>% as.english()` have fewer than five taxa; `r testate_summ$n_gcd2 %>% as.english()` have a greatest common divisor of two, and the other `r testate_summ$n_gcd3 %>% as.english()` has a greatest common divisor of three.
 
 ## Estimating the percent sum
 
-The `r last_chance_summ$nsamples` chironomid head capsule assemblage dataset from Last Chance Lake [@Axford2017] includes both the count sums and the percentage of each taxa, allowing the count sums estimated from the rarest taxon to be checked.
+The Owen's Lake dataset [@Platt1997] also includes percentages for each taxa, allowing the count sums estimated from the percent data to be verified. Excluding monospecific assemblages, for which no meaningful estimate of the count sum is possible, the minimum percent method and the direct search method correctly estimate the count sum for, respectively, `r owens_est_summ$minpc`% and `r owens_est_summ$direct`% of the assemblages. The few assemblages that fail the direct seach method are species poor and have low count sums.
+
+The `r last_chance_summ$nsamples` chironomid head capsule assemblage dataset from Last Chance Lake [@Axford2017] also includes both the count sums and the percentage of each taxa.
 The percentages are given to two decimal places: to account for rounding errors, the countChecker package uses the smallest and largest values consistent with the reported percentage.
 With the minimum percent method the estimated count sums are, within error, either identical to the reported count sum or twice as much (Fig. \@ref(fig:last-chance-plot)).
 With the direct search method, the estimated count sums are all exactly twice the reported count sum.
 The factor of two difference is because all the counts include half head capsules (but only sometimes is the rarest taxon represented by a half head capsule).
 Reporting half microfossils is common for several microfossil groups, including chironomids and pollen (especially for bisaccate conifers); occasionally other fractions are reported.
-Fractional counts make the estimated count too high by a factor of two, so do not risk incorrectly flagging counts as being too small.
+Half counts make the estimated count too high by a factor of two, so do not risk incorrectly flagging count sums as being too small.
 The direct search method is more precise than the minimum percent method as the rounding error is relatively smaller on the larger percent values the method uses.
 
 ```{r last-chance-plot, fig.cap = "Estimated and reported chironomid count sums by the minumum percent method (solid symbols with error bars) and the direct search method (red crosses) from Last Chance Lake [@Axford2017]. Lines show the 1:1 (solid) and 2:1 (dashed) relationships.", fig.width = 90/25.4, fig.height = 90/25.4}
@@ -155,8 +156,10 @@ Dataset pollen1 is a `r n_groups(readd(pollen1_counts))` count pollen stratigrap
 The published stratigraphy and the archived dataset generally resemble each other, but there are several discrepancies.
 The associated paper reports that count sums are 200 (excluding fern and fungal spores).
 The archived data have counts sums between `r pollen1_summary$count$min_count` and `r pollen1_summary$count$max2_count`, with the exception of one count of `r pollen1_summary$count$max_count` (which may be so high because of a possible data entry error).
-However, these count sums include trilete spores, probably from a fern or fern ally, with an abundance as high as `r pollen1_summary$max_trilete`.
-Unexpectedly, only `r pollen1_summary$count$has_singletons %>% insist(. == 1) %>% as.english()` of the counts has a singleton.
+Count sums that are smaller than 200 may be because some rare taxa have been omitted from the archived data.
+This should normally only cause small discrepancies.
+More importantly, these count sums include trilete spores, probably from a fern or fern ally, with an abundance as high as `r pollen1_summary$max_trilete` spores.
+Unexpectedly, only `r pollen1_summary$count$has_singletons %>% insist(. == 1) %>% as.english()` of the counts has a singleton, a _`r pollen1_summary$individual$singleton_spp`_ grain.
 The other counts have minimum abundances of two or four pollen grains.
 With the exception of the single singleton, all `r pollen1_summary$individual$n` species counts are divisible by two`r pollen1_summary$individual$not_two %>% insist(. == 1) %>% invisible()`.
 The probability that these counts reflect the true nature of the pollen assemblages is exceedingly low; it is far more likely that the data have been mishandled in some way.
@@ -178,13 +181,13 @@ In total, `r diatom1_summ$n_low_n %>% as.english()` assemblages appear to have a
 
 ```
 
-The archived data include `r diatom1_summ$ntaxa` taxa that have a maximum abundance of at least 1.25%; this is about half of the 109 taxa reported in the paper.
-This pruning of rare taxa will increase the risk of counts without singletons, but does not appear to have caused any problem here (which would be reflected by non-integer multiples).
+The archived data include `r diatom1_summ$n_taxa` taxa that have a maximum abundance of at least 1.25%; this is about half of the 109 taxa reported in the paper.
+This pruning of rare taxa will increase the risk of counts without singletons, which would cause the minimum percent method to fail, but will have little impact on the direct search method.
 
 Dataset diatom2 has `r diatom2_summ$nsamples` assemblages with a median richness of `r diatom2_summ$median_taxa` taxa.
 The associated paper reports that the diatom counts included 400–500 valves per assemblage except for four diatom-poor assemblages with at least 100 valves.
-The direct search method estimates that `r diatom2_summ$n400 %>% as.english()` of the assemblages have a count sum of less than 400, and `r diatom2_summ$n100 %>% as.english()` have less than 100.
-The direct search and minimum percent methods agree, within rounding error, `r diatom2_summ$meth_agree %>% insist(isTRUE(.)) %>% invisible()`on the estimated count sums, implying that either all assemblages have singletons, or that the greatest common divisor of the raw counts is greater than one.
+The direct search method estimates that `r diatom2_summ$n400 %>% as.english()` assemblages have a count sum of less than 400, and `r diatom2_summ$n100 %>% as.english()` have less than 100.
+The direct search and minimum percent methods agree, within rounding error, `r diatom2_summ$meth_agree %>% insist(isTRUE(.)) %>% invisible()`on the estimated count sums, implying that either all assemblages have singletons and count sums are low in some assemblages, or that the greatest common divisor of the raw counts is greater than one.
 This means that for the assemblage with the minimum percent is `r diatom2_summ$maxpc`, which has `r diatom2_summ$rich_maxpc %>% as.english()` taxa, all counts would need to be multiples of `r diatom2_summ$integer_mult` for the count sum to be at least 100.
 
 Dataset chironomid1 has `r chironomid1_summ$nsamples` assemblages.
@@ -193,16 +196,15 @@ These assemblages are diverse (richness between `r chironomid1_summ$richness %>%
 
 Palaeoceanographic dataset marine1 has `r marine1_summ$nsamples` assemblages with a median taxonomic richness of `r marine1_summ$median_taxa` taxa.
 The associated paper reports that assemblages with count sums below 100 were omitted, and that there were 20 assemblages with count sums below 200.
-The direct search method estimates that `r marine1_summ$n100 %>% as.english()` assemblages have count sums below 100 (this excludes `r marine1_summ$n_one_taxa %>% as.english()` mono-specific assemblage for which no estimate of the count sum is possible), with count sums as low as `r marine1_summ$est_n_min`.
+The direct search method estimates that `r marine1_summ$n100 %>% as.english()` assemblages have count sums below 100 (this excludes `r marine1_summ$n_one_taxa %>% as.english()` mono-specific assemblage), with count sums as low as `r marine1_summ$est_n_min`.
 With this dataset, the direct search and the minimum percent method give identical results for some assemblages but highly divergent estimates for others, with the direct search method sometimes giving estimates of several thousand, in one case over two orders of magnitude higher than the minimum percent method.
 Some of the divergence appears to be because some, mainly low diversity, assemblages lack singletons.
 The most extreme divergences appear to be data entry errors with incorrect rounding, perhaps during taxonomic revisions of the percent data rather than the raw counts.
 
-
-
 # Discussion
 
 My search through archived microfossil count data found several datasets where count sums are, or appear to be, smaller than that reported.
+Some of the count sums appear to be an order of magnitude below what was reported.
 The datasets examined are a convenience sample of available count data that met the inclusion criteria.
 As such, this analysis cannot be used to accurately determine the prevalence of datasets with possible undercounts, but it appears that a non-negligible fraction of the literature is affected.
 It is possible in some cases that the assemblages with low counts were omitted or merged prior to analysis, but the number of assemblages reported was not updated.
@@ -211,9 +213,6 @@ In some cases, the assemblages with low apparent counts can be seen in the publi
 
 It is also possible that the apparently low count sums are a false positive. 
 This can only happen in assemblages that have a greatest common divisor greater than one. The analysis of the breeding bird, testate amoeba and Owen's Lake datasets shows that assemblages without singletons are rare, and assemblages with a greatest common divisor greater than one are very rare, especially for taxonomically diverse assemblages. If a dataset contains several taxonomically diverse assemblages that have a greatest common divisor of two (or expecially if greater than two) doubts should be raised about whether the counts sums are accurately described.
-
-Count sums may be smaller than expected if rare taxa have been omitted from the archived data.
-This should be a minor problem.
 
 Microfossil percent data are often given to two decimal places. 
 This is sufficient precision for the direct search method to have utility with counts sums of several thousand. 
@@ -224,7 +223,7 @@ It should be possible to identify such cases from the meta-data and knowledge of
 It will also fail, as show by dataset marine1, if percentages are incorrectly calculated or rounded.
 
 Some taxonomic groups have microfossils that often come in groups of attached individuals.
-For example, for each diatom cell has two valves, the counting unit.
+For example, for each diatom cell has two valves which are the counting unit.
 These valves usually separate during processing, but paired valves are often found, and some taxa such as _Aulacoseira_ produce long chains of strongly bound valves.
 This might make singletons slighly less likely. 
 The results from Owen's Lake suggest that this is not an important problem, as most assemblages have many singletons.
@@ -238,16 +237,15 @@ Some papers do not report count sums.
 When this important quality metric is omitted, the reader should be able to assume that the standard minimum count sum for the taxonomic group has been used (i.e. 50 for chironomids, several hundred for pollen and diatoms).
 If the actual count sums are materially below this, then this potentially constitutes falsification by omission [@Fanelli2013].
 
-These results highlight the importance of archiving both the raw data and the code required to process the data.
-
 # Conclusions
 
 A non-negligible fraction of the archived assemblage data includes counts that appear to have a count sum below that reported in the paper. 
 Some of the apparent counts are small enough that the uncertainty of the count and derived statistics will be substantially larger than expected.
+These results highlight the importance of archiving both the raw data and the code required to process the data.
 
 # Acknowledgements{-}
 
-I thank ... Neotoma?? Pangaea??
+Some data were obtained from the Neotoma Paleoecology Database (http://www.neotomadb.org), and the work of the data contributors and the Neotoma community is gratefully acknowledged. 
 
 ```{r}
 #set digits to default

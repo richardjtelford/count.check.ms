@@ -20,6 +20,36 @@ diatom_plan <- drake_plan(
       gcd2 = mean(gcd[mn > 1] == 1) * 100,
       gcd_max = max(gcd, na.rm = TRUE)),
   
+  ####owens diatoms####
+  owens_est = owens %>% 
+    estimate_n(ID_cols = c("SampleId", "SampleCode", "CountSum"), percent_col = "Percent", taxon_col = "TaxonShortName", digits = 4) %>%
+    assertr::verify(map_int(direct_search_est, nrow) == 1) %>% #check only one row in each direct_search_est
+    unnest(direct_search_est) %>% 
+    assertr::verify(score == 1),#check score ==1
+  
+  owens_est_summ = owens_est %>% 
+    select(est_n_minpc, est_n_direct, CountSum, n_taxa) %>% 
+    filter(n_taxa > 1) %>% 
+    summarise(
+      minpc = mean(round(est_n_minpc, 3) == CountSum) * 100, 
+      direct = mean(est_n_direct == CountSum) * 100
+    ),
+  
+  owens_fail = owens_est %>% 
+    select(est_n_minpc, est_n_direct, CountSum, n_taxa) %>%
+    filter(n_taxa >1, est_n_direct!=CountSum),
+  
+  owens_plot = owens_est %>% 
+    filter(between(n_taxa, 8, 15), between(CountSum, 80, 150)) %>% 
+    slice(4) %>%  
+    select(c(SampleId:n_taxa), score, est_n_direct) %>% 
+    unnest(direct_search) %>% 
+    gather(key = taxon, value = presence, -c(SampleId:est_n_direct, n, score1)) %>% 
+    ggplot(aes(x = taxon, y = n, fill = presence)) + 
+    geom_raster(show.legend = FALSE) +
+    scale_y_continuous(limits = c(0, 300), expand = c(0, 0)) +
+    labs(y = "Putative count sum") +
+    scale_fill_manual(values = c("white", "black")),
   
   ####diatom1####
   diatom1_data = {target <- secrets %>% 
@@ -80,12 +110,6 @@ diatom_plan <- drake_plan(
     assertr::verify(map_int(direct_search_est, nrow) == 1) %>% #check only one row in each direct_search_est, 
     unnest(direct_search_est) %>% 
     assertr::verify(score == 1),
-    
-  # diatom2_integer = diatom2_data %>% 
-  #   select(-(Event:Depth..m.)) %>% 
-  #   filter(diatom2_est_count$est_n < 400) %>%
-  #   percent_checker(digits = 2) %>% 
-  #   count(precision, contains),
 
   diatom2_summ  = list(
     nsamples = nrow(diatom2_data),
@@ -102,48 +126,3 @@ diatom_plan <- drake_plan(
     
   )
 )
-
-
-
-# Adirondack <- read_file(file = "GRIM/diatoms/download.asp.html") %>% 
-#   gsub(pattern = "<.*?>", replacement = "", x = .) %>% 
-#   read_delim(delim = "\t", skip = 1)
-#   
-  
-# read_delim("http://diatom.ansp.org/dpdc/download.asp?type=count&DatasubsetID=48", delim = "\t")
-# 
-# 
-# ne_diatoms <- read_file("https://archive.epa.gov/emap/archive-emap/web/txt/diataxva.txt")
-# ne2 <- ne_diatoms  %>% gsub(pattern = "\"", replacement = "", x = .) %>%  read_delim(delim = ",", skip = 28) %>%
-#   filter(COUNT != ".") %>% 
-#   mutate(COUNT = as.numeric(COUNT), PERCENT = as.numeric(PERCENT))
-# 
-# ne_sum <- ne2  %>% 
-#   group_by(COREPOS, LAKE_ID, INTERVAL, SAMP_ID) %>% 
-#   summarise(n = n(), ss = sum(COUNT == 1), s = sum(COUNT), m = min(PERCENT))
-# ne_sum
-# 
-# ne2 %>% group_by(COREPOS, LAKE_ID, INTERVAL, SAMP_ID) %>% 
-#   mutate(sum = sum(COUNT)) %>% filter(sum < 500) %>% select(-INT_FRM, -INT_TO, -DATE_COL, -LON_DD, -LAT_DD, -`YEAR `) %>% arrange(sum) %>% View()
-# 
-# ggplot(ne_sum, aes(x = s, y = m)) + geom_point() + stat_function(geom = "line", fun = function(x)100/x)
-# ggplot(ne_sum, aes(x = ss)) + geom_bar() 
-# ggplot(ne2, aes(x = COUNT)) + geom_bar() + xlim(0, 30)
-# 
-# ne_sum %>% arrange(s)
-
-# owens_summary %>% ggplot(aes(x = n_sing)) + geom_bar()
-# owens %>% 
-#   group_by(SampleId) %>% 
-#   filter(CountSum >= 300) %>% 
-#   nest() %>% 
-#   sample_n(20) %>% 
-#   unnest() %>% 
-#   group_by(SampleId) %>% 
-#   arrange(desc(Count)) %>% 
-#   mutate(n = 1:n()) %>% 
-#   ggplot(aes(x = n, y = Count, colour = factor(SampleId))) + 
-#   geom_line(show.legend = FALSE) + scale_y_log10() + 
-#   facet_wrap(~SampleId) + 
-#   theme(strip.text = element_blank()) + 
-#   labs(x = "Rank", y = "Abundance")

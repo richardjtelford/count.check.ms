@@ -66,6 +66,9 @@ plans <- bind_rows(
 #configure and make drake plan
 config <- drake_config(plans)
 
+#view dependency graph
+vis_drake_graph(config, targets_only = TRUE)
+
 #Build the right things
 make(plans, jobs = 2, parallelism = "future", keep_going = TRUE)
 failed()

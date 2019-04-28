@@ -24,7 +24,7 @@ pollen_plan <- drake_plan(
    
    individual = pollen1_counts %>% 
      ungroup() %>%
-     summarise(one = sum(count == 1), two = sum(count %% 2 == 0), n = n(), not_two = n - two),
+     summarise(one = sum(count == 1), two = sum(count %% 2 == 0), n = n(), not_two = n - two, singleton_spp = taxa[count == 1]),
    
    max_trilete =  pollen1_counts %>% 
      filter(taxa == "Unknown (trilete)") %>% 
