@@ -24,6 +24,7 @@ vignettes/*.pdf
 *.md
 *.html
 *.pdf
+!count_check_MS.pdf
 
 #figures
 *.jpg

@@ -93,7 +93,7 @@ Datasets discussed by Telford [-@Telford2019] as possibly having under-reported 
 Datasets with possible mis-reporting are anonymised, but no attempt is made to diagnose whether errors or misconduct are responsible.
 This paper does not attempt to be an exhaustive survey of all the data available.
 
-All analyses were done in R version `r getRversion()` [@R] and used the packages extraDistr version `r packageVersion("extraDistr")` [@extraDistr], numbers version `r packageVersion("numbers")` [@numbers], and countChecker `r packageVersion("countChecker")` [@countChecker].
+All analyses were done in R version `r getRversion()` [@R] and used the packages extraDistr version `r packageVersion("extraDistr")` [@extraDistr], numbers version `r packageVersion("numbers")` [@numbers], and countSum `r packageVersion("countSum")` [@countSum].
 Code to replicate all the analyses shown above is archived at [https://github.com/richardjtelford/count.check.ms](https://github.com/richardjtelford/count.check.ms).
 
 # Results
@@ -138,7 +138,7 @@ Of the `r testate_summ$n_gcd2plus %>% as.english()` assemblages with a greatest 
 The Owen's Lake dataset [@Platt1997] also includes percentages for each taxa, allowing the count sums estimated from the percent data to be verified. Excluding monospecific assemblages, for which no meaningful estimate of the count sum is possible, the minimum percent method and the direct search method correctly estimate the count sum for, respectively, `r owens_est_summ$minpc`% and `r owens_est_summ$direct`% of the assemblages. The few assemblages that fail the direct seach method are species poor and have low count sums.
 
 The `r last_chance_summ$nsamples` chironomid head capsule assemblage dataset from Last Chance Lake [@Axford2017] also includes both the count sums and the percentage of each taxa.
-The percentages are given to two decimal places: to account for rounding errors, the countChecker package uses the smallest and largest values consistent with the reported percentage.
+The percentages are given to two decimal places: to account for rounding errors, the countSum package uses the smallest and largest values consistent with the reported percentage.
 With the minimum percent method the estimated count sums are, within error, either identical to the reported count sum or twice as much (Fig. \@ref(fig:last-chance-plot)).
 With the direct search method, the estimated count sums are all exactly twice the reported count sum.
 The factor of two difference is because all the counts include half head capsules (but only sometimes is the rarest taxon represented by a half head capsule).

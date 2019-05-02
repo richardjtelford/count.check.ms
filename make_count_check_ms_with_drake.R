@@ -7,7 +7,7 @@ library("readr")
 #devtools::install_github("richardjtelford/rjt.misc")
 library("rjt.misc")
 #devtools::install_github("richardjtelford/count_checker")#need to make package and repo names identical (_ not permitted)
-library("countChecker")
+library("countSum")
 
 #drake configuration
 pkgconfig::set_config("drake::strings_in_dots" = "literals")
@@ -38,7 +38,7 @@ analyses <- drake_plan(
   
   #add extra packages to bibliography
   biblio2 = package_citations(
-    packages = c("extraDistr", "countChecker", "numbers"), 
+    packages = c("extraDistr", "countSum", "numbers"), 
     old_bib = file_in("Rmd/extra/countMS.bib"), 
     new_bib = file_out("Rmd/extra/countMS2.bib")),
   
