@@ -34,7 +34,7 @@ knitr::opts_chunk$set(echo = FALSE, include = TRUE, warning = TRUE, message = TR
 
 #set ggplot theme
 theme_set(theme_bw(base_size = 12))
-options(digits = 1)
+options(digits = 2)
 
 loadd(bird_singleton_summary)
 loadd(testate_summ)
@@ -102,22 +102,24 @@ Code to replicate all the analyses shown above is archived at [https://github.co
 
 ## Prevalence of singletons
 
-A tiny minority of the over `r format(floor(bird_singleton_summary$n_routes[1]/1000) * 1000, big.mark = ",")` bird counts from the North American breeding bird survey [@NAmerican_Breeding_Bird2018]
-lack singletons at the species level (Table \@ref(tab:bird-table))).
+The vast majority of the over `r format(floor(bird_singleton_summary$n_routes[1]/1000) * 1000, big.mark = ",")` bird counts from the North American breeding bird survey [@NAmerican_Breeding_Bird2018]
+have singletons at the species level (Table \@ref(tab:bird-table))).
 To explore the effect of taxonomic richness on the prevalence of singletons, I aggregate the birds counts to progressively lower taxonomic resolutions.
-As richness declines, the proportion of counts lacking singletons increases (Table \@ref(tab:bird-table)), reaching a moderate proportion at the order level, where most of the counts lacking singletons have fewer than five taxa.
-The vast majority of counts without singletons have a greatest common divisor of one, except when taxonomic richness is low.
+As richness declines, the proportion of counts having singletons declines (Table \@ref(tab:bird-table)), reaching a moderate proportion at the order level, where most of the counts lacking singletons have fewer than five taxa.
+The vast majority of counts have a greatest common divisor of one, except when taxonomic richness is low.
 
 ```{r bird-table}
+options(digits = 4)
 bird_singleton_summary %>%
-  select(`Taxonomic level` = taxonomic_level, `Percent without singletons` = pc_singletons, `Percent GCD > 1` = GCD2plus, `Mean richness` = mean_richness) %>%
-  knitr::kable(digits = c(0, 4, 4, 3), caption = "Percent of bird counts without singletons and of greatest common divisor (GCD) greater than one of counts without singletons, at different taxonomic levels.")
+  select(`Taxonomic level` = taxonomic_level, `Percent with singletons` = p_singletons, `Percent GCD = 1` = GCD1, `Median richness` = median_richness) %>%
+  knitr::kable(digits = c(0, 6, 6, 3), caption = "Percent of bird counts with singletons and of greatest common divisor (GCD) of one, at different taxonomic levels.")
+options(digits = 2)
 ```
 
 To test the sensitivity of the prevalence of counts without singletons to the count sum, I re-sample the counts with 400 or more observations to smaller count sums using a multivariate hypergeometric distribution.
-At the order level, the proportion of counts without singletons declines steeply until it reaches a minimum at about 200, thereafter is rises slowly (Fig. \@ref(fig:bird-recount)).
-The prevalence of counts without singletons is high for small counts because it is possible that only the common taxa are counted; with larger counts, the chance of counting a single individual of a rare taxon increases.
-With even larger counts the prevalence of counts without singletons increases due to saturation as singletons become doubletons and few new taxa are found.
+At the order level, the proportion of counts with singletons increases steeply until it reaches a maximum at about 200, thereafter is declines slowly (Fig. \@ref(fig:bird-recount)).
+The prevalence of counts with singletons is low for small counts because it is possible that only the common taxa are counted; with larger counts, the chance of counting a single individual of a rare taxon increases.
+With even larger counts the prevalence of counts with singletons decreases due to saturation as singletons become doubletons and few new taxa are found.
 
 ```{r bird-recount, fig.cap="Effect of count sum on the proportion of bird counts without singleton orders. Results are the mean of ten trials, error bars are two standard errors.", fig.width = 70/25.4, fig.height = 70/25.4}
 readd(bird_recount_singleton_plot)

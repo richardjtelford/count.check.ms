@@ -97,7 +97,7 @@ neotoma_plan <- drake_plan(
     table <- pollen_summ1 %>% 
       inner_join(datasets, by  = "datasetID") %>% 
       group_by(dataset) %>% 
-      summarise(`Number of assemblages` = n(), `Median number of taxa` = median(n_taxa), GCD = mean(gcd == 1), `Median number of singletons (GCD = 1)` = median(n_singletons[gcd == 1])) 
+      summarise(`No. assemblages` = n(), `Median no. taxa` = median(n_taxa), `GCD = 1` = mean(gcd == 1), `Median no. singletons (GCD = 1)` = median(n_singletons[gcd == 1])) 
 
     #figure    
     figure <- pollen_summ1 %>% 

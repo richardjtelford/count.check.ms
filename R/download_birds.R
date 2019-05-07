@@ -38,10 +38,11 @@ bird_plan <- drake_plan(
   bird_singleton_summary = bird_singletons %>%
     group_by(taxonomic_level) %>%
     summarise(
-      pc_singletons = mean(singletons == 0) * 100,
+      p_singletons = mean(singletons > 0) * 100,
       n_singletons = sum(singletons == 0),
-      mean_richness = mean(n_taxa),
+      median_richness = median(n_taxa),
       n_routes = n(),
+      GCD1 = mean(GCD == 1, na.rm = TRUE) * 100,
       GCD2plus = mean(GCD > 1, na.rm = TRUE) * 100,
       GCD_max = max(GCD, na.rm = TRUE)
     ) %>%
@@ -51,12 +52,12 @@ bird_plan <- drake_plan(
     )) %>%
     arrange(taxonomic_level),
   
-  #bird order GCD summary
-  bird_order_GCD = bird_singletons %>% 
-    ungroup() %>% 
-    filter(singletons == 0, taxonomic_level == "order", !is.na(GCD)) %>%
-    group_by(n_taxa) %>% 
-    summarise(t = sum(GCD > 1, na.rm = TRUE), n = n()),
+  # #bird order GCD summary
+  # bird_order_GCD = bird_singletons %>% 
+  #   ungroup() %>% 
+  #   filter(singletons == 0, taxonomic_level == "order", !is.na(GCD)) %>%
+  #   group_by(n_taxa) %>% 
+  #   summarise(t = sum(GCD > 1, na.rm = TRUE), n = n()),
   
   #simulate counts with mv hypergeometric
   bird_recount_singletons = bird_data %>% 
@@ -70,14 +71,14 @@ bird_plan <- drake_plan(
     unnest(recount) %>% 
     mutate(new_count_sum = as.numeric(new_count_sum)) %>% 
     group_by(new_count_sum, rep) %>% 
-    summarise(m = mean(no_singletons == 0)) %>% 
+    summarise(m = mean(no_singletons > 0) * 100) %>% 
     summarise(m_no_singletons = mean(m), sd = sd(m), se = sd/sqrt(n())),
   
   bird_recount_singleton_plot = bird_recount_singletons %>% 
     ggplot(aes(x = new_count_sum, y = m_no_singletons, ymin = m_no_singletons - 1.96 * se, ymax = m_no_singletons + 2 * se)) + 
     geom_errorbar() + 
     geom_point(size = 0.5) +
-    labs(x = "Count sum", y = "Proportion without singletons")
+    labs(x = "Count sum", y = "Percent with singletons")
   )#end of drake_plan
  
 

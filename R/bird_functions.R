@@ -28,7 +28,7 @@ bird_process <- function(bird_data, bird_species) {
       n_taxa = n(),
       singletons = sum(count == 1),
       count_sum = sum(count), 
-      GCD = ifelse(singletons == 0 & n_taxa > 1, numbers::mGCD(count), NA)#only find GCD where no singletons for speed ( and > 1 taxa). Using ifelse as it doesn't run TRUE code when it would crash
+      GCD = ifelse(n_taxa > 1, numbers::mGCD(count), NA)#only find GCD where no singletons for speed ( and > 1 taxa). Using ifelse as it doesn't run TRUE code when it would crash
     )
   return(out)
 }

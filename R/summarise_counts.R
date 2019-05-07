@@ -1,4 +1,4 @@
-loadd(testate_counts)
+#loadd(testate_counts)
 
 summarise_counts <- function(counts){#columns sampleID/taxon/count
   results <- list()
