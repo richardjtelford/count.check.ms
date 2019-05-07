@@ -9,7 +9,7 @@ address:
   - code: University of Bergen
     address: Department of Biological Sciences, University of Bergen and Bjerknes Centre for Climate Research, Post Box 7803, N-5020 Bergen, Norway
 abstract: |
-  Microfossil counts are a key data type in palaeoecology. Recent work has raised the possibility that some authors might misreport an important quality control parameter, the counts sums, occasionally dramatically so. This paper introduces methods that can flag assemblages with potentially misreported count sums and finds that some assemblage datasets appear to fail these tests.
+  Microfossil counts are a key data type in palaeoecology. Recent work has raised the possibility that some authors might misreport an important quality control parameter, the counts sums, occasionally dramatically so. This paper introduces methods that can flag assemblages with potentially misreported count sums and finds that some assemblage datasets that fail these tests.
 journal: "Quaternary Science Reviews"
 date: "`r format(Sys.Date(), '%d %B %Y')`"
 header-includes:
@@ -37,9 +37,10 @@ theme_set(theme_bw(base_size = 12))
 options(digits = 1)
 
 loadd(bird_singleton_summary)
-loadd(testate_summ, testate_summary)
-loadd(last_chance_summ, pollen1_summary)
-loadd(owens_summ, owens_summary2, owens_est_summ)
+loadd(testate_summ)
+loadd(last_chance_summ)
+loadd(pollen_summ, pollenA, pollen1234)
+loadd(owens_summ1, owens_summ, owens_est_summ)
 loadd(diatom1_summ, diatom2_summ, chironomid1_summ, marine1_summ)
 
 ```
@@ -54,14 +55,14 @@ It would be reckless to assume that the palaeoecological literature does not hav
 Several numerical tools have been developed to identify questionable data.
 Deviations from the distribution of digits expected from the Newcomb-Benford law has been used to detect issues with scientific and financial data [@Barabesi2017].
 Carlisle [-@Carlisle2017] identified papers where the baseline differences in means for different treatments were surprisingly high or low given the variance of the data.
-Brown et al. [-@Brown2017] developed the granularity-related inconsistency means test (GRIM) of whether means of integer data are consistent with the reported sample size.
+Brown et al. [-@Brown2017] developed the granularity-related inconsistency means (GRIM) test of whether means of integer data are consistent with the reported sample size.
 However none of these tests are directly applicable to microfossil assemblage data, one of the most common types of palaeoecological data.
 
 A common assertion in papers reporting microfossil assemblage data is that a minimum of _N_ microfossils were counted, where _N_ is often fifty for chironomids and several hundred for pollen and diatoms.
 This is important because larger count sums are associated with smaller uncertainties, both in relative abundance of taxa and derived statistics such are transfer function reconstructions [@Heiri2001].
 However, mistakes happen and metadata such as count sums can be forgotten once percentages are calculated.
 In addition, given the time-consuming nature of microfossil counting, especially when preservation is poor or concentrations are low, there may be an incentive to misreport the minimum count sum.
-The risk that count sums will be mis-reported is not just theoretical: Larocque-Tobler et al [-@Larocque-Tobler2015] reported that their chironomid count sums were at least fifty head capsules, a subsequent corrigendum  [@Larocque-Tobler2016] acknowledged that count sums were actually as low as nineteen.
+The risk that count sums will be mis-reported is not just theoretical: Larocque-Tobler et al [-@Larocque-Tobler2015] reported that their chironomid count sums were at least fifty head capsules; a subsequent corrigendum [@Larocque-Tobler2016] acknowledged that count sums were actually as low as nineteen.
 Telford [-@Telford2019] reports some other cases where count sums may be much lower than reported.
 
 If the genuine assemblage counts are archived for all taxa, it is trivial to identify undercounts.
@@ -70,7 +71,7 @@ A more common problem is that, regrettably, many palaeoecologists archive percen
 This paper develops simple tests that can flag if the count data might have been misrepresented, or if the count sum of percent data is perhaps lower than reported.
 
 The key insight that allows inference about the count sum is that assemblage data are expected to follow the typical features of a rank abundance curve.
-In particular, because there are many rare taxa in most communities [@Darwin1859], most community or assemblage samples will include taxa represented by a single individual [@Coddington2009], hereafter singletons, unless the sampling effort is high relative to the taxonomic richness.
+In particular, because there are many rare taxa in most communities [@Darwin1859], most community or assemblage samples will include taxa represented by a single individual, hereafter singletons, unless the sampling effort is high relative to the taxonomic richness [@Coddington2009].
 In the occasional assemblages without singletons, the greatest common divisor should usually be one, i.e. few assemblages should have all counts divisable by an integer larger than one, especially if species richness is high.
 
 In general, it is not possible to determine the sum from which percent were calculated, but the properties of community and assemblage counts make it possible to estimate it.
@@ -88,7 +89,8 @@ Some complications and caveats are discussed.
 
 Publicly available datasets were downloaded from the Palaeodata Center, Neotoma, Pangaea and other sources.
 A range of ecological and palaeoecological data were sought to allow for difference in typical count sum and species richness.
-Datasets where the minimum count sum was not reported in the associated paper were excluded.
+Fossil pollen assemblage in the Neotoma database [@neotoma_2018] (downloaded `r readd(pollen_download_date)`) with small count sums (< 50), that appeared to be percentages, or were documented as back-transformed from digitised data were excluded. 
+Datasets with percent data where the minimum count sum was not reported in the associated paper were excluded.
 Datasets discussed by Telford [-@Telford2019] as possibly having under-reported count sums were also excluded to avoid double reporting.
 Datasets with possible mis-reporting are anonymised, but no attempt is made to diagnose whether errors or misconduct are responsible.
 This paper does not attempt to be an exhaustive survey of all the data available.
@@ -121,17 +123,25 @@ With even larger counts the prevalence of counts without singletons increases du
 readd(bird_recount_singleton_plot)
 ```
 
-The `r n_distinct(readd(owens)$SampleId)` diatoms counts from Owen's Lake span a wide range of count sums (`r range(owens_summ$sum) %>% paste(collapse = "--")`) as, if concentrations were low, the requirement that at least 300 valves were counted, was replaced by a minimum area of slide to count [@Platt1997].
-Discounting the `r sum(owens_summ$n_taxa == 1)` mono-specific assemblages (all with very low count sums`r max(owens_summ$sum[owens_summ$n_taxa == 1]) %>% insist(. <= 10) %>% invisible()`), the median number of singletons per count is `r owens_summary2$median_sing %>% as.english()` and only `r owens_summary2$no_singletons`% of assemblages lack singletons.
-Assemblages with count sums below 50 have a higher chance of lacking singletons (`r owens_summary2$no_single_lt_50`% vs `r owens_summary2$no_single50_`%).
-Of the assemblages without singletons, `r owens_summary2$gcd2`% have a greatest common divisor of one.
-The maximum greatest common divisor is `r  owens_summary2$gcd_max %>% as.english()`.
-Assemblages with a greatest common divisor above one all have low taxonomic richness`r owens_summ %>% filter(gcd > 1) %>% pull(n_taxa) %>% max() %>%  insist(. <= 6) %>% invisible()`.
+The `r nrow(owens_summ1)` diatoms counts from Owen's Lake span a wide range of count sums (`r min(owens_summ1$count_sum)` -- `r max(owens_summ1$count_sum)`) as, if concentrations were low, the requirement that at least 300 valves were counted, was replaced by a minimum area of slide to count [@Platt1997].
+Discounting the `r sum(owens_summ1$n_taxa == 1)` mono-specific assemblages (all with very low count sums`r max(owens_summ1$count_sum[owens_summ1$n_taxa == 1]) %>% insist(. <= 10) %>% invisible()`), `r owens_summ$p_singletons`% of assemblages have singletons with a median number of singletons per assemblage of `r owens_summ$median_sing %>% as.english()`.
+Assemblages with count sums above 50 have a higher chance of having singletons (`r owens_summ$no_single_gt_50`% vs `r owens_summ$no_single50_`%).
+`r owens_summ$gcd2`% of assemblages have a greatest common divisor of one, the remainder have a greatest common divisor of `r owens_summ$gcd_max %>% as.english()`.
+Assemblages with a greatest common divisor above one all have low taxonomic richness`r owens_summ1 %>% filter(gcd > 1) %>% pull(n_taxa) %>% max() %>% insist(. <= 6) %>% invisible()`.
 
-The `r testate_summ$nsamples` assemblages in the North American testate amoeba training set with available count data [@AMESBURY2018] have count sums between `r testate_summary$count_summary$sum %>% range() %>% paste(collapse = " and ")` tests (median = `r testate_summary$count_summary$sum %>% median()`), and taxonomic richness ranges between `r testate_summary$count_summary$n_taxa %>% range() %>% paste(collapse = " and ")` (median = `r testate_summary$count_summary$n_taxa %>% median()`) taxa.
-`r testate_summary$prop_singletons * 100`% of the assemblages have at least one singleton (median `r testate_summary$median_singletons`).
-In the assemblages that lack singletons, `r testate_summary$gcd1 * 100`% have a greatest common divisor of one.
-Of the `r testate_summ$n_gcd2plus %>% as.english()` assemblages with a greatest common divisor above one, `r testate_summ$n_gcd2_low_div %>% as.english()` have fewer than five taxa; `r testate_summ$n_gcd2 %>% as.english()` have a greatest common divisor of two, and the other `r testate_summ$n_gcd3 %>% as.english()` has a greatest common divisor of three.
+The `r testate_summ$n_assemblages` assemblages in the North American testate amoeba training set with available count data [@AMESBURY2018] have count sums between `r testate_summ$count_min` and `r testate_summ$count_max` tests (median = `r testate_summ$count_median`), and taxonomic richness ranges between `r testate_summ$tax_min` and `r testate_summ$tax_max` (median = `r testate_summ$tax_median`) taxa.
+`r testate_summ$p_singletons`% of the assemblages have at least one singleton (median `r testate_summ$median_singletons`) and `r testate_summ$p_gcd1`% of assemblages have a greatest common divisor of one.
+Of the `r testate_summ$n_gcd1 %>% as.english()` assemblages with a greatest common divisor above one, `r testate_summ$n_gcd2_low_div %>% as.english()` have fewer than five taxa; `r testate_summ$n_gcd2 %>% as.english()` have a greatest common divisor of two, and the other `r testate_summ$n_gcd3 %>% as.english()` has a greatest common divisor of three.
+
+The pollen data from the Neotoma database included over `r pollen_summ$n_assemblages` thousand assemblages in `r pollen_summ$n_datasets %>% format()` datasets. 
+Nearly all assemblages have singletons (`r pollen_summ$p_singletons`%) and a greatest common divisor of one (`r pollen_summ$p_gcd1`%). 
+The assemblages with a greatest common dividor above one are not randomly distributed among the datasets: `r pollen_summ$dataset_gcd1`% of the datasets have no such assemblages.
+Some data sets with a high proportion of assemblages with a greatest common divisor above are older datasets which may, despite the available metadata, have been digitised with the loss of rare taxa and precision.
+For example, one dataset includes `r pollenA$n_samp` assemblages with a median richness of `r pollenA$taxa_median` taxa.
+Count sums vary between `r pollenA$count_min` and `r pollenA$count_max`.
+The greatest common divisor is three for all assemblages, that is all `r pollenA$n_count` counts in the dataset are divisible by three.
+Excluding such datasets would further increase the proportion of assemblages with singletons. 
+Some other Neotoma datasets are discussed is a subsequent section.  
 
 ## Estimating the percent sum
 
@@ -152,17 +162,27 @@ readd(last_chance_plot)
 
 ## Unexpected count data
 
-Dataset pollen1 is a `r n_groups(readd(pollen1_counts))` count pollen stratigraphy.
-The published stratigraphy and the archived dataset generally resemble each other, but there are several discrepancies.
-The associated paper reports that count sums are 200 (excluding fern and fungal spores).
-The archived data have counts sums between `r pollen1_summary$count$min_count` and `r pollen1_summary$count$max2_count`, with the exception of one count of `r pollen1_summary$count$max_count` (which may be so high because of a possible data entry error).
-Count sums that are smaller than 200 may be because some rare taxa have been omitted from the archived data.
-This should normally only cause small discrepancies.
-More importantly, these count sums include trilete spores, probably from a fern or fern ally, with an abundance as high as `r pollen1_summary$max_trilete` spores.
-Unexpectedly, only `r pollen1_summary$count$has_singletons %>% insist(. == 1) %>% as.english()` of the counts has a singleton, a _`r pollen1_summary$individual$singleton_spp`_ grain.
-The other counts have minimum abundances of two or four pollen grains.
-With the exception of the single singleton, all `r pollen1_summary$individual$n` species counts are divisible by two`r pollen1_summary$individual$not_two %>% insist(. == 1) %>% invisible()`.
-The probability that these counts reflect the true nature of the pollen assemblages is exceedingly low; it is far more likely that the data have been mishandled in some way.
+Some of the pollen data in the Neotoma database have an inexplicably high proportions of assemblages with a greatest common divisor greater than one. 
+Here I focus on four datasets produced by the same research group. 
+All the datasets, which are relatively recent, include information on the spike used to calculate pollen concentration, so cannot have been digitised.
+The four datasets have some assemblages with a greatest common divisor of two interspersed, sometimes regularly, amongst assembages with the expected greatest common divisor of one.
+The assemblages with a greatest common divisor of one typically have several singletons (Table \@ref(tab:neotoma-table))).
+
+```{r neotoma-table}
+pollen1234$table %>% knitr::kable(caption = "Caption")
+```
+
+Assemblages with a greatest common divisor of one typically have a higher taxonomic richness than assemblages with a greatest common divisor of two (Fig. \@ref(fig:neotoma-plot)).
+The latter have a richness that is typically of the former with count sums half as large.
+
+```{r neotoma-plot, fig.height = 100/24.5, fig.width=100/24.5, fig.cap="Number of taxa against count sum for assemblages with a greatest common divisor of one (red circles) or two (blue triangles). All four datasets show the same pattern, but it is clearest in datasets 1 and 2 which have the highest proportion of assemblages with a greatest common divisor of two."}
+pollen1234$figure %>% print()
+```
+
+One assemblage with a greatest common divisor of two has `r pollen1234$summ$max_richness` taxa. 
+Assuming the distribution of counts is (at least locally) uniform, the probability of _n_ counts being divisible by _k_ is $1/k^n$: for a single assemblage with this many taxa, the probability is 1 in 10^`r floor(log10(2^pollen1234$summ$max_richness))`^.
+The probability that these counts reflect the true nature of the pollen assemblages is exceedingly low; it is far more likely that the data have been mishandled at some stage in some way.
+
 
 ## Unexpected percent data
 ```{r line169}
@@ -203,22 +223,25 @@ The most extreme divergences appear to be data entry errors with incorrect round
 
 # Discussion
 
-My search through archived microfossil count data found several datasets where count sums are, or appear to be, smaller than that reported.
+Analysis of the breeding bird, Owen's Lake, testate amoeba and pollen data sets has shown that, as expected, the vast majority of community and assemblages counts should have singletons, and even more should have a greatest common divisor of one. 
+This means that these characteristics are potentially useful for identifying data where the count sum is misreported.
+
+My search through archived microfossil data found several datasets where count sums are, or appear to be, smaller than that reported.
 Some of the count sums appear to be an order of magnitude below what was reported.
-The datasets examined are a convenience sample of available count data that met the inclusion criteria.
+The percent datasets examined are a convenience sample of available data that met the inclusion criteria.
 As such, this analysis cannot be used to accurately determine the prevalence of datasets with possible undercounts, but it appears that a non-negligible fraction of the literature is affected.
 It is possible in some cases that the assemblages with low counts were omitted or merged prior to analysis, but the number of assemblages reported was not updated.
 Care was taken to identify any such cases by, for example, examining stratigraphic diagrams to see if the low count assemblages were included.
 In some cases, the assemblages with low apparent counts can be seen in the published stratigraphic diagrams.
 
 It is also possible that the apparently low count sums are a false positive. 
-This can only happen in assemblages that have a greatest common divisor greater than one. The analysis of the breeding bird, testate amoeba and Owen's Lake datasets shows that assemblages without singletons are rare, and assemblages with a greatest common divisor greater than one are very rare, especially for taxonomically diverse assemblages. If a dataset contains several taxonomically diverse assemblages that have a greatest common divisor of two (or expecially if greater than two) doubts should be raised about whether the counts sums are accurately described.
+This can only happen in assemblages that have a greatest common divisor greater than one, which is very rare, especially for taxonomically diverse assemblages. If a dataset contains several taxonomically diverse assemblages that have a greatest common divisor of two (or expecially if greater than two) doubts should be raised about whether the counts sums are accurately described.
 
 Microfossil percent data are often given to two decimal places. 
 This is sufficient precision for the direct search method to have utility with counts sums of several thousand. 
 Some data are only given to the nearest percent, which means that neither method has utility with count sums above 100.
 
-The direct search method will fail if the dataset includes taxa calculated with different count sums, for example pollen sums of trees, shrubs and  upland herbs and a pollen and spore sum that also includes pteridiophytes. 
+The direct search method will fail if the dataset includes taxa calculated with different count sums, for example pollen sums of trees, shrubs and upland herbs and a pollen and spore sum that also includes pteridiophytes. 
 It should be possible to identify such cases from the meta-data and knowledge of usual practice with different proxies. 
 It will also fail, as show by dataset marine1, if percentages are incorrectly calculated or rounded.
 

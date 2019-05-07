@@ -2,12 +2,15 @@
 library("drake")
 library("tidyverse")
 library("readr")
+library("readxl")
 #library("gridExtra")
 #library("broom")
-#devtools::install_github("richardjtelford/rjt.misc")
-library("rjt.misc")
 #devtools::install_github("richardjtelford/count_checker")#need to make package and repo names identical (_ not permitted)
 library("countSum")
+library("assertr")
+#devtools::install_github("richardjtelford/rjt.misc")
+library("rjt.misc")
+library("neotoma")
 
 #drake configuration
 pkgconfig::set_config("drake::strings_in_dots" = "literals")
@@ -21,10 +24,9 @@ options(askpass = function(x)readLines("pw.txt"))
 source("R/download_birds.R")
 source("R/download_testates.R")
 source("R/download_chironomids.R")
-source("R/download_pollen.R")
+source("R/download_neotoma.R")
 source("R/download_diatoms.R")
 source("R/download_marine.R")
-source("R/summarise_counts.R")
 
 
 #construct drake plan
@@ -33,6 +35,9 @@ analyses <- drake_plan(
   #secrets
   secrets = readRDS(file_in("data/secrets.RDS")) %>%
       encryptr::decrypt(secret),
+  neotoma_secrets = readRDS(file_in("data/neotoma_secrets.RDS")) %>%
+    encryptr::decrypt(datasetID) %>% 
+    mutate(datasetID = as.integer(datasetID)),
   
   #make plots
   
@@ -58,7 +63,7 @@ plans <- bind_rows(
   bird_plan, 
   testate_plan, 
   chironomid_plan, 
-  pollen_plan,
+  neotoma_plan,
   diatom_plan,
   marine_plan,
   analyses)

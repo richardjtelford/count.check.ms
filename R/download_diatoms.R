@@ -5,22 +5,25 @@ diatom_plan <- drake_plan(
     gsub(pattern = "<.*?>", replacement = "", x = .) %>% 
     read_delim(delim = "\t"),
   
-  owens_summ = owens %>% 
+  owens_summ1 = owens %>% 
   group_by(SampleId) %>% 
-  summarise(mn = min(Count), n_sing = sum(Count == 1), sum = sum(Count), n_taxa = n(), gcd = ifelse(n_taxa > 1, numbers::mGCD(Count), NA)),
+  summarise(mn = min(Count), n_sing = sum(Count == 1), count_sum = sum(Count), n_taxa = n(), gcd = ifelse(n_taxa > 1, numbers::mGCD(Count), NA)),
   
-  owens_summary2 = owens_summ %>% 
+  owens_summ = owens_summ1 %>% 
     filter(n_taxa > 1) %>% 
     summarise(
       n = n(),
+      count_min = min(count_sum),
+      count_max = max(count_sum),
       median_sing = median(n_sing),
+      p_singletons  = mean(n_sing  > 0) * 100,
       no_singletons = mean(mn != 1) * 100,
-      no_single_lt_50 = mean(mn[sum < 50] != 1) * 100, 
-      no_single50_ = mean(mn[sum >= 50] != 1) * 100, 
-      gcd2 = mean(gcd[mn > 1] == 1) * 100,
+      no_single_gt_50 = mean(mn[count_sum > 50] == 1) * 100, 
+      no_single50_ = mean(mn[count_sum <= 50] == 1) * 100, 
+      gcd2 = mean(gcd == 1) * 100,
       gcd_max = max(gcd, na.rm = TRUE)),
   
-  ####owens diatoms####
+  ####owens diatoms percent####
   owens_est = owens %>% 
     estimate_n(ID_cols = c("SampleId", "SampleCode", "CountSum"), percent_col = "Percent", taxon_col = "TaxonShortName", digits = 4) %>%
     assertr::verify(map_int(direct_search_est, nrow) == 1) %>% #check only one row in each direct_search_est

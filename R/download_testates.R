@@ -32,23 +32,30 @@ testate_plan <- drake_plan(
       cnt[, names(cnt) %in% tl$taxon.name]
       })) %>%
     map_df(gather, key = taxon, value = count, .id = "sampleID") %>% 
-    mutate(sampleID = as.numeric(sampleID)),
+    mutate(sampleID = as.numeric(sampleID)) %>% 
+    group_by(sampleID),
   
   #run analyses
-  testate_summary = summarise_counts(testate_counts),
+  testate_summ1 = testate_counts %>% 
+    summarise(count_sum = sum(count), n_taxa = n(), gcd = numbers::mGCD(count), n_singletons = sum(count == 1), min = min(count)) %>% 
+    assert(within_bounds(1, 3), gcd),
 
-  testate_summ = list(
-    nsamples = n_distinct(testate_counts$sampleID),
-    n_gcd2plus = nrow(testate_summary$gcd2plus),
-    n_gcd2 = sum(testate_summary$gcd2plus$gcd == 2),
-    n_gcd3 = sum(testate_summary$gcd2plus$gcd == 3),
-    n_gcd4 = sum(testate_summary$gcd2plus$gcd > 3) %>% insist(. == 0),
-    n_gcd2_low_div = sum(testate_summary$gcd2plus$n_taxa < 5) 
-  )
+ 
+  testate_summ = testate_summ1 %>% 
+     summarise(
+       n_assemblages = n(),
+       count_max = max(count_sum),
+       count_min = min(count_sum),
+       count_median = median(count_sum),
+       tax_min = min(n_taxa),
+       tax_max = max(n_taxa),
+       tax_median = median(n_taxa),
+       p_singletons  = mean(n_singletons > 0) * 100,
+       median_singletons = median(n_singletons),
+       p_gcd1 = mean(gcd == 1) * 100,
+       n_gcd1 = sum(gcd > 1),
+       n_gcd2 = sum(gcd == 2),
+       n_gcd3 = sum(gcd == 3),
+       n_gcd2_low_div = sum(gcd[n_taxa < 5] > 1)
+     )
 )
-
-# testate_config <- drake_config(testate_plan)
-# 
-# make(testate_plan, jobs = 2)
-# vis_drake_graph(testate_config, targets_only = TRUE)
-
