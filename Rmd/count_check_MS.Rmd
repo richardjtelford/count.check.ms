@@ -137,7 +137,7 @@ Of the `r testate_summ$n_gcd1 %>% as.english()` assemblages with a greatest comm
 
 The pollen data from the Neotoma database included over `r pollen_summ$n_assemblages` thousand assemblages in `r pollen_summ$n_datasets %>% format()` datasets. 
 Nearly all assemblages have singletons (`r pollen_summ$p_singletons`%) and a greatest common divisor of one (`r pollen_summ$p_gcd1`%). 
-The assemblages with a greatest common dividor above one are not randomly distributed among the datasets: `r pollen_summ$dataset_gcd1`% of the datasets have no such assemblages.
+The assemblages with a greatest common divisor above one are not randomly distributed among the datasets: `r pollen_summ$dataset_gcd1`% of the datasets have no such assemblages.
 Some data sets with a high proportion of assemblages with a greatest common divisor above are older datasets which may, despite the available metadata, have been digitised with the loss of rare taxa and precision.
 For example, one dataset includes `r pollenA$n_samp` assemblages with a median richness of `r pollenA$taxa_median` taxa.
 Count sums vary between `r pollenA$count_min` and `r pollenA$count_max`.
@@ -147,7 +147,7 @@ Some other Neotoma datasets are discussed is a subsequent section.
 
 ## Estimating the percent sum
 
-The Owen's Lake dataset [@Platt1997] also includes percentages for each taxa, allowing the count sums estimated from the percent data to be verified. Excluding monospecific assemblages, for which no meaningful estimate of the count sum is possible, the minimum percent method and the direct search method correctly estimate the count sum for, respectively, `r owens_est_summ$minpc`% and `r owens_est_summ$direct`% of the assemblages. The few assemblages that fail the direct seach method are species poor and have low count sums.
+The Owen's Lake dataset [@Platt1997] also includes percentages for each taxa, allowing the count sums estimated from the percent data to be verified. Excluding mono-specific assemblages, for which no meaningful estimate of the count sum is possible, the minimum percent method and the direct search method correctly estimate the count sum for, respectively, `r owens_est_summ$minpc`% and `r owens_est_summ$direct`% of the assemblages. The few assemblages that fail the direct search method are species poor and have low count sums.
 
 The `r last_chance_summ$nsamples` chironomid head capsule assemblage dataset from Last Chance Lake [@Axford2017] also includes both the count sums and the percentage of each taxa.
 The percentages are given to two decimal places: to account for rounding errors, the countSum package uses the smallest and largest values consistent with the reported percentage.
@@ -167,7 +167,7 @@ readd(last_chance_plot)
 Some of the pollen data in the Neotoma database have an inexplicably high proportions of assemblages with a greatest common divisor greater than one. 
 Here I focus on four datasets produced by the same research group. 
 All the datasets, which are relatively recent, include information on the spike used to calculate pollen concentration, so cannot have been digitised.
-The four datasets have some assemblages with a greatest common divisor of two interspersed, sometimes regularly, amongst assembages with the expected greatest common divisor of one.
+The four datasets have some assemblages with a greatest common divisor of two interspersed, sometimes regularly, amongst assemblages with the expected greatest common divisor of one.
 The assemblages with a greatest common divisor of one typically have several singletons (Table \@ref(tab:neotoma-table))).
 
 ```{r neotoma-table}
@@ -237,7 +237,7 @@ Care was taken to identify any such cases by, for example, examining stratigraph
 In some cases, the assemblages with low apparent counts can be seen in the published stratigraphic diagrams.
 
 It is also possible that the apparently low count sums are a false positive. 
-This can only happen in assemblages that have a greatest common divisor greater than one, which is very rare, especially for taxonomically diverse assemblages. If a dataset contains several taxonomically diverse assemblages that have a greatest common divisor of two (or expecially if greater than two) doubts should be raised about whether the counts sums are accurately described.
+This can only happen in assemblages that have a greatest common divisor greater than one, which is very rare, especially for taxonomically diverse assemblages. If a dataset contains several taxonomically diverse assemblages that have a greatest common divisor of two (or especially if greater than two) doubts should be raised about whether the counts sums are accurately described.
 
 Microfossil percent data are often given to two decimal places. 
 This is sufficient precision for the direct search method to have utility with counts sums of several thousand. 
@@ -250,13 +250,13 @@ It will also fail, as show by dataset marine1, if percentages are incorrectly ca
 Some taxonomic groups have microfossils that often come in groups of attached individuals.
 For example, for each diatom cell has two valves which are the counting unit.
 These valves usually separate during processing, but paired valves are often found, and some taxa such as _Aulacoseira_ produce long chains of strongly bound valves.
-This might make singletons slighly less likely. 
+This might make singletons slightly less likely. 
 The results from Owen's Lake suggest that this is not an important problem, as most assemblages have many singletons.
 
 Small undercounts in a few assemblages will have minimal impact on the precision of any palaeoenvironmental reconstruction or other statistics derived from the assemblage.
 Substantial undercounts will potentially seriously effect the precision of the results.
 Such undercounts might constitute a data handling error, for example, if samples with low counts were supposed to be merged but that step was forgotten.
-Substantial and pervasive undercounting could be construed as scientific misconduct due to either negligence or falsification, and action to correct the literature is probably required.
+Substantial and pervasive under-counting could be construed as scientific misconduct due to either negligence or falsification, and action to correct the literature is probably required.
 
 Some papers do not report count sums.
 When this important quality metric is omitted, the reader should be able to assume that the standard minimum count sum for the taxonomic group has been used (i.e. 50 for chironomids, several hundred for pollen and diatoms).
