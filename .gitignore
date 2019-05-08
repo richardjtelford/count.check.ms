@@ -51,10 +51,22 @@ output/
 *.zip
 *.xlsx
 *.xls
+*.csv
+*.txt
 
 #bib format
 *.csl
 
+#Bib backup
+*2.bib
+*bib.bak
+
 #packrat library
 packrat/lib*/
 packrat/src/
+
+#old folder
+GRIM/
+
+#secrets folder
+secrets/

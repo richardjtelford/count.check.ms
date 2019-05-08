@@ -39,15 +39,12 @@ analyses <- drake_plan(
     encryptr::decrypt(datasetID) %>% 
     mutate(datasetID = as.integer(datasetID)),
   
-  #make plots
-  
   #add extra packages to bibliography
   biblio2 = package_citations(
     packages = c("extraDistr", "countSum", "numbers"), 
     old_bib = file_in("Rmd/extra/countMS.bib"), 
     new_bib = file_out("Rmd/extra/countMS2.bib")),
   
-  #knit manuscript
   #knit manuscript
   manuscript = {
     file_in("Rmd/extra/countMS2.bib")
