@@ -42,7 +42,7 @@ neotoma_plan <- drake_plan(
   #process
   pollen_summ = tibble(
     n_datasets = n_distinct(pollen$datasetID),
-    n_assemblages = floor(n_distinct(pollen$sampleID)/1000),
+    n_assemblages = (floor(n_distinct(pollen$sampleID)/1000) * 1000) %>% format(big.mark = ","),
     p_singletons = mean(pollen_summ1$n_singletons > 0) * 100,
     p_gcd1 = mean(pollen_summ1$gcd == 1) * 100,
     n_gcd1 = sum(pollen_summ1$gcd > 1),
@@ -53,7 +53,7 @@ neotoma_plan <- drake_plan(
       summarise(n = sum(n)),
     p_gcd1_high = n_gcd1_high/n_gcd1 * 100,
     
-    dataset_gcd1 = mean(pollen_summ2$gcd1 == 1) * 100,
+    dataset_gcd1 = mean(pollen_summ2$gcd1 != 1) * 100,
     dataset_gcd.5 = sum(pollen_summ2$gcd1 < threshold)
     
   ),
@@ -96,15 +96,17 @@ neotoma_plan <- drake_plan(
     #table of results
     table <- pollen_summ1 %>% 
       inner_join(datasets, by  = "datasetID") %>% 
-      group_by(dataset) %>% 
-      summarise(`No. assemblages` = n(), `Median no. taxa` = median(n_taxa), `GCD = 1` = mean(gcd == 1), `Median no. singletons (GCD = 1)` = median(n_singletons[gcd == 1])) 
+      rename(Dataset = dataset) %>% 
+      group_by(Dataset) %>% 
+      summarise(`No. assemblages` = n(), `Median no. taxa` = median(n_taxa), `% GCD = 1` = mean(gcd == 1) * 100, `Median no. singletons (GCD = 1)` = median(n_singletons[gcd == 1])) 
 
     #figure    
     figure <- pollen_summ1 %>% 
       inner_join(datasets, by = "datasetID") %>%
       filter(dataset %in% 1:2) %>% 
       mutate(gcd = factor(gcd)) %>% 
-      ggplot(aes(x = count_sum, y = n_taxa, colour = gcd, shape = gcd)) + 
+      ggplot(aes(x = count_sum, y = n_taxa, colour = gcd, shape = gcd)) +
+      stat_smooth(geom = "line", se = FALSE, span = 1, show.legend = FALSE, alpha = 0.6, size = 1) +
       geom_point(show.legend = FALSE) +
       facet_wrap(~dataset) +
       scale_color_brewer(palette = "Set1") +
