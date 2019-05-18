@@ -1,5 +1,5 @@
 ---
-title: "Tools for identifying unexpectely low microfossil count sums"
+title: "Tools for identifying unexpectedly low microfossil count sums"
 author:
   - name: Richard J. Telford
     email: richard.telford@uib.no
@@ -9,7 +9,7 @@ address:
   - code: University of Bergen
     address: Department of Biological Sciences, University of Bergen and Bjerknes Centre for Climate Research, Post Box 7803, N-5020 Bergen, Norway
 abstract: |
-  Microfossil counts are a key data type in palaeoecology. Recent work has raised the possibility that some authors might misreport an important quality control parameter, the counts sums, occasionally dramatically so. This paper introduces methods that can flag assemblages with potentially misreported count sums and finds that some assemblage datasets that fail these tests.
+  Microfossil counts are a key data type in palaeoecology. Recent work has raised the possibility that some authors might misreport an important quality control parameter, the counts sums, occasionally dramatically so. This paper introduces methods that can flag assemblages with potentially misreported count sums and finds that some assemblage datasets fail these tests.
 journal: "Quaternary Science Reviews"
 date: "`r format(Sys.Date(), '%d %B %Y')`"
 header-includes:
@@ -41,7 +41,7 @@ loadd(testate_summ)
 loadd(last_chance_summ)
 loadd(pollen_summ, pollenA, pollen1234)
 loadd(owens_summ1, owens_summ, owens_est_summ)
-loadd(diatom1_summ, diatom2_summ, chironomid1_summ, marine1_summ)
+loadd(diatom1_summ, diatom2_summ, chironomid1_summ, marine1_summ, chironomid2_summ)
 
 ```
 
@@ -72,7 +72,7 @@ This paper develops simple tests that can flag if the count data might have been
 
 The key insight that allows inference about the count sum is that assemblage data are expected to follow the typical features of a rank abundance curve.
 In particular, because there are many rare taxa in most communities [@Darwin1859], most community or assemblage samples will include taxa represented by a single individual, hereafter singletons, unless the sampling effort is high relative to the taxonomic richness [@Coddington2009].
-In the occasional assemblages without singletons, the greatest common divisor should usually be one, i.e. few assemblages should have all counts divisable by an integer larger than one, especially if species richness is high.
+In the occasional assemblages without singletons, the greatest common divisor should usually be one, i.e. few assemblages should have all counts divisible by an integer larger than one, especially if species richness is high.
 
 In general, it is not possible to determine the sum from which percent were calculated, but the properties of community and assemblage counts make it possible to estimate it.
 Given that we expect the rarest taxon to be a singleton, the count sum _N_ can be estimated as $1/p_{min} \times 100$ where _p~min~_ is the percent abundance of the rarest taxon.
@@ -225,8 +225,8 @@ The most extreme divergences appear to be data entry errors with incorrect round
 
 # Discussion
 
-Analysis of the breeding bird, Owen's Lake, testate amoeba and pollen data sets has shown that, as expected, the vast majority of community and assemblages counts should have singletons, and even more should have a greatest common divisor of one. 
-This means that these characteristics are potentially useful for identifying data where the count sum is misreported.
+Analysis of the breeding bird, Owen's Lake diatom, testate amoeba and pollen data sets has shown that, as expected, the vast majority of community and assemblages counts have singletons, and an even larger proportion have a greatest common divisor of one. 
+Therefore, these characteristics are potentially useful for identifying data where the count sum is misreported.
 
 My search through archived microfossil data found several datasets where count sums are, or appear to be, smaller than that reported.
 Some of the count sums appear to be an order of magnitude below what was reported.
@@ -237,7 +237,15 @@ Care was taken to identify any such cases by, for example, examining stratigraph
 In some cases, the assemblages with low apparent counts can be seen in the published stratigraphic diagrams.
 
 It is also possible that the apparently low count sums are a false positive. 
-This can only happen in assemblages that have a greatest common divisor greater than one, which is very rare, especially for taxonomically diverse assemblages. If a dataset contains several taxonomically diverse assemblages that have a greatest common divisor of two (or especially if greater than two) doubts should be raised about whether the counts sums are accurately described.
+However, as taxonomically diverse assemblages with a greatest common divisor greater than one are rare and all the datasets with apparently low count sums contained multiple taxonomically diverse assemblages with apparently low count sums, this is unlikely. 
+
+These tests require the assemblage data which are often not archived. 
+However, if the count sums are very low it is possible to recognise this from a stratigraphic diagram. 
+For example, a chironomid stratigraphy had an assemblage where all five taxa had a relative abundance of about 20%, suggesting a count sum of five, far below the reported fifty chironomids. Another assemblage had six taxa with a relative abundance of just over 10% and a seventh with twice as much, suggesting a count sum of eight chironomids.
+On request, the authors sent the data. 
+None of the `r chironomid2_summ$n_samp` assemblages in the dataset had more fifty chironomids: the count sums varied between `r chironomid2_summ$count_min` and  `r chironomid2_summ$count_max`. 
+
+## Challenges
 
 Microfossil percent data are often given to two decimal places. 
 This is sufficient precision for the direct search method to have utility with counts sums of several thousand. 
@@ -252,6 +260,8 @@ For example, for each diatom cell has two valves which are the counting unit.
 These valves usually separate during processing, but paired valves are often found, and some taxa such as _Aulacoseira_ produce long chains of strongly bound valves.
 This might make singletons slightly less likely. 
 The results from Owen's Lake suggest that this is not an important problem, as most assemblages have many singletons.
+
+## Consequences
 
 Small undercounts in a few assemblages will have minimal impact on the precision of any palaeoenvironmental reconstruction or other statistics derived from the assemblage.
 Substantial undercounts will potentially seriously effect the precision of the results.

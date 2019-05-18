@@ -67,5 +67,13 @@ chironomid_plan <- drake_plan(
       pull(n_taxa) %>% 
       range()
   
-  )
+  ),
+  
+  #chironomid2
+  chironomid2_summ = read_csv(file_in("data/chironomid2.csv")) %>% 
+    select(ID, starts_with("Chironomid")) %>% 
+    gather(key = taxon, value = count, -ID) %>% 
+    group_by(ID) %>% 
+    summarise(count_sum = sum(count), no_singletons = sum(count == 1)) %>% 
+    summarise(n_samp = n(), count_min = min(count_sum), count_max = max(count_sum), min_singletons = min(no_singletons))
 )
