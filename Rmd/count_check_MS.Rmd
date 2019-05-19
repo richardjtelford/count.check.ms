@@ -45,7 +45,7 @@ loadd(diatom1_summ, diatom2_summ, chironomid1_summ, marine1_summ, chironomid2_su
 
 ```
 
-**Keywords:** Microfossil counts; quantitative methods
+**Keywords:** Microfossils assemblages, Counts; Quantitative methods, Reproducible research, Meta-research
 
 # Introduction
 
@@ -283,7 +283,7 @@ These results highlight the importance of archiving both the raw data and the co
 
 # Acknowledgements{-}
 
-Some data were obtained from the Neotoma Paleoecology Database (http://www.neotomadb.org), and the work of the data contributors and the Neotoma community is gratefully acknowledged. 
+Some data were obtained from the Neotoma Paleoecology Database (http://www.neotomadb.org), and the work of the data contributors and the Neotoma community is gratefully acknowledged. This work was partly supported by Norwegian Research Council project PalaeoDrivers (213607).
 
 ```{r}
 #set digits to default
