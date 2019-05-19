@@ -10,7 +10,7 @@ address:
     address: Department of Biological Sciences, University of Bergen and Bjerknes Centre for Climate Research, Post Box 7803, N-5020 Bergen, Norway
 abstract: |
   Microfossil counts are a key data type in palaeoecology. Recent work has raised the possibility that some authors might misreport an important quality control parameter, the counts sums, occasionally dramatically so. This paper introduces methods that can flag assemblages with potentially misreported count sums and finds that some assemblage datasets fail these tests.
-journal: "Quaternary Science Reviews"
+journal: "Journal of Quaternary Science"
 date: "`r format(Sys.Date(), '%d %B %Y')`"
 header-includes:
    - \usepackage{lineno}
@@ -26,11 +26,11 @@ output:
 documentclass: article
 classoption: a4paper
 bibliography: extra/countMS2.bib
-csl: extra/journal-of-paleolimnology.csl
+csl: extra/elsevier-harvard_rjt.csl
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = FALSE, include = TRUE, warning = TRUE, message = TRUE)
+knitr::opts_chunk$set(echo = FALSE, include = TRUE, warning = TRUE, message = TRUE, error = TRUE)
 
 #set ggplot theme
 theme_set(theme_bw(base_size = 12))
@@ -198,7 +198,9 @@ However, the rarest taxon in two assemblages have a relative abundance of `r dia
 If the count sums actually are at least 400, this would imply that each species count in these assemblages is an integer multiple of at least `r diatom1_summ$integer_mult`.
 This seems unlikely.
 Alternatively, the actual count sum for these assemblages could be as low as `r diatom1_summ$low_n` valves.
-In total, `r diatom1_summ$n_low_n %>% as.english()` assemblages appear to have a count sum below 400 valves.
+In total, `r diatom1_summ$n_low_n %>% as.english()` assemblages appear to have a count sum below 400 valves. 
+The results section of the paper acknowledges that counts were below the standard 400 valves for part of the Late Glacial.
+All the assemblages identified with possible low count sums are in this part of the stratigraphy, demonstrating the utility of the method.
 
 ```{r line178}
 
