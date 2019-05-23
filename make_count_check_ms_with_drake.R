@@ -45,6 +45,7 @@ analyses <- drake_plan(
   
   #knit manuscript
   manuscript = {
+    file_in("Rmd/extra/elsevier-harvard_rjt.csl")
     file_in("Rmd/extra/countMS2.bib")
     rmarkdown::render(
       input = knitr_in("Rmd/count_check_MS.Rmd"), 
