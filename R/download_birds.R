@@ -14,19 +14,21 @@ bird_plan <- drake_plan(
         )
   },
   ##species list
-  bird_species = read_lines("ftp://ftpext.usgs.gov/pub/er/md/laurel/BBS/DataFiles/SpeciesList.txt", skip = 7)[-2] %>% 
+  bird_species = read_lines("ftp://ftpext.usgs.gov/pub/er/md/laurel/BBS/DataFiles/SpeciesList.txt", skip = 8)[-2] %>% 
     paste(collapse = "\n") %>% 
     read_fwf(col_positions = fwf_widths(widths = c(6, 6, 51, 51, 51, 51, 51, 51, 51))) %>% 
     set_names(slice(., 1)) %>% 
     slice(-1) %>%
     select(-French_Common_Name, -Species) %>%
-    rename(Latin_name = Spanish_Common_Name),
+    rename(Latin_name = Spanish_Common_Name) %>% 
+    mutate(AOU = as.integer(AOU)),
   
   #extract bird data
   bird_data = {
     bird_download # force dependency
     list.files(path = "data/birds/", pattern = "\\.zip$", full.names = TRUE) %>% 
     map(read_csv) %>% 
+    map(rename_at, vars(matches("StateNum")), tolower) %>%   
     map(mutate, statenum  = as.numeric(statenum)) %>% 
     map(~mutate(., count = rowSums(select(., starts_with("Stop"))))) %>% 
     map_df(select, -starts_with("Stop"))

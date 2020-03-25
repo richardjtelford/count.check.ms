@@ -21,9 +21,9 @@ bird_process <- function(bird_data, bird_species) {
     order = joined %>% rename(taxon = ORDER),
     .id = "taxonomic_level"
   ) %>%
-    group_by(RouteDataID, year, taxonomic_level, taxon) %>%
+    group_by(RouteDataID, Year, taxonomic_level, taxon) %>%
     summarise(count = sum(count)) %>%
-    group_by(RouteDataID, year, taxonomic_level) %>%
+    group_by(RouteDataID, Year, taxonomic_level) %>%
     summarise(
       n_taxa = n(),
       singletons = sum(count == 1),
