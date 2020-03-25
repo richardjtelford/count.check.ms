@@ -9,11 +9,9 @@ neotoma_plan <- drake_plan(
 
   #download_data
   pollen_data = pollen_sites %>% get_download(), #SLOW
-  pollen_download_date = {
-    pollen_data
-    lubridate::today()#datestamp
-  },
-  
+  pollen_download_date = pollen_data[[1]]$dataset$access.date %>% #datestamp
+    as.Date(),
+
   #extract pollen counts
   pollen = pollen_data %>% 
     #remove elements known to be backtransformed from diagrams
@@ -98,7 +96,10 @@ neotoma_plan <- drake_plan(
       inner_join(datasets, by  = "datasetID") %>% 
       rename(Dataset = dataset) %>% 
       group_by(Dataset) %>% 
-      summarise(`No. assemblages` = n(), `Median no. taxa` = median(n_taxa), `% GCD = 1` = mean(gcd == 1) * 100, `Median no. singletons (GCD = 1)` = median(n_singletons[gcd == 1])) 
+      summarise(`No. assemblages` = n(), 
+                `Median no. taxa` = median(n_taxa), 
+                `% GCD = 1` = mean(gcd == 1) * 100, 
+                `Median no. singletons (GCD = 1)` = median(n_singletons[gcd == 1])) 
 
     #figure    
     figure <- pollen_summ1 %>% 
