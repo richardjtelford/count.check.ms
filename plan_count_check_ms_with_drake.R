@@ -2,14 +2,18 @@
 library("drake")
 library("tidyverse")
 library("readxl")
-#devtools::install_github("richardjtelford/countSum")
+#remotes::install_github("richardjtelford/countSum")
 library("countSum")
 library("assertr")
-#devtools::install_github("richardjtelford/rjt.misc")
+#remotes::install_github("richardjtelford/rjt.misc")
 library("rjt.misc")
 library("neotoma")
-#devtools::install_github("richardjtelford/neotoma2tibble")
+#remotes::install_github("richardjtelford/neotoma2tibble")
 library("neotoma2tibble")
+
+#extra packages required
+requireNamespace("visNetwork")
+requireNamespace("rticles")
 
 #drake configuration
 pkgconfig::set_config("drake::strings_in_dots" = "literals")
