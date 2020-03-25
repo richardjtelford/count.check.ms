@@ -1,7 +1,6 @@
 #import package
 library("drake")
 library("tidyverse")
-library("readr")
 library("readxl")
 #devtools::install_github("richardjtelford/countSum")
 library("countSum")
@@ -9,10 +8,13 @@ library("assertr")
 #devtools::install_github("richardjtelford/rjt.misc")
 library("rjt.misc")
 library("neotoma")
+#devtools::install_github("richardjtelford/neotoma2tibble")
+library("neotoma2tibble")
 
 #drake configuration
 pkgconfig::set_config("drake::strings_in_dots" = "literals")
 #set up parallel processing for drake
+options(future.fork.enable = TRUE)
 future::plan(future::multiprocess) 
 
 ## askpass
@@ -64,19 +66,8 @@ plans <- bind_rows(
   marine_plan,
   analyses)
 
+
 #configure and make drake plan
-config <- drake_config(plans)
+config <- drake_config(plans, jobs = 3, parallelism = "future", keep_going = TRUE)
 
-#view dependency graph
-vis_drake_graph(config, targets_only = TRUE)
-
-#Build the right things
-make(plans, jobs = 2, parallelism = "future", keep_going = TRUE)
-failed()
-
-if(length(failed()) == 0) {
-  system("evince Rmd/count_check_MS.pdf", wait = FALSE)#display pdf - only linux
-}
-
-#view dependency graph
-vis_drake_graph(config, targets_only = TRUE)
+config
