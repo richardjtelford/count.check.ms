@@ -1,0 +1,656 @@
+{
+  "R": {
+    "Version": "3.4.4",
+    "Repositories": [
+      {
+        "Name": "CRAN",
+        "URL": "https://cloud.r-project.org"
+      }
+    ]
+  },
+  "Packages": {
+    "BH": {
+      "Package": "BH",
+      "Version": "1.69.0-1",
+      "Source": "CRAN"
+    },
+    "DBI": {
+      "Package": "DBI",
+      "Version": "1.0.0",
+      "Source": "CRAN"
+    },
+    "R6": {
+      "Package": "R6",
+      "Version": "2.4.0",
+      "Source": "CRAN"
+    },
+    "RColorBrewer": {
+      "Package": "RColorBrewer",
+      "Version": "1.1-2",
+      "Source": "CRAN"
+    },
+    "Rcpp": {
+      "Package": "Rcpp",
+      "Version": "1.0.1",
+      "Source": "CRAN"
+    },
+    "analogue": {
+      "Package": "analogue",
+      "Version": "0.17-9999",
+      "Source": "github",
+      "RemoteRepo": "analogue",
+      "RemoteUsername": "gavinsimpson",
+      "RemoteRef": "master",
+      "RemoteSha": "8ba2c36cb0669a69f196f6a7870fd157ad87c604",
+      "RemoteHost": "https://api.github.com",
+      "RemoteRepo": "analogue",
+      "RemoteUsername": "gavinsimpson",
+      "RemoteSha": "8ba2c36cb0669a69f196f6a7870fd157ad87c604",
+      "RemoteType": "github"
+    },
+    "askpass": {
+      "Package": "askpass",
+      "Version": "1.1",
+      "Source": "CRAN"
+    },
+    "assertr": {
+      "Package": "assertr",
+      "Version": "2.6",
+      "Source": "CRAN"
+    },
+    "assertthat": {
+      "Package": "assertthat",
+      "Version": "0.2.1",
+      "Source": "CRAN"
+    },
+    "base64enc": {
+      "Package": "base64enc",
+      "Version": "0.1-3",
+      "Source": "CRAN"
+    },
+    "bibtex": {
+      "Package": "bibtex",
+      "Version": "0.4.2",
+      "Source": "CRAN"
+    },
+    "bookdown": {
+      "Package": "bookdown",
+      "Version": "0.7",
+      "Source": "CRAN"
+    },
+    "brglm": {
+      "Package": "brglm",
+      "Version": "0.6.1",
+      "Source": "CRAN"
+    },
+    "broom": {
+      "Package": "broom",
+      "Version": "0.4.4",
+      "Source": "CRAN"
+    },
+    "callr": {
+      "Package": "callr",
+      "Version": "3.2.0",
+      "Source": "CRAN"
+    },
+    "cellranger": {
+      "Package": "cellranger",
+      "Version": "1.1.0",
+      "Source": "CRAN"
+    },
+    "cli": {
+      "Package": "cli",
+      "Version": "1.1.0",
+      "Source": "CRAN"
+    },
+    "colorspace": {
+      "Package": "colorspace",
+      "Version": "1.4-0",
+      "Source": "R-Forge"
+    },
+    "countSum": {
+      "Package": "countSum",
+      "Version": "0.0-3",
+      "Source": "github",
+      "RemoteRepo": "countSum",
+      "RemoteUsername": "richardjtelford",
+      "RemoteRef": "master",
+      "RemoteSha": "0ef96dff40c26d7bdfb3210ec5533f84ef9f8827",
+      "RemoteHost": "https://api.github.com",
+      "RemoteRepo": "countSum",
+      "RemoteUsername": "richardjtelford",
+      "RemoteSha": "0ef96dff40c26d7bdfb3210ec5533f84ef9f8827",
+      "RemoteType": "github"
+    },
+    "crayon": {
+      "Package": "crayon",
+      "Version": "1.3.4",
+      "Source": "CRAN"
+    },
+    "crosstalk": {
+      "Package": "crosstalk",
+      "Version": "1.0.0",
+      "Source": "CRAN"
+    },
+    "curl": {
+      "Package": "curl",
+      "Version": "3.3",
+      "Source": "CRAN"
+    },
+    "dbplyr": {
+      "Package": "dbplyr",
+      "Version": "1.2.1",
+      "Source": "CRAN"
+    },
+    "digest": {
+      "Package": "digest",
+      "Version": "0.6.18",
+      "Source": "CRAN"
+    },
+    "dplyr": {
+      "Package": "dplyr",
+      "Version": "0.8.0.1",
+      "Source": "CRAN"
+    },
+    "drake": {
+      "Package": "drake",
+      "Version": "6.2.1",
+      "Source": "CRAN"
+    },
+    "encryptr": {
+      "Package": "encryptr",
+      "Version": "0.1.2",
+      "Source": "CRAN"
+    },
+    "english": {
+      "Package": "english",
+      "Version": "1.2-3",
+      "Source": "CRAN"
+    },
+    "evaluate": {
+      "Package": "evaluate",
+      "Version": "0.13",
+      "Source": "CRAN"
+    },
+    "extraDistr": {
+      "Package": "extraDistr",
+      "Version": "1.8.10",
+      "Source": "CRAN"
+    },
+    "fansi": {
+      "Package": "fansi",
+      "Version": "0.4.0",
+      "Source": "CRAN"
+    },
+    "forcats": {
+      "Package": "forcats",
+      "Version": "0.3.0",
+      "Source": "CRAN"
+    },
+    "formatR": {
+      "Package": "formatR",
+      "Version": "1.5",
+      "Source": "CRAN"
+    },
+    "fs": {
+      "Package": "fs",
+      "Version": "1.2.7",
+      "Source": "CRAN"
+    },
+    "future": {
+      "Package": "future",
+      "Version": "1.11.1.1",
+      "Source": "CRAN"
+    },
+    "ggplot2": {
+      "Package": "ggplot2",
+      "Version": "3.1.1",
+      "Source": "CRAN"
+    },
+    "globals": {
+      "Package": "globals",
+      "Version": "0.12.4",
+      "Source": "CRAN"
+    },
+    "glue": {
+      "Package": "glue",
+      "Version": "1.3.1",
+      "Source": "github",
+      "RemoteRepo": "glue",
+      "RemoteUsername": "tidyverse",
+      "RemoteRef": "master",
+      "RemoteSha": "f356a1269590b610e3e4925a310d1e07eef1e767",
+      "RemoteHost": "https://api.github.com",
+      "RemoteRepo": "glue",
+      "RemoteUsername": "tidyverse",
+      "RemoteSha": "f356a1269590b610e3e4925a310d1e07eef1e767",
+      "RemoteType": "github"
+    },
+    "gridExtra": {
+      "Package": "gridExtra",
+      "Version": "2.3",
+      "Source": "CRAN"
+    },
+    "gtable": {
+      "Package": "gtable",
+      "Version": "0.3.0",
+      "Source": "CRAN"
+    },
+    "haven": {
+      "Package": "haven",
+      "Version": "1.1.1",
+      "Source": "CRAN"
+    },
+    "highr": {
+      "Package": "highr",
+      "Version": "0.8",
+      "Source": "CRAN"
+    },
+    "hms": {
+      "Package": "hms",
+      "Version": "0.4.2",
+      "Source": "CRAN"
+    },
+    "htmltools": {
+      "Package": "htmltools",
+      "Version": "0.3.6",
+      "Source": "CRAN"
+    },
+    "htmlwidgets": {
+      "Package": "htmlwidgets",
+      "Version": "1.3",
+      "Source": "CRAN"
+    },
+    "httpuv": {
+      "Package": "httpuv",
+      "Version": "1.5.1",
+      "Source": "CRAN"
+    },
+    "httr": {
+      "Package": "httr",
+      "Version": "1.4.0",
+      "Source": "CRAN"
+    },
+    "igraph": {
+      "Package": "igraph",
+      "Version": "1.2.1",
+      "Source": "CRAN"
+    },
+    "jsonlite": {
+      "Package": "jsonlite",
+      "Version": "1.6",
+      "Source": "CRAN"
+    },
+    "knitr": {
+      "Package": "knitr",
+      "Version": "1.22",
+      "Source": "CRAN"
+    },
+    "labeling": {
+      "Package": "labeling",
+      "Version": "0.3",
+      "Source": "CRAN"
+    },
+    "later": {
+      "Package": "later",
+      "Version": "0.8.0",
+      "Source": "CRAN"
+    },
+    "lazyeval": {
+      "Package": "lazyeval",
+      "Version": "0.2.2",
+      "Source": "CRAN"
+    },
+    "leaflet": {
+      "Package": "leaflet",
+      "Version": "2.0.2",
+      "Source": "CRAN"
+    },
+    "listenv": {
+      "Package": "listenv",
+      "Version": "0.7.0",
+      "Source": "CRAN"
+    },
+    "lubridate": {
+      "Package": "lubridate",
+      "Version": "1.7.4",
+      "Source": "CRAN"
+    },
+    "magrittr": {
+      "Package": "magrittr",
+      "Version": "1.5",
+      "Source": "CRAN"
+    },
+    "markdown": {
+      "Package": "markdown",
+      "Version": "0.9",
+      "Source": "CRAN"
+    },
+    "mime": {
+      "Package": "mime",
+      "Version": "0.6",
+      "Source": "CRAN"
+    },
+    "mnormt": {
+      "Package": "mnormt",
+      "Version": "1.5-5",
+      "Source": "CRAN"
+    },
+    "modelr": {
+      "Package": "modelr",
+      "Version": "0.1.2",
+      "Source": "CRAN"
+    },
+    "munsell": {
+      "Package": "munsell",
+      "Version": "0.5.0",
+      "Source": "CRAN"
+    },
+    "neotoma": {
+      "Package": "neotoma",
+      "Version": "1.7.3",
+      "Source": "github",
+      "RemoteRepo": "neotoma",
+      "RemoteUsername": "ropensci",
+      "RemoteRef": "master",
+      "RemoteSha": "63f239993bea9a04dd2d33d763706ecf34417231",
+      "RemoteHost": "https://api.github.com",
+      "RemoteRepo": "neotoma",
+      "RemoteUsername": "ropensci",
+      "RemoteSha": "63f239993bea9a04dd2d33d763706ecf34417231",
+      "RemoteType": "github"
+    },
+    "numbers": {
+      "Package": "numbers",
+      "Version": "0.7-1",
+      "Source": "CRAN"
+    },
+    "openssl": {
+      "Package": "openssl",
+      "Version": "1.2.1",
+      "Source": "CRAN"
+    },
+    "packrat": {
+      "Package": "packrat",
+      "Version": "0.4.9-3",
+      "Source": "CRAN"
+    },
+    "permute": {
+      "Package": "permute",
+      "Version": "0.9-5",
+      "Source": "CRAN"
+    },
+    "pillar": {
+      "Package": "pillar",
+      "Version": "1.3.1",
+      "Source": "CRAN"
+    },
+    "pkgconfig": {
+      "Package": "pkgconfig",
+      "Version": "2.0.2",
+      "Source": "CRAN"
+    },
+    "plogr": {
+      "Package": "plogr",
+      "Version": "0.2.0",
+      "Source": "CRAN"
+    },
+    "plyr": {
+      "Package": "plyr",
+      "Version": "1.8.4",
+      "Source": "CRAN"
+    },
+    "png": {
+      "Package": "png",
+      "Version": "0.1-7",
+      "Source": "CRAN"
+    },
+    "princurve": {
+      "Package": "princurve",
+      "Version": "2.1.3",
+      "Source": "CRAN"
+    },
+    "processx": {
+      "Package": "processx",
+      "Version": "3.3.0",
+      "Source": "CRAN"
+    },
+    "profileModel": {
+      "Package": "profileModel",
+      "Version": "0.5-9",
+      "Source": "CRAN"
+    },
+    "promises": {
+      "Package": "promises",
+      "Version": "1.0.1",
+      "Source": "CRAN"
+    },
+    "ps": {
+      "Package": "ps",
+      "Version": "1.3.0",
+      "Source": "CRAN"
+    },
+    "psych": {
+      "Package": "psych",
+      "Version": "1.8.4",
+      "Source": "CRAN"
+    },
+    "purrr": {
+      "Package": "purrr",
+      "Version": "0.3.2",
+      "Source": "CRAN"
+    },
+    "raster": {
+      "Package": "raster",
+      "Version": "2.8-4",
+      "Source": "CRAN"
+    },
+    "readr": {
+      "Package": "readr",
+      "Version": "1.1.1",
+      "Source": "CRAN"
+    },
+    "readxl": {
+      "Package": "readxl",
+      "Version": "1.1.0",
+      "Source": "CRAN"
+    },
+    "rematch": {
+      "Package": "rematch",
+      "Version": "1.0.1",
+      "Source": "CRAN"
+    },
+    "reprex": {
+      "Package": "reprex",
+      "Version": "0.1.2",
+      "Source": "CRAN"
+    },
+    "reshape2": {
+      "Package": "reshape2",
+      "Version": "1.4.3",
+      "Source": "CRAN"
+    },
+    "rioja": {
+      "Package": "rioja",
+      "Version": "0.9-15.1",
+      "Source": "CRAN"
+    },
+    "rjt.misc": {
+      "Package": "rjt.misc",
+      "Version": "0.0.0.9002",
+      "Source": "github",
+      "RemoteRepo": "rjt.misc",
+      "RemoteUsername": "richardjtelford",
+      "RemoteRef": "master",
+      "RemoteSha": "ff5788e6cb671573513e270bb857ed79d3ababa9",
+      "RemoteHost": "https://api.github.com",
+      "RemoteRepo": "rjt.misc",
+      "RemoteUsername": "richardjtelford",
+      "RemoteSha": "ff5788e6cb671573513e270bb857ed79d3ababa9",
+      "RemoteType": "github"
+    },
+    "rlang": {
+      "Package": "rlang",
+      "Version": "0.3.4",
+      "Source": "CRAN"
+    },
+    "rmarkdown": {
+      "Package": "rmarkdown",
+      "Version": "1.12",
+      "Source": "CRAN"
+    },
+    "rstudioapi": {
+      "Package": "rstudioapi",
+      "Version": "0.10",
+      "Source": "CRAN"
+    },
+    "rticles": {
+      "Package": "rticles",
+      "Version": "0.6",
+      "Source": "CRAN"
+    },
+    "rvest": {
+      "Package": "rvest",
+      "Version": "0.3.2",
+      "Source": "CRAN"
+    },
+    "scales": {
+      "Package": "scales",
+      "Version": "1.0.0.9000",
+      "Source": "github",
+      "RemoteRepo": "scales",
+      "RemoteUsername": "hadley",
+      "RemoteRef": "master",
+      "RemoteSha": "c3740146460b955df33a6ff0148810ff8ebd03a5",
+      "RemoteHost": "https://api.github.com",
+      "RemoteRepo": "scales",
+      "RemoteUsername": "hadley",
+      "RemoteSha": "c3740146460b955df33a6ff0148810ff8ebd03a5",
+      "RemoteType": "github"
+    },
+    "selectr": {
+      "Package": "selectr",
+      "Version": "0.4-1",
+      "Source": "CRAN"
+    },
+    "shiny": {
+      "Package": "shiny",
+      "Version": "1.2.0",
+      "Source": "CRAN"
+    },
+    "sourcetools": {
+      "Package": "sourcetools",
+      "Version": "0.1.7",
+      "Source": "CRAN"
+    },
+    "sp": {
+      "Package": "sp",
+      "Version": "1.3-1",
+      "Source": "CRAN"
+    },
+    "storr": {
+      "Package": "storr",
+      "Version": "1.2.0",
+      "Source": "CRAN"
+    },
+    "stringi": {
+      "Package": "stringi",
+      "Version": "1.4.3",
+      "Source": "CRAN"
+    },
+    "stringr": {
+      "Package": "stringr",
+      "Version": "1.4.0",
+      "Source": "CRAN"
+    },
+    "sys": {
+      "Package": "sys",
+      "Version": "2.1",
+      "Source": "CRAN"
+    },
+    "tibble": {
+      "Package": "tibble",
+      "Version": "2.1.1",
+      "Source": "CRAN"
+    },
+    "tidyr": {
+      "Package": "tidyr",
+      "Version": "0.8.3",
+      "Source": "CRAN"
+    },
+    "tidyselect": {
+      "Package": "tidyselect",
+      "Version": "0.2.5",
+      "Source": "CRAN"
+    },
+    "tidyverse": {
+      "Package": "tidyverse",
+      "Version": "1.2.1",
+      "Source": "CRAN"
+    },
+    "tinytex": {
+      "Package": "tinytex",
+      "Version": "0.12",
+      "Source": "CRAN"
+    },
+    "utf8": {
+      "Package": "utf8",
+      "Version": "1.1.4",
+      "Source": "CRAN"
+    },
+    "vegan": {
+      "Package": "vegan",
+      "Version": "2.5-4",
+      "Source": "CRAN"
+    },
+    "viridis": {
+      "Package": "viridis",
+      "Version": "0.5.1",
+      "Source": "CRAN"
+    },
+    "viridisLite": {
+      "Package": "viridisLite",
+      "Version": "0.3.0",
+      "Source": "CRAN"
+    },
+    "whisker": {
+      "Package": "whisker",
+      "Version": "0.3-2",
+      "Source": "CRAN"
+    },
+    "withr": {
+      "Package": "withr",
+      "Version": "2.1.2.9000",
+      "Source": "github",
+      "RemoteRepo": "withr",
+      "RemoteUsername": "jimhester",
+      "RemoteRef": "master",
+      "RemoteSha": "c8f726fa4731af52ea3a4556d18bf61abb2e349c",
+      "RemoteHost": "https://api.github.com",
+      "RemoteRepo": "withr",
+      "RemoteUsername": "jimhester",
+      "RemoteSha": "c8f726fa4731af52ea3a4556d18bf61abb2e349c",
+      "RemoteType": "github"
+    },
+    "xfun": {
+      "Package": "xfun",
+      "Version": "0.6",
+      "Source": "CRAN"
+    },
+    "xml2": {
+      "Package": "xml2",
+      "Version": "1.2.0",
+      "Source": "CRAN"
+    },
+    "xtable": {
+      "Package": "xtable",
+      "Version": "1.8-3",
+      "Source": "CRAN"
+    },
+    "yaml": {
+      "Package": "yaml",
+      "Version": "2.2.0",
+      "Source": "CRAN"
+    }
+  }
+}
