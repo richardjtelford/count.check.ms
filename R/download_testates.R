@@ -17,7 +17,11 @@ testate_plan <- drake_plan(
     mutate(authors = testate_datasets %>% 
              map("pi.data") %>% 
              map("ContactName") %>% 
-             map_chr(paste, collapse = " ")),
+             map_chr(paste, collapse = " "), 
+           submission = testate_datasets %>% 
+             map("submission") %>% 
+             map_chr("submission.date") %>% 
+             lubridate::ymd()),
 
   #some sites have only percent data
   testate_has_percent = testate_data %>%
@@ -25,7 +29,7 @@ testate_plan <- drake_plan(
     map_lgl(~any(.$variable.units == "percent", na.rm = TRUE)),  
   
   #get counts
-  testate_counts = testate_data[!testate_has_percent] %>%
+  testate_counts = testate_data[!testate_has_percent & testate_meta$submission < lubridate::ymd("2019-05-01")] %>%#cut data without counts or recently added
     map(~({
       cnt <- counts(.)
       tl <- .$taxon.list %>% filter(variable.units == "NISP")
