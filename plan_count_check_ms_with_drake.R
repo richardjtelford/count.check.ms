@@ -37,12 +37,21 @@ source("R/download_marine.R")
 #construct drake plan
 analyses <- drake_plan(
   
-  #secrets
-  secrets = readRDS(file_in("data/secrets.RDS")) %>%
-      encryptr::decrypt(secret),
-  neotoma_secrets = readRDS(file_in("data/neotoma_secrets.RDS")) %>%
+  #secrets. NULL if no password file
+  has_password = fs::file_exists(file_in("pw.txt")),
+  secrets = if(has_password){
+    readRDS(file_in("data/secrets.RDS")) %>%
+      encryptr::decrypt(secret)
+    } else {
+      NULL
+    },
+  neotoma_secrets = if(has_password){
+    readRDS(file_in("data/neotoma_secrets.RDS")) %>%
     encryptr::decrypt(datasetID) %>% 
-    mutate(datasetID = as.integer(datasetID)),
+    mutate(datasetID = as.integer(datasetID))
+  } else {
+    NULL
+  },
   
   #add extra packages to bibliography
   biblio2 = package_citations(
@@ -58,7 +67,17 @@ analyses <- drake_plan(
       input = knitr_in("Rmd/count_check_MS.Rmd"), 
       knit_root_dir = "../", 
       clean = FALSE)
-  }
+  }, 
+  
+  # save backup data
+  data_backup = {      #save anonymised data
+    if(has_password){
+      #marine1
+      marine1 %>% 
+        set_names(paste0("V", 1:ncol(.))) %>% 
+        write_delim(path = "data_backup/marine1.csv")
+      }
+    }
 )
 
 #put plans together

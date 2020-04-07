@@ -1,22 +1,36 @@
 marine_plan <- drake_plan(
 
+  #download marine1 dataset
   marine1 = {
-    target <- secrets %>%
-      filter(dataset == "marine1") %>%
-      pull(secret)
-    read_delim(target, delim = "\t", skip = 324)
+      if(has_password){
+      #get secret
+      target <- secrets %>%
+        filter(dataset == "marine1") %>%
+        pull(secret)
+      
+      #download file
+      m1 <- read_delim(target, delim = "\t", skip = 325) %>%    
+        select(-(Event:`Si [µmol/l] (summer 10 m)`))
+
+    } else {
+      #get back-up if no saved secrets
+      #no file_in as casuses circular network
+      m1 <- read_csv("data_backup/marine1.csv")
+    }
+    m1
   },
 
+  #estimate n
   marine1_est_n = marine1 %>% 
-    select(-(Event:`Si [µmol/l] (summer 10 m)`)) %>% 
     rowid_to_column("sampleID") %>%  
-    gather(key = taxon, value = percent, -sampleID) %>% 
+    pivot_longer(-sampleID, names_to = "taxon", values_to = "percent") %>% 
     filter(percent > 0) %>% 
     estimate_n(ID_cols = "sampleID", digits = 2, nmax = 10000) %>% 
     mutate(direct_search_est = map(direct_search_est, slice, 1)) %>% #take only first estimate if multiple  - only affects v large estimates
     unnest(direct_search_est) %>%
     assertr::verify(score == 1),
   
+  #summarise
   marine1_summ = list(
     nsamples = nrow(marine1),
     median_taxa = median(marine1_est_n$n_taxa),
@@ -29,33 +43,3 @@ marine_plan <- drake_plan(
     )
   
 )
-
-
-# x %>% unnest(direct_search_est) %>% group_by(sampleID) %>% slice(1) %>% ungroup() %>% select(c(1:3, 6), score, est_n_direct, n_taxa) %>% filter(est_n_minpc < 100)
-# 
-# marine1 %>% 
-#   select(-(Event:`Si [µmol/l] (summer 10 m)`)) %>% 
-#   rowid_to_column("sampleID") %>%  
-#   gather(key = taxon, value = percent, -sampleID) %>% 
-#   filter(percent > 0) %>%
-#   group_by(sampleID) %>% 
-#   mutate(minpc = min(percent)) %>% 
-#   filter(percent >= 5) %>% 
-#   group_by(sampleID, percent) %>% 
-#   mutate(n = n() - 1) %>% 
-#   group_by(sampleID) %>% 
-#   summarise(mn = first(minpc), s = sum(n))
-#   
-# 
-# marine1 %>% 
-#   select(-(Event:`Si [µmol/l] (summer 10 m)`)) %>% 
-#   rowid_to_column("sampleID") %>%  
-#   gather(key = taxon, value = percent, -sampleID) %>% 
-#   filter(percent > 0) %>% 
-#   estimate_n(ID_cols = "sampleID", digits = 2, nmax = 1000) %>% 
-#   unnest(direct_search_est) %>% 
-#   group_by(sampleID) %>% 
-#   slice(1) %>% 
-#   select(1:6, score, est_n_direct) -> z
-# 
-# ggplot(z, aes(x = score))+ geom_histogram()
