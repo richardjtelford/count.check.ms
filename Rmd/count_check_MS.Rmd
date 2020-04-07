@@ -74,7 +74,7 @@ The key insight that allows inference about the count sum is that assemblage dat
 In particular, because there are many rare taxa in most communities [@Darwin1859], most community or assemblage samples will include taxa represented by a single individual, hereafter singletons, unless the sampling effort is high relative to the taxonomic richness [@Coddington2009].
 In the occasional assemblages without singletons, the greatest common divisor should usually be one, i.e. few assemblages should have all counts divisible by an integer larger than one, especially if species richness is high.
 
-In general, it is not possible to determine the sum from which percent were calculated, but the properties of community and assemblage counts make it possible to estimate it.
+In general, it is not possible to determine the sum from which percentages were calculated, but the properties of community and assemblage counts make it possible to estimate it.
 Given that we expect the rarest taxon to be a singleton, the count sum _N_ can be estimated as $1/p_{min} \times 100$ where _p~min~_ is the percent abundance of the rarest taxon.
 This method will fail for assemblages without singletons.
 We also expect the percent _p_ to be calculated from integer counts, therefore there should be a count sum _N_ such that $p_i/100\times N$ is, within rounding error, an integer for all _i_ taxa.
@@ -87,11 +87,11 @@ Some complications and caveats are discussed.
 
 # Methods
 
-Publicly available datasets were downloaded from the Palaeodata Center, Neotoma, Pangaea and other sources.
+Publicly available datasets were downloaded from the Palaeodata Center, Neotoma, Pangaea, and other sources.
 A range of ecological and palaeoecological data were sought to allow for differences in typical count sums and species richness.
 Fossil pollen assemblage in the Neotoma database [@neotoma_2018] (downloaded `r readd(pollen_download_date)`) with small count sums (< 50), that appeared to be percentages, or were documented as back-transformed from digitised data were excluded. 
 Datasets with percent data where the minimum count sum was not reported in the associated paper were excluded.
-Datasets discussed by Telford [-@Telford2019] as possibly having under-reported count sums were also excluded to avoid double reporting.
+Datasets discussed by Telford [-@Telford2019] as possibly having misreported the minimum count sum were also excluded to avoid double reporting.
 Datasets with possible misreporting are anonymised, but no attempt is made to diagnose whether errors or misconduct are responsible.
 This paper does not attempt to be an exhaustive survey of all the data available.
 
@@ -166,7 +166,7 @@ readd(last_chance_plot)
 ## Unexpected count data
 
 Some of the pollen datasets in the Neotoma database have an inexplicably high proportion of assemblages with a greatest common divisor greater than one. 
-Here I focus on four datasets produced by the same research group. 
+Here I focus on four datasets produced by one research group. 
 All the datasets, which are relatively recent, include information on the spike used to calculate pollen concentration, so cannot have been digitised.
 The four datasets have some assemblages with a greatest common divisor of two interspersed, sometimes regularly, amongst assemblages with the expected greatest common divisor of one.
 The assemblages with a greatest common divisor of one typically have several singletons (Table \@ref(tab:neotoma-table)).
@@ -234,7 +234,7 @@ Therefore, these characteristics are potentially useful for identifying data whe
 My search through archived microfossil data found several datasets where count sums are, or appear to be, smaller than that reported.
 Some of the count sums appear to be an order of magnitude below what was reported.
 The non-pollen datasets examined here are a convenience sample of available data that met the inclusion criteria.
-As such, this analysis cannot be used to accurately determine the prevalence of datasets with possible undercounts, but it appears that a non-negligible fraction of the literature is affected.
+As such, this analysis cannot be used to accurately determine the prevalence of datasets with possible undercounts, but it appears that a small but non-negligible fraction of the literature is affected.
 It is possible in some cases that the assemblages with low counts were omitted or merged prior to analysis, but the number of assemblages reported was not updated.
 Care was taken to identify any such cases by, for example, examining stratigraphic diagrams to see if the low count assemblages were included.
 In some cases, the assemblages with low apparent counts can be seen in the published stratigraphic diagrams.
