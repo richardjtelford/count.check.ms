@@ -126,14 +126,14 @@ readd(bird_recount_singleton_plot)
 ```
 
 The `r nrow(owens_summ1)` diatom counts from Owen's Lake span a wide range of count sums (`r min(owens_summ1$count_sum)` -- `r max(owens_summ1$count_sum)`) because, if concentrations were low, the requirement that at least 300 valves were counted was replaced by a minimum area of slide to count [@Platt1997].
-Discounting the `r sum(owens_summ1$n_taxa == 1)` mono-specific assemblages (all with very low count sums`r max(owens_summ1$count_sum[owens_summ1$n_taxa == 1]) %>% insist(. <= 10) %>% invisible()`), `r owens_summ$p_singletons`% of assemblages have singletons with a median number of singletons per assemblage of `r owens_summ$median_sing %>% as.english()`.
+Discounting the `r sum(owens_summ1$n_taxa == 1)` mono-specific assemblages (all with very low count sums`r max(owens_summ1$count_sum[owens_summ1$n_taxa == 1]) %>% insist(. <= 10) %>% invisible()`), `r owens_summ$p_singletons`% of assemblages have singletons with a median number of singletons per assemblage of `r owens_summ$median_sing %>% words()`.
 Assemblages with count sums above 50 have a higher chance of having singletons (`r owens_summ$no_single_gt_50`% vs `r owens_summ$no_single50_`%).
-`r owens_summ$gcd2`% of assemblages have a greatest common divisor of one, the remainder have a greatest common divisor of `r owens_summ$gcd_max %>% as.english()`.
+`r owens_summ$gcd2`% of assemblages have a greatest common divisor of one, the remainder have a greatest common divisor of `r owens_summ$gcd_max %>% words()`.
 Assemblages with a greatest common divisor above one all have low taxonomic richness`r owens_summ1 %>% filter(gcd > 1) %>% pull(n_taxa) %>% max() %>% insist(. <= 6) %>% invisible()`.
 
 The `r testate_summ$n_assemblages` assemblages in the North American testate amoeba training set with available count data [@AMESBURY2018] have count sums between `r testate_summ$count_min` and `r testate_summ$count_max` tests (median = `r testate_summ$count_median`), and taxonomic richness ranges between `r testate_summ$tax_min` and `r testate_summ$tax_max` (median = `r testate_summ$tax_median`) taxa.
 `r testate_summ$p_singletons`% of the assemblages have at least one singleton (median `r testate_summ$median_singletons`) and `r testate_summ$p_gcd1`% of assemblages have a greatest common divisor of one.
-Of the `r testate_summ$n_gcd1 %>% as.english()` assemblages with a greatest common divisor above one, `r testate_summ$n_gcd2_low_div %>% as.english()` have fewer than five taxa; `r testate_summ$n_gcd2 %>% as.english()` have a greatest common divisor of two, and the other `r testate_summ$n_gcd3 %>% as.english()` has a greatest common divisor of three.
+Of the `r testate_summ$n_gcd1 %>% words()` assemblages with a greatest common divisor above one, `r testate_summ$n_gcd2_low_div %>% words()` have fewer than five taxa; `r testate_summ$n_gcd2 %>% words()` have a greatest common divisor of two, and the other `r testate_summ$n_gcd3 %>% words()` has a greatest common divisor of three.
 
 The pollen data from the Neotoma database included over `r pollen_summ$n_assemblages` assemblages in `r pollen_summ$n_datasets %>% format()` datasets. 
 Nearly all assemblages have singletons (`r pollen_summ$p_singletons`%) and a greatest common divisor of one (`r pollen_summ$p_gcd1`%). 
@@ -198,7 +198,7 @@ However, the rarest taxon in two assemblages have a relative abundance of `r dia
 If the count sums actually are at least 400, this would imply that each species count in these assemblages is an integer multiple of at least `r diatom1_summ$integer_mult`.
 This seems unlikely.
 Alternatively, the actual count sum for these assemblages could be as low as `r diatom1_summ$low_n` valves.
-In total, `r diatom1_summ$n_low_n %>% as.english()` assemblages appear to have a count sum below 400 valves. 
+In total, `r diatom1_summ$n_low_n %>% words()` assemblages appear to have a count sum below 400 valves. 
 The results section of the paper acknowledges that counts were below the standard 400 valves for part of the Late Glacial.
 All the assemblages identified with possible low count sums are in this part of the stratigraphy, demonstrating the utility of the method.
 
@@ -211,17 +211,17 @@ This pruning of rare taxa will increase the risk of counts without singletons, w
 
 Dataset diatom2 has `r diatom2_summ$nsamples` assemblages with a median richness of `r diatom2_summ$median_taxa` taxa.
 The associated paper reports that the diatom counts included 400–500 valves per assemblage except for four diatom-poor assemblages with at least 100 valves.
-The direct search method estimates that `r diatom2_summ$n400 %>% as.english()` assemblages have a count sum of less than 400, and `r diatom2_summ$n100 %>% as.english()` have less than 100.
+The direct search method estimates that `r diatom2_summ$n400 %>% words()` assemblages have a count sum of less than 400, and `r diatom2_summ$n100 %>% words()` have less than 100.
 The direct search and minimum percent methods agree, within rounding error, `r diatom2_summ$meth_agree %>% insist(isTRUE(.)) %>% invisible()`on the estimated count sums, implying that either all assemblages have singletons and count sums are low in some assemblages, or that the greatest common divisor of the raw counts is greater than one.
-This means that for the assemblage where the minimum percent is `r diatom2_summ$maxpc`, which has `r diatom2_summ$rich_maxpc %>% as.english()` taxa, all counts would need to be multiples of `r diatom2_summ$integer_mult` for the count sum to be at least 100.
+This means that for the assemblage where the minimum percent is `r diatom2_summ$maxpc`, which has `r diatom2_summ$rich_maxpc %>% words()` taxa, all counts would need to be multiples of `r diatom2_summ$integer_mult` for the count sum to be at least 100.
 
 Dataset chironomid1 has `r chironomid1_summ$nsamples` assemblages.
-Although the associated paper reports that assemblages with count sums below 50 were discarded, the direct search method estimates that `r chironomid1_summ$n_below50 %>% as.english` assemblages have count sums between `r chironomid1_summ$min_below50` and `r chironomid1_summ$max_below50`.
+Although the associated paper reports that assemblages with count sums below 50 were discarded, the direct search method estimates that `r chironomid1_summ$n_below50 %>% words` assemblages have count sums between `r chironomid1_summ$min_below50` and `r chironomid1_summ$max_below50`.
 These assemblages are diverse (richness between `r chironomid1_summ$richness %>% paste(collapse = " and ")` taxa), so it is unlikely that the true counts are double that estimated here and the greatest common divisor is two.
 
 Palaeoceanographic dataset marine1 has `r marine1_summ$nsamples` assemblages with a median taxonomic richness of `r marine1_summ$median_taxa` taxa.
 The associated paper reports that assemblages with count sums below 100 were omitted.
-The direct search method estimates that `r marine1_summ$n100 %>% as.english()` assemblages have count sums below 100 (this excludes `r marine1_summ$n_one_taxa %>% as.english()` mono-specific assemblage), with count sums as low as `r marine1_summ$est_n_min`.
+The direct search method estimates that `r marine1_summ$n100 %>% words()` assemblages have count sums below 100 (this excludes `r marine1_summ$n_one_taxa %>% words()` mono-specific assemblage), with count sums as low as `r marine1_summ$est_n_min`.
 With this dataset, the direct search and the minimum percent method give identical results for some assemblages but highly divergent estimates for others, with the direct search method sometimes giving estimates of several thousand, in one case over two orders of magnitude higher than the minimum percent method.
 Some of the divergence appears to be because some, mainly low diversity, assemblages lack singletons.
 The most extreme divergences appear to be data entry errors with incorrect rounding, perhaps during taxonomic revisions of the percent data rather than the raw counts.
