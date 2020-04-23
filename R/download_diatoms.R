@@ -122,18 +122,16 @@ diatom_plan <- drake_plan(
     unnest(direct_search_est) %>% 
     assertr::verify(score == 1),
 
-  diatom2_summ  = list(
-    nsamples = nrow(diatom2_data),
-    median_taxa = median(diatom2_est_n$n_taxa),
-    n400 = sum(diatom2_est_n$est_n_direct < 400),
-    n100 = sum(diatom2_est_n$est_n_direct < 100),
-    maxpc = max(diatom2_est_n$minpc), 
-    rich_maxpc = diatom2_est_n$n_taxa[which.max(diatom2_est_n$minpc)],
-    meth_agree = diatom2_est_n %>% 
-      transmute(agree = est_n_direct >= est_min_minpc & est_n_direct <= est_max_minpc) %>% 
-      pull(agree) %>% 
-      all(),
-    integer_mult = ceiling(100/min(diatom2_est_n$est_n_minpc))
-    
+  diatom2_summ  = diatom2_est_n %>% 
+    ungroup() %>% 
+    summarise(
+      nsamples = n(),
+      median_taxa = median(n_taxa),
+      n400 = sum(est_n_direct < 400),
+      n100 = sum(est_n_direct < 100),
+      maxpc = max(minpc), 
+      rich_maxpc = n_taxa[which.max(minpc)],
+      meth_agree = all(est_n_direct >= est_min_minpc & est_n_direct <= est_max_minpc),
+      integer_mult = ceiling(100/min(est_n_minpc))
   )
 )
