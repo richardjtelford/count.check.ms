@@ -6,7 +6,7 @@ plan <- "plan_count_check_ms_with_drake.R"
 r_make(source = plan) # Build the right things.
 drake_failed()
 
-if(length(drake_failed() == 0)){
+if(length(drake_failed()) == 0){
   fs::file_show("Rmd/count_check_MS.pdf")#display pdf
 }
 
