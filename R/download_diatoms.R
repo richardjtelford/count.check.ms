@@ -105,18 +105,21 @@ diatom_plan <- drake_plan(
     insist(.$n_maxpc == 2),
 
   ####diatom2####
-  diatom2_data = {
+  diatom2_data = if(has_password){
     target <- secrets %>% 
       filter(dataset == "diatom2") %>% 
       pull(secret)
-    read_delim(target, delim = "\t", skip = 216) %>% set_names(make.names(names(.))) %>% 
-      filter(rowSums(select(., -(Event:Depth..m.))) > 0) #drop zero count
+    read_delim(target, delim = "\t", skip = 216) %>%
+      set_names(make.names(names(.))) %>% 
+      filter(rowSums(select(., -(Event:Depth..m.))) > 0) %>%  #drop zero count
+      select(-(Latitude:Depth..m.)) %>% 
+      pivot_longer(cols = -Event, names_to = "taxon", values_to = "percent") %>%
+      filter(percent > 0)
+  } else {
+    read_csv(file = "data_backup/diatom2.csv")
   },
 
   diatom2_est_n = diatom2_data %>% 
-    select(-(Latitude:Depth..m.)) %>% 
-    pivot_longer(cols = -Event, names_to = "taxon", values_to = "percent") %>%
-    filter(percent > 0) %>% 
     estimate_n(ID_cols = "Event", digits = 2) %>% 
     assertr::verify(map_int(direct_search_est, nrow) == 1) %>% #check only one row in each direct_search_est, 
     unnest(direct_search_est) %>% 

@@ -74,16 +74,24 @@ analyses <- drake_plan(
     if(has_password){
       #marine1
       marine1 %>% 
-        set_names(paste0("V", 1:ncol(.))) %>% 
+        set_names(paste0("marine", 1:ncol(.))) %>% 
         write_csv(path = "data_backup/marine1.csv")
       #chironomid1
-      write_csv(chironomid1, path = "data_backup/chironomid1.csv")
+      chironomid1 %>% 
+        mutate(taxon = fct_anon(factor(taxon), prefix = "chiron_")) %>% 
+      write_csv(path = "data_backup/chironomid1.csv")
       
       #diatom1
-      diatom1 %>% 
-        set_names(paste0("V", 1:ncol(.))) %>% 
+      diatom1_data %>% 
+        set_names(c("depth_cm", "age_calBP", paste0("diatom", 1:(ncol(.) - 2)))) %>% 
         write_csv(path = "data_backup/diatom1.csv")
       
+      # diatom2
+      diatom2_data %>% 
+        mutate(taxon = fct_anon(factor(taxon), prefix = "chiron_")) %>%
+        write_csv(path = "data_backup/diatom2.csv")
+      
+      #pollen
       }
     }
 )
