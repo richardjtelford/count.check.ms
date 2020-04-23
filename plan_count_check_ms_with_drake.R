@@ -114,6 +114,8 @@ plans <- bind_rows(
   marine_plan,
   analyses)
 
+#quick network plot
+plot(plans)
 
 #configure and make drake plan
 config <- drake_config(plans, jobs = 3, parallelism = "future", keep_going = TRUE)

@@ -84,23 +84,20 @@ diatom_plan <- drake_plan(
     count(contains) %>% 
     mutate(prop = n/sum(n)),
   
-  diatom1_summ = list(
-    nsamples = nrow(diatom1_data),
-    median_taxa = median(diatom1_estn$n_taxa),
-    maxpc = max(diatom1_estn$minpc),
-    n_maxpc = sum(diatom1_estn$minpc == max(diatom1_estn$minpc)),
-    prop_integer = diatom1_pcheck %>% 
-      filter(contains == "integer") %>%
-      pull(prop),
-    integer_mult = ceiling(400/min(diatom1_estn$est_n_minpc)),
-    low_n = diatom1_estn %>% 
-      summarise(n = min(est_n_direct)) %>% 
-      pull(n),
-    n_low_n = diatom1_estn %>% 
-      summarise(n = sum(est_n_direct < 400)) %>% 
-      pull(n),
-    n_taxa = ncol(diatom1_data) - 2
-     
+  diatom1_summ = diatom1_estn %>% 
+    ungroup() %>% 
+    summarise(
+      nsamples = n(),
+      median_taxa = median(n_taxa),
+      maxpc = max(minpc),
+      n_maxpc = sum(minpc == max(minpc)),
+      prop_integer = diatom1_pcheck %>% 
+        filter(contains == "integer") %>%
+        pull(prop),
+      integer_mult = ceiling(400/min(est_n_minpc)),
+      low_n = min(est_n_direct),
+      n_low_n = sum(est_n_direct < 400),
+      n_taxa = ncol(diatom1_data) - 2
   ) %>% 
     insist(.$n_maxpc == 2),
 
