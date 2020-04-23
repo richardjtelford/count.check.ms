@@ -75,7 +75,15 @@ analyses <- drake_plan(
       #marine1
       marine1 %>% 
         set_names(paste0("V", 1:ncol(.))) %>% 
-        write_delim(path = "data_backup/marine1.csv")
+        write_csv(path = "data_backup/marine1.csv")
+      #chironomid1
+      write_csv(chironomid1, path = "data_backup/chironomid1.csv")
+      
+      #diatom1
+      diatom1 %>% 
+        set_names(paste0("V", 1:ncol(.))) %>% 
+        write_csv(path = "data_backup/diatom1.csv")
+      
       }
     }
 )
