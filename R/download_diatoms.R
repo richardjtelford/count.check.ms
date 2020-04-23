@@ -45,24 +45,32 @@ diatom_plan <- drake_plan(
   owens_plot = owens_est %>% 
     filter(between(n_taxa, 8, 15), between(CountSum, 80, 150)) %>% 
     slice(4) %>%  
-    select(c(SampleId:n_taxa), score, est_n_direct) %>% 
+    select(c(SampleId:n_taxa), score_best = score, est_n_direct) %>% 
     unnest(direct_search) %>% 
-    gather(key = taxon, value = presence, -c(SampleId:est_n_direct, n, score1)) %>% 
+    pivot_longer(
+      cols = -c(SampleId, SampleCode, CountSum, data, score, n, minpc, est_n_minpc, est_min_minpc, est_max_minpc, n_taxa, score_best, est_n_direct), 
+      names_to = "taxon", 
+      values_to = "presence") %>%     
+    
     ggplot(aes(x = taxon, y = n, fill = presence)) + 
     geom_raster(show.legend = FALSE) +
     scale_y_continuous(limits = c(0, 300), expand = c(0, 0)) +
     labs(y = "Putative count sum") +
+    coord_flip() +
     scale_fill_manual(values = c("white", "black")),
   
   ####diatom1####
-  diatom1_data = {target <- secrets %>% 
-    filter(dataset == "diatom1") %>% 
-    pull(secret)
+  diatom1_data = if(has_password){
+    target <- secrets %>% 
+      filter(dataset == "diatom1") %>% 
+      pull(secret)
     read_delim(target, delim = "\t", comment = "#")
+  } else {
+    read_csv(file = "data_backup/diatom1.csv")
   },
   
   diatom1_estn = diatom1_data %>% 
-    gather(key = taxon, value = percent, -(depth_cm:age_calBP)) %>%
+    pivot_longer(cols = -(depth_cm:age_calBP), names_to = "taxon", values_to = "percent") %>%
     filter(percent > 0) %>% 
     estimate_n(ID_cols = c("depth_cm", "age_calBP"), digits = 2) %>% 
     assertr::verify(map_int(direct_search_est, nrow) == 1) %>% 
@@ -107,7 +115,7 @@ diatom_plan <- drake_plan(
 
   diatom2_est_n = diatom2_data %>% 
     select(-(Latitude:Depth..m.)) %>% 
-    gather(key = taxon, value = percent, -Event) %>%
+    pivot_longer(cols = -Event, names_to = "taxon", values_to = "percent") %>%
     filter(percent > 0) %>% 
     estimate_n(ID_cols = "Event", digits = 2) %>% 
     assertr::verify(map_int(direct_search_est, nrow) == 1) %>% #check only one row in each direct_search_est, 
