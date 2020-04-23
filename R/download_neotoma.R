@@ -26,12 +26,12 @@ neotoma_plan <- drake_plan(
       sampleID = as.integer(sampleID)
           ) %>% 
     group_by(datasetID, sampleID) %>% 
+    #filter out counts of 0.01 (in datasetID 17391 - presumably slide scanning for rareties)
+    filter(count != 0.01) %>% 
     #remove very low count sums and monospecific assemblages
     filter(sum(count) >= 50, n() > 1) %>%
     #round slightly to correct near-integers backtransformed? from percent
     mutate(count = round(count, 3)) %>% 
-    #filter out counts of 0.01 (in datasetID 17391 - presumably slide scanning for rareties)
-    filter(count != 0.01) %>% 
     #filter out two datasets with probable percent data
     filter(!datasetID %in% c(15059, 25609)) %>% 
     mutate(count = ceiling(count)), 
@@ -58,33 +58,41 @@ neotoma_plan <- drake_plan(
   
   
   pollen_summ1 = pollen %>% 
-    filter(n() > 1) %>% #should not remove any as low counts already removed
-    summarise(count_sum = sum(count), n_taxa = n(), gcd = numbers::mGCD(count), n_singletons = sum(count == 1), min = min(count)),
-  
+    pollen_summarise(),
   
   pollen_summ2 = pollen_summ1 %>% 
-    summarise(n = n(), gcd1 = mean(gcd == 1), nosingletons = mean(n_singletons > 0)),
+    summarise(n = n(), 
+              gcd1 = mean(gcd == 1), 
+              nosingletons = mean(n_singletons > 0)),
   
 
   #ecological groups
   pollen_wanted = c("TRSH", "UPHE", "SUCC", "PALM", "MANG"),
 
-  ##bad examples
-  pollenA = {
-    datasetID = neotoma_secrets %>% filter(dataset == "A") 
-    summ1 = pollen_summ1 %>% 
-      semi_join(datasetID) %>% 
-      ungroup() %>% 
-      assert(in_set(3), gcd)
-    
-    tibble(
-      n_samp = nrow(summ1),
-      n_count = sum(summ1$n_taxa),
-      count_min = summ1$count_sum %>% min,
-      count_max = summ1$count_sum %>% max,
-      taxa_median = summ1$n_taxa %>% median
-    )
+  ##bad examples####
+  #presumed digitised dataset
+  pollenA_data = if(has_password){
+    datasetID <- neotoma_secrets %>% filter(dataset == "A") 
+    pollen %>% 
+      semi_join(datasetID)
+  } else {
+    read_csv("data_backup/pollenA_data.csv") %>% 
+      group_by(sampleID)
   },
+  
+  pollenA_summ = pollenA_data %>% 
+    pollen_summarise() %>% 
+    ungroup() %>% 
+    assert(in_set(3), gcd),# check multiples of three
+    
+  pollenA = pollenA_summ %>% 
+    summarise(
+      n_samp = n(),
+      n_count = sum(n_taxa),
+      count_min = min(count_sum),
+      count_max = max(count_sum),
+      taxa_median = median(n_taxa)
+    ),
   
   pollen1234 = {
     datasets = neotoma_secrets %>% filter(dataset %in% 1:4) 
@@ -122,32 +130,9 @@ neotoma_plan <- drake_plan(
         ungroup() %>% 
         summarise(max = max(n_taxa)) %>% 
         pull(max)
-        
     )
     
     list(table = table, figure = figure, summ = summ)
   }
 )#end of drake plan
-
-
-process_rare_data <- function(ID, pollen_data){#browser()
-  ID <- as.character(ID)
-  #check has concentration data
-  pollen_data[[ID]]$lab.data %>% 
-    as.data.frame() %>% 
-    select(matches("spike$")) %>% 
-    verify(ncol(.) > 0)
-  #check fungal etc also divisible by 2 - mostly 
-  # pollen_data[[ID]] %>% 
-  #   counts() %>% 
-  #   rownames_to_column("sampleID") %>% 
-  #   mutate(sampleID = as.numeric(sampleID)) %>% 
-  #   gather(key = taxa, value = count, -sampleID) %>% 
-  #   inner_join(pollen_summ1) %>% 
-  #   filter(count > 0, gcd == 2) %>% 
-  #   summarise(odd = sum(count %% 2 != 0)) %>% 
-  #   assert(in_set(0), odd)
-  
-}
-
 
