@@ -8,7 +8,7 @@ mk_thin_pollen <- function(counts, taxon.list){
   
   thin_pollen <- counts %>%
     rownames_to_column(var = "sampleID") %>% 
-    gather(key = taxa, value = count, -sampleID) %>% 
+    pivot_longer(cols = -sampleID, names_to = "taxa", values_to = "count") %>% 
     filter(count > 0) %>% 
     left_join(taxon.list, by = c("taxa" = name_column)) %>% 
     
