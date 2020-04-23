@@ -5,7 +5,7 @@ chironomid_plan <- drake_plan(
   last_chance = read.table("https://www1.ncdc.noaa.gov/pub/data/paleo/insecta/chironomidae/northamerica/greenland/last-chance2017chironomid.txt", header = TRUE),
   
   last_chance_n = last_chance %>% 
-    gather(key = taxon, value = percent, -age_calBP, -totcaps) %>% 
+    pivot_longer(cols = c(-age_calBP, -totcaps), names_to = "taxon", values_to = "percent") %>% 
     filter(percent > 0) %>% 
     estimate_n(ID_cols = c("age_calBP", "totcaps"), digits = 2),
   
@@ -30,24 +30,35 @@ chironomid_plan <- drake_plan(
   last_chance_summ = list(
     nsamples = nrow(last_chance)
   ),
+  
   #chironomid1
   #download and import
   chironomid1_download = {
-    target <- secrets %>% 
-      filter(dataset == "chironomid1") %>% 
-      pull(secret)
-    download.file(url = target, destfile = file_out("data/chironomid1.xlsx"))
-    },
-  chironomid1 = read_excel(file_in("data/chironomid1.xlsx"), sheet = 2, skip = 2) %>% 
-    rename(sampleID = `Sample code`) %>% 
-    gather(key = taxon, value = percent, -sampleID, -`Core Depth (cm)`, -`Year (AD)`) %>% 
-    filter(percent > 0),
+    if(has_password){
+      target <- secrets %>% 
+        filter(dataset == "chironomid1") %>% 
+        pull(secret)
+      download.file(url = target, destfile = file_out("data/chironomid1.xlsx"))
+    }
+  },
   
+  chironomid1 = if(has_password){
+    read_excel(file_in("data/chironomid1.xlsx"), sheet = 2, skip = 2) %>% 
+    rename(sampleID = `Sample code`) %>% 
+    pivot_longer(cols = c(-sampleID, -`Core Depth (cm)`, -`Year (AD)`), names_to = "taxon", values_to = "percent") %>% 
+    filter(percent > 0)
+  } else {
+      read_csv(file = "data_backup/chironomid1.csv")
+    }
+  ,
+  
+  #estimate n
   chironomid1_est = chironomid1 %>% 
     estimate_n(digits = 4, ID_cols = c("sampleID", "Core Depth (cm)", "Year (AD)")) %>% 
     assertr::verify(map_int(direct_search_est, nrow) == 1) %>% #check only one row in each direct_search_est 
     unnest(direct_search_est),
   
+  #summarise
   chironomid1_summ = list(
     nsamples = n_distinct(chironomid1$sampleID),
     n_below50 = chironomid1_est %>% 
@@ -72,7 +83,7 @@ chironomid_plan <- drake_plan(
   #chironomid2
   chironomid2_summ = read_csv(file_in("data/chironomid2.csv")) %>% 
     select(ID, starts_with("Chironomid")) %>% 
-    gather(key = taxon, value = count, -ID) %>% 
+    pivot_longer(cols = -ID, names_to = "taxon", values_to = "count") %>% 
     group_by(ID) %>% 
     summarise(count_sum = sum(count), no_singletons = sum(count == 1)) %>% 
     summarise(n_samp = n(), count_min = min(count_sum), count_max = max(count_sum), min_singletons = min(no_singletons))
