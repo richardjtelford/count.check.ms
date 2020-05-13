@@ -1,0 +1,103 @@
+# Response to reviewers
+
+The referees have recommended publication after some minor, but significant, revisions to your manuscript.  Therefore, I invite you to respond to the referees' comments and revise your manuscript accordingly. Perhaps the most important point raised - notably by reviewer #1 - is that while your analysis is useful in helping identify errors and anomalies in data sets, this does not mean that falsification of data is commonplace in Quaternary palaeoecology, as you imply. Like you, I am a keen proponent of "open data" and, at my prompting, JQS has just moved from "authors are encouraged" to "authors are expected" to make their data openly available. Ensuring that authors do this is, to my mind, a far bigger problem than the few cases where data have been shown to be falsified.  It would therefore be helpful to frame your paper in this wider context of encouraging open data sharing, with data provided in their primary form (e.g. raw counts not %) to allow re-use.  Your paper is currently quite short and might benefit from more thorough explanations of the data sets used, etc.
+
+We require a marked version of the revised manuscript. The marked version should indicate all changes that have been made in response to reviewer comments. This document can be created by highlighting areas of text or, by using the 'track changes' function in word.
+
+
+##  Reviewer 1
+
+__I appreciate the opportunity to review this paper, which describes useful methods for identifying potential errors in reported count sums in paleoecology. Overall, I found the paper to be clearly presented and accurate. It is deeply troubling to think that there are misreported data out there in my field, but I appreciate the author making tools available to identify those cases. It’s an important job and this paper should be of international interest. __
+
+__I do take exception to two of the author’s conclusions (see the two starred items below) and believe he should reconsider them or more convincingly justify them. My other comments below are either very minor, or focused on clarifying a few take-home points and clarifying which datasets are referred to throughout the text. (An added table might help with that last issue.)__
+
+__Lines 33-36: I don’t think the paper is strengthened with the statements that “mistakes happen and metadata such as count sums can be forgotten once percentages are calculated. In addition, given the time-consuming nature of microfossil counting, especially when preservation is poor or concentrations are low, there may be an incentive to misreport the minimum count sum.” The former is vague and as a paleoecologist I can’t really image count sums “being forgotten” per se. I appreciate that the author is acknowledging that not every misreported number is intentional fraud; mistakes do happen! But this and the latter statement feel like speculation, and just not needed here. The author can simply state that this important data type has been demonstrably misreported in some past literature, per his next points with citations. __
+
+This quote actually refers to a published paper. The paper reported that all counts were larger than 50 but some were as low as 13. 
+Somewhere between the taxonomist who had counted the microfossils and the data analyst that instruction that some samples needed amalgamating got lost or forgotten. 
+I have changes this to reflect the risk of secondary data analysis.
+
+Without a survey of those who have mis-reported count sums, we can only speculate about their motive. 
+I contend that poor preservation and low concentration are likely to increase the risk of misreported counts - I am assuming people are struggling with difficult samples.
+I have edited this sentence to remove the phrase about incentives.
+
+__Line 58: percentS (plural)?__
+
+Fixed.
+
+__Line 170: Suggest “four anonymized datasets” here to remind the reader that you are intentionally anonymizing datasets where you find irregularities.__ 
+
+Fixed.
+
+__And “the same research group” is ambigious (do you mean Axford from your previous example?). For clarity, I suggest “a single research group” or “one research group.”__
+
+Fixed. “one research group”
+
+__Line 183: “one pollen assemblage” of the four you analyzed as a set? I find the use of anonymized data rather hard to keep track of. I understand the choice to anonymize the “irregular” datasets here, and probably some awkwardness is an unavoidable outcome of anonymizing – but suggest another round of minor editing to make it as clear as possible throughout the paper which datasets are being referred to where. Suggest adding a TABLE listing all of the anonymized datasets referred to in the paper – with only the relevant properties of the datasets reported (dataset pollen3, proxy pollen, source Neotoma, # samples x, species richness x, etc). And then the text could refer to “dataset pollen3 (Table 3).” Most of this info is already in the text, but the author can make it easier for readers to keep track of the anonymized datasets.__
+              
+#TODO              
+              
+__For Figs 1, 2 and 3 and Tables: For clarity and ease of use, I strongly suggest adding text that summarizes the take-home point(s) of each figure/table.  For example, rather than demonstrating problems with datasets, figs demonstrate major features of typical, ostensibly reliable datasets – and the utility of your methods. Make their take-homes clear in the captions.__  
+     
+    #TODO
+                         
+__**Line 251: “it appears 251 that a non-negligible fraction of the literature is affected.” Really? The global database of paleoecological data is HUGE.  What is meant by “non-negligible”?  This statement seems to condemn an entire field as rife with misconduct, when the results of this study of limited scope can NOT establish THAT.  To make this statement requires more evidence.  Instead, the author HAS demonstrated that there are probably examples of misreported count sums in public databases, and that the tools he is sharing can help in detecting those problems.__ 
+
+<!-- (S4, S2, F1, Z2, C1, A1, T9, T1, L1, S1) -->
+This comment hinges on the necessarily ill-defined nature of the term "non-negligible". 
+
+I am aware of 23 chironomid papers by five authors where the count sums are either smaller than the reported minimum reported or are smaller than 10 and the minimum is not reported. Several of these are widely cited. Assuming there are about 400 chironomid papers, this would represent about 5% of papers. I would contend that, for this subfield, this non-negligible.
+
+I had hoped to be able to make quantitative estimates of the prevalence of under-counting from the Neotoma dataset. Unfortunately, for many Neotoma datasets, the metadata incorrectly report counts derived from stratigraphic diagrams as raw counts. Several strange datasets were found (perhaps 1%) but it was difficult to diagnose what had happened.
+
+Since I submitted this manuscript, I have reviewed two manuscripts where count sums were below that reported.
+
+I have changed the text to read "small but non-negligible".
+   
+__Lines 265-270: Does this finding contrast with reported, published count sums for these chironomid samples?  It’s unclear whether this is meant as an example of misconduct, or rather as a nice, simple example of data structure in low count sums. Clarify so as not to accidentally impugn these researchers if it’s the latter.__
+
+TODO
+           
+__**Line 299: “the reader should be able to assume that the standard minimum count sum for the taxonomic group has been used.” I agree this would be great, but I disagree that this is true. Thus I strongly disagree that not meeting this expectation constitutes falsification. I can easily imagine a student new to the field making this mistake honestly; one would hope they archived their count sums so they are easy to reconstruct. Alternatively one could use the very tools presented here to sort it out. As a substitute, it would certainly be true (and alas also obvious, thus probably not worth stating) to say that “the reader should be able to assume that any reported minimum count sum is accurate and was strictly adhered to.”__ 
+
+The cases I am thinking of here are papers written by people who are well aware of the typical minimum count sums for their taxon group.
+    
+    TODO 
+    
+## Reviewer 2
+           
+__The paper deals with the count sum in microfossil-based palaeoecological research. In such research, the results (data) are normally presented as percentage data, and the author test some simple numerical tools to investigate whether the original count sum from which the percentages were calculated can be estimated. The conclusion is that the in some cases the real count sums are lower than reported in the papers, which will make any interpretations based on the data less reliable and useful.__
+           
+__Although the topic of the paper is no doubt important, there is a problem with the paper. The author has selected some datasets from the available large databases for analysis. In most cases, the papers from where the data are taken are not reported in the study. For example, in chapter 3.3 pollen data are presented with text “Here I focus on four datasets produced by the same research group”. No citations are given in text or in the caption of Table 2 where the data are analyzed. The same is true with diatom1 and diatom2 and marine1 datasets, which are analyzed but without citations. The author writes that “Datasets with possible misreporting are anonymised”. This is understandable, but clearly a problem from the point of view of normal scientific reporting, where the original sources are reported so that the readers can check and verify the authenticity of the data used.__
+
+TODO
+           
+__Whether using anonymised data in the study can be accepted or not, is a wider question which I believe any journal needs to make. As said, I understand the author's decision, but I also see it as problematic.__
+    
+I understand the reviewer's concerns, and realise that using anonymised sources is an unusual decision. It is difficult to balance the need for the manuscript to be transparent with the need not to unfairly malign scientists for what may be honest errors. By anonymising sources, I am following the precident set by Brown and Heathers (2016; doi:10.1177/1948550616673876) and concur with their justification (in their conclusion). 
+
+As I wrote in my initial letter, I am prepared to share with the reviewers the information needed to decrypt the file containing the references so they can reproduce my analyses. I can also, equivalently give them the references directly.
+           
+__My other main issue is that I suggest that the author would make the “Methods” chapter clearer in the paper. Two techniques, called the minimum percentage method and direct search method, are used for estimating the count sums. It would be good to clearly present these methods in “Methods” instead of just mentioning them in the introduction, as is done in the current version.__
+    
+TODO    
+           
+__Some more precise comments__
+           
+__-“We” and “I” are used in the text__
+
+TODO
+
+__-page 3. “Datasets…having under-reported count sums…” This should be “over-reported count sums”__
+
+This sentence has been clarified. "having misreported the minimum count sum"
+
+__-page 3. The bird example is hard to conceive. What does the “bird count” here mean? Does it mean the number of breeding bird species (two adults) in a certain area or a number of birds observed (so not necessarily breeding) in a certain area? Moreover, it is not totally clear why the analysis of the bird data was included in the study. One would assume that this type of diversity/evenness studies with bird data have been conducted earlier__
+
+The methods developed in the manuscript are equally applicable to ecological and palaeoecological count data, so it is important to include data from both fields. The North American breeding birds is chosen because it is enormous, spans diverse ecological gradient, has a wide range of diversity at different taxonomic levels. This allows the sensitivity of the methods developed in the manuscript to be tested, for example, in relationship to richness. Richness is only discussed in so much as it is relevant to the presence of singletons, not as an ecological indicator in its own right.
+
+The manuscript now describes this dataset better, and justifies its inclusion.
+
+__-page 11 Telford, R.J. 2019a Is this a published or submitted paper? No journal is indicated__
+
+Fixed - article now published
