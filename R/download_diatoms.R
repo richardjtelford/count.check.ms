@@ -33,6 +33,7 @@ diatom_plan <- drake_plan(
   owens_est_summ = owens_est %>% 
     select(est_n_minpc, est_n_direct, CountSum, n_taxa) %>% 
     filter(n_taxa > 1) %>% 
+    ungroup() %>% 
     summarise(
       minpc = mean(round(est_n_minpc, 3) == CountSum) * 100, 
       direct = mean(est_n_direct == CountSum) * 100
@@ -40,10 +41,15 @@ diatom_plan <- drake_plan(
   
   owens_fail = owens_est %>% 
     select(est_n_minpc, est_n_direct, CountSum, n_taxa) %>%
-    filter(n_taxa >1, est_n_direct!=CountSum),
+    filter(n_taxa > 1, est_n_direct != CountSum),
+  
+  owens_fail_minpc = owens_est %>% 
+    select(est_n_minpc, est_max_minpc, est_min_minpc, CountSum, n_taxa) %>%
+    filter(n_taxa > 1, !between(CountSum, est_min_minpc, est_max_minpc)),
   
   owens_plot = owens_est %>% 
     filter(between(n_taxa, 8, 15), between(CountSum, 80, 150)) %>% 
+    ungroup() %>% 
     slice(4) %>%  
     select(c(SampleId:n_taxa), score_best = score, est_n_direct) %>% 
     unnest(direct_search) %>% 
