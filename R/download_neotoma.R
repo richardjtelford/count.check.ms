@@ -94,6 +94,7 @@ neotoma_plan <- drake_plan(
       taxa_median = median(n_taxa)
     ),
   
+  ## unexpected gcd == 2
   pollen1234 = {
     datasets = neotoma_secrets %>% filter(dataset %in% 1:4) 
     #check has spike
