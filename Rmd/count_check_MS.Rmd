@@ -9,7 +9,7 @@ address:
   - code: University of Bergen
     address: Department of Biological Sciences, University of Bergen and Bjerknes Centre for Climate Research, Post Box 7803, N-5020 Bergen, Norway
 abstract: |
-  Microfossil counts are a key data type in palaeoecology. Recent work has raised the possibility that some authors might misreport an important quality control parameter, the counts sums, occasionally dramatically so. This paper introduces methods that can flag assemblages with potentially misreported count sums and finds that some assemblage datasets fail these tests.
+  Microfossil counts are a key data type in palaeoecology. Recent work has raised the possibility that some authors might misreport an important quality control parameter, the counts sums, occasionally dramatically so. This paper explores the statistical properties of ecological and palaeoecological species counts and uses the findings to develop methods to flag count or percentage data with unexpected distributions. Several assemblage datasets that fail these tests, and potentially have misreported count sums, are identified.
 journal: "Journal of Quaternary Science"
 date: "`r format(Sys.Date(), '%d %B %Y')`"
 header-includes:
@@ -60,9 +60,10 @@ However none of these tests are directly applicable to microfossil assemblage da
 
 A common assertion in papers reporting microfossil assemblage data is that a minimum of _N_ microfossils were counted, where _N_ is often fifty for chironomids and several hundred for pollen and diatoms.
 This is important because larger count sums are associated with smaller uncertainties, both in relative abundance of taxa and derived statistics such as transfer function reconstructions [@Heiri2001; @Payne2009].
-However, mistakes happen and metadata such as count sums can be forgotten once percentages are calculated.
-In addition, given the time-consuming nature of microfossil counting, especially when preservation is poor or concentrations are low, there may be an incentive to misreport the minimum count sum.
-The risk that count sums will be misreported is not just theoretical: Larocque-Tobler et al [-@Larocque-Tobler2015] reported that their chironomid count sums were at least fifty head capsules; a subsequent corrigendum [@Larocque-Tobler2016] acknowledged that count sums were actually as low as nineteen.
+There is a risk that count sums will be misreported.
+This could happen by mistake, especially with the use of secondary data.
+It could also happen knowingly, especially when microfossil preservation is poor or concentrations are low.
+This risk that count sums will be misreported is demonstrated by Larocque-Tobler et al [@Larocque-Tobler2016] who acknowledged that the chironomid count sums in [-@Larocque-Tobler2015] were not at least fifty head capsules as reported but as low as nineteen.
 Telford [-@Telford2019] reports some other cases where count sums may be much lower than reported.
 
 If the genuine assemblage counts are archived for all taxa, it is trivial to identify undercounts.
@@ -96,16 +97,20 @@ Datasets with possible misreporting are anonymised, but no attempt is made to di
 This paper does not attempt to be an exhaustive survey of all the data available.
 
 All analyses were done in R version `r getRversion()` [@R] and used the packages extraDistr version `r packageVersion("extraDistr")` [@extraDistr], numbers version `r packageVersion("numbers")` [@numbers], and countSum `r packageVersion("countSum")` [@countSum].
-Code to replicate all the analyses shown above is archived at [https://github.com/richardjtelford/count.check.ms](https://github.com/richardjtelford/count.check.ms).
+Code to replicate all the analyses is archived at [https://github.com/richardjtelford/count.check.ms](https://github.com/richardjtelford/count.check.ms).
 
 # Results
 
 ## Prevalence of singletons
 
-The vast majority of the over `r format(floor(bird_singleton_summary$n_routes[1]/1000) * 1000, big.mark = ",")` bird counts from the North American breeding bird survey [@NAmerican_Breeding_Bird2018]
-have singletons at the species level (Table \@ref(tab:bird-table))).
-To explore the effect of taxonomic richness on the prevalence of singletons, I aggregate the birds counts to progressively lower taxonomic resolutions.
-As richness declines, the proportion of counts having singletons declines (Table \@ref(tab:bird-table)), reaching a moderate proportion at the order level, where most of the counts lacking singletons have fewer than five taxa.
+The North American breeding bird survey is a very large, annual monitoring program to track the status of North American bird populations [@NAmerican_Breeding_Bird2018].
+All birds seen in point counts along ~40 km survey routes at the height of the breeding season are counted.
+The very large number of routes, over `r format(floor(bird_singleton_summary$n_routes[1]/1000) * 1000, big.mark = ",")`, typically with large numbers of individuals, allows the ideas developed above to be tested: do most routes have singletons and is the greatest common divisor one, and identify circumstances for which they fail.
+This can be tested for the observed data, and by simulating smaller counts and lower richness.
+
+The vast majority of the bird routes have singletons at the species level (Table \@ref(tab:bird-table))).
+To explore the effect of taxonomic richness on the prevalence of singletons, I aggregate the birds routes to progressively lower taxonomic resolutions.
+As richness declines, the proportion of routes having singletons declines (Table \@ref(tab:bird-table)), reaching a moderate proportion at the order level, where most of the counts lacking singletons have fewer than five taxa.
 The vast majority of counts have a greatest common divisor of one, except when taxonomic richness is low.
 
 ```{r bird-table}
@@ -116,10 +121,10 @@ bird_singleton_summary %>%
 options(digits = 2)
 ```
 
-To test the sensitivity of the prevalence of counts without singletons to the count sum, I resample the counts with 400 or more observations to smaller count sums using a multivariate hypergeometric distribution.
+To test the sensitivity of the prevalence of routes without singletons to the count sum, I resample the routes with 400 or more observations to smaller count sums using a multivariate hypergeometric distribution.
 At the order level, the proportion of counts with singletons increases steeply until it reaches a maximum at about 200, thereafter is declines slowly (Fig. \@ref(fig:bird-recount)).
 The prevalence of counts with singletons is low for small counts because it is possible that only the common taxa are counted; with larger counts, the chance of counting a single individual of a rare taxon increases.
-With even larger counts the prevalence of counts with singletons decreases due to saturation as singletons become doubletons and few new taxa are found.
+With even larger counts the prevalence of routes with singletons decreases due to saturation as singletons become doubletons and few new taxa are found.
 
 ```{r bird-recount, fig.cap="Effect of count sum on the proportion of bird counts without singleton at the order level. Results are the mean of ten trials, error bars are two standard errors.", fig.width = 80/25.4, fig.height = 70/25.4}
 readd(bird_recount_singleton_plot)
@@ -166,7 +171,7 @@ readd(last_chance_plot)
 ## Unexpected count data
 
 Some of the pollen datasets in the Neotoma database have an inexplicably high proportion of assemblages with a greatest common divisor greater than one. 
-Here I focus on four datasets produced by one research group. 
+Here I focus on four anonymised datasets produced by one research group. 
 All the datasets, which are relatively recent, include information on the spike used to calculate pollen concentration, so cannot have been digitised.
 The four datasets have some assemblages with a greatest common divisor of two interspersed, sometimes regularly, amongst assemblages with the expected greatest common divisor of one.
 The assemblages with a greatest common divisor of one typically have several singletons (Table \@ref(tab:neotoma-table)).
