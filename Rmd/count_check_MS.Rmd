@@ -54,8 +54,8 @@ It would be reckless to assume that the palaeoecological literature does not hav
 
 Several numerical tools have been developed to identify questionable data.
 Deviations from the distribution of digits expected from the Newcomb-Benford law has been used to detect issues with scientific and financial data [@Barabesi2017].
-Carlisle [-@Carlisle2017] identified papers where the baseline differences in means for different treatments were surprisingly high or low given the variance of the data.
-Brown et al. [-@Brown2017] developed the granularity-related inconsistency of means (GRIM) test which assesses whether means of integer data are consistent with the reported sample size.
+@Carlisle2017 identified papers where the baseline differences in means for different treatments were surprisingly high or low given the variance of the data.
+@Brown2017 developed the granularity-related inconsistency of means (GRIM) test which assesses whether means of integer data are consistent with the reported sample size.
 However none of these tests are directly applicable to microfossil assemblage data, one of the most common types of palaeoecological data.
 
 A common assertion in papers reporting microfossil assemblage data is that a minimum of _N_ microfossils were counted, where _N_ is often fifty for chironomids and several hundred for pollen and diatoms.
@@ -63,8 +63,8 @@ This is important because larger count sums are associated with smaller uncertai
 There is a risk that count sums will be misreported.
 This could happen by mistake, especially with the use of secondary data.
 It could also happen knowingly, especially when microfossil preservation is poor or concentrations are low.
-This risk that count sums will be misreported is demonstrated by Larocque-Tobler et al [@Larocque-Tobler2016] who acknowledged that the chironomid count sums in [-@Larocque-Tobler2015] were not at least fifty head capsules as reported but as low as nineteen.
-Telford [-@Telford2019] reports some other cases where count sums may be much lower than reported.
+This risk that count sums will be misreported is demonstrated by @Larocque-Tobler2016 who acknowledged that the chironomid count sums in @Larocque-Tobler2015 were not at least fifty head capsules as reported but as low as nineteen.
+@Telford2019 reports some other cases where count sums may be much lower than reported.
 
 If the genuine assemblage counts are archived for all taxa, it is trivial to identify undercounts.
 Unfortunately, count data might be falsified so that it appears to meet the reported count sum.
@@ -76,9 +76,9 @@ In particular, because there are many rare taxa in most communities [@Darwin1859
 In the occasional assemblages without singletons, the greatest common divisor should usually be one, i.e. few assemblages should have all counts divisible by an integer larger than one, especially if species richness is high.
 
 In general, it is not possible to determine the sum from which percentages were calculated, but the properties of community and assemblage counts make it possible to estimate it.
-Given that we expect the rarest taxon to be a singleton, the count sum _N_ can be estimated as $1/p_{min} \times 100$ where _p~min~_ is the percent abundance of the rarest taxon.
+Given the expectation that the rarest taxon is a singleton, the count sum _N_ can be estimated as $1/p_{min} \times 100$ where _p~min~_ is the percent abundance of the rarest taxon.
 This method will fail for assemblages without singletons.
-We also expect the percent _p_ to be calculated from integer counts, therefore there should be a count sum _N_ such that $p_i/100\times N$ is, within rounding error, an integer for all _i_ taxa.
+It is also expected that the percent _p_ is calculated from integer counts, therefore there should be a count sum _N_ such that $p_i/100\times N$ is, within rounding error, an integer for all _i_ taxa.
 Possible values for _N_ can be found by a direct search algorithm over the range of plausible values of _N_.
 An infinite number of possible count sums that are consistent with the percent exist, but the lowest will give the correct value of _N_ except in cases where the greatest common divisor is greater than one.
 These tests are closely related to GRIM [@Brown2017], as all rely on the granularity of percentages calculated from integer data.
@@ -92,7 +92,7 @@ Publicly available datasets were downloaded from the Palaeodata Center, Neotoma,
 A range of ecological and palaeoecological data were sought to allow for differences in typical count sums and species richness.
 Fossil pollen assemblage in the Neotoma database [@neotoma_2018] (downloaded `r readd(pollen_download_date)`) with small count sums (< 50), that appeared to be percentages, or were documented as back-transformed from digitised data were excluded. 
 Datasets with percent data where the minimum count sum was not reported in the associated paper were excluded.
-Datasets discussed by Telford [-@Telford2019] as possibly having misreported the minimum count sum were also excluded to avoid double reporting.
+Datasets discussed by @Telford2019 as possibly having misreported the minimum count sum were also excluded to avoid double reporting.
 Datasets with possible misreporting are anonymised, but no attempt is made to diagnose whether errors or misconduct are responsible.
 This paper does not attempt to be an exhaustive survey of all the data available.
 
