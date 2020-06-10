@@ -55,7 +55,7 @@ analyses <- drake_plan(
   
   #add extra packages to bibliography
   biblio2 = package_citations(
-    packages = c("extraDistr", "countSum", "numbers"), 
+    packages = c("extraDistr", "countSum", "numbers", "neotoma", "drake", "tidyverse"), 
     old_bib = file_in("Rmd/extra/countMS.bib"), 
     new_bib = file_out("Rmd/extra/countMS2.bib")),
   

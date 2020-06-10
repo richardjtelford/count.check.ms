@@ -88,6 +88,7 @@ Some complications and caveats are discussed.
 
 # Methods
 
+## Data
 Publicly available datasets were downloaded from the Palaeodata Center, Neotoma, Pangaea, and other sources.
 A range of ecological and palaeoecological data were sought to allow for differences in typical count sums and species richness.
 Fossil pollen assemblage in the Neotoma database [@neotoma_2018] (downloaded `r readd(pollen_download_date)`) with small count sums (< 50), that appeared to be percentages, or were documented as back-transformed from digitised data were excluded. 
@@ -96,14 +97,26 @@ Datasets discussed by @Telford2019 as possibly having misreported the minimum co
 Datasets with possible misreporting are anonymised, but no attempt is made to diagnose whether errors or misconduct are responsible.
 This paper does not attempt to be an exhaustive survey of all the data available.
 
-All analyses were done in R version `r getRversion()` [@R] and used the packages extraDistr version `r packageVersion("extraDistr")` [@extraDistr], numbers version `r packageVersion("numbers")` [@numbers], and countSum `r packageVersion("countSum")` [@countSum].
+## Numerical methods
+
+For count data, the prevalence of counts without singletons and the 
+greatest common divisor of each count were calculated and related to the count sum.
+For percent data, the count sum was estimated using the minimum percent method and the direct search methods described above. 
+
+All analyses were done in R v. `r getRversion()` [@R] and used the packages 
+extraDistr v. `r packageVersion("extraDistr")` [@extraDistr],
+numbers v. `r packageVersion("numbers")` [@numbers], 
+countSum v. `r packageVersion("countSum")` [@countSum], 
+neotoma v. `r packageVersion("neotoma")` [@neotoma], 
+drake v. `r packageVersion("drake")` [@drake], 
+and tidyverse v. `r packageVersion("tidyverse")` [@tidyverse].
 Code to replicate all the analyses is archived at [https://github.com/richardjtelford/count.check.ms](https://github.com/richardjtelford/count.check.ms).
 
 # Results
 
 ## Prevalence of singletons
 
-The North American breeding bird survey is a very large, annual monitoring program to track the status of North American bird populations [@NAmerican_Breeding_Bird2018].
+The North American breeding bird survey is a very large, annual monitoring programme to track the status of North American bird populations [@NAmerican_Breeding_Bird2018].
 All birds seen in point counts along ~40 km survey routes at the height of the breeding season are counted.
 The very large number of routes, over `r format(floor(bird_singleton_summary$n_routes[1]/1000) * 1000, big.mark = ",")`, typically with large numbers of individuals, allows the ideas developed above to be tested: do most routes have singletons and is the greatest common divisor one, and identify circumstances for which they fail.
 This can be tested for the observed data, and by simulating smaller counts and lower richness.
