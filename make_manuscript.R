@@ -1,3 +1,7 @@
+#Use renv to install correct version of all necessary package
+#renv::restore()
+
+#load packages
 library("drake")
 
 plan <- "plan_count_check_ms_with_drake.R"
