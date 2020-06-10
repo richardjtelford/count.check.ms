@@ -11,11 +11,12 @@ chironomid_plan <- drake_plan(
   
   last_chance_direct_search_plot = last_chance_n %>% 
     filter(age_calBP == 1099) %>% 
+    select(age_calBP, totcaps, direct_search) %>% 
     unnest(direct_search) %>% 
+    filter(n <= 300) %>% 
     ggplot(aes(x  = n, y = score)) + 
     geom_point() +
-    labs(x = "Putative count sum", y = "Score") + 
-    xlim(NA, 300),
+    labs(x = "Putative count sum", y = "Score"),
   
   last_chance_plot = last_chance_n %>% 
     unnest(direct_search_est) %>%   
