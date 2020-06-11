@@ -1,6 +1,7 @@
 
 #source functions
 source("R/get_sites_meta.R")
+source("R/hershop_pollen_plan.R")
 
 #### drake plan ####
 neotoma_plan <- drake_plan(
@@ -68,7 +69,8 @@ neotoma_plan <- drake_plan(
 
   #ecological groups
   pollen_wanted = c("TRSH", "UPHE", "SUCC", "PALM", "MANG"),
-
+  
+  
   ##bad examples####
   #presumed digitised dataset
   pollenA_data = if(has_password){
@@ -136,4 +138,11 @@ neotoma_plan <- drake_plan(
     list(table = table, figure = figure, summ = summ)
   }
 )#end of drake plan
+
+# bind pollen plans
+
+pollen_plan <- bind_plans(
+  neotoma_plan, 
+  hershop_plan
+) 
 

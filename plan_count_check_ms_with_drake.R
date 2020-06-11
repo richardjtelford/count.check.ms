@@ -109,7 +109,7 @@ plans <- bind_rows(
   bird_plan, 
   testate_plan, 
   chironomid_plan, 
-  neotoma_plan,
+  pollen_plan,
   diatom_plan,
   marine_plan,
   analyses)
