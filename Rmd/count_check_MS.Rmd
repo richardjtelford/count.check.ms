@@ -191,23 +191,30 @@ Here I focus on five anonymised datasets.
 Dataset pollen1, published includes `r pollenA$n_samp` assemblages with a median richness of `r pollenA$taxa_median` taxa.
 Count sums vary between `r pollenA$count_min` and `r pollenA$count_max`.
 The greatest common divisor is three for all assemblages: all `r pollenA$n_count` counts in the dataset are divisible by three. 
-Assuming (optimistically) the distribution of counts is (at least locally) uniform, the probability of _n_ counts being divisible by _k_ is $1/k^n$.
+Assuming (optimistically) the distribution of counts is (at least locally) uniform, the probability of _n_ counts being divisible by _k_ is $k^{-n}$.
 For a dataset this large, the probability of having all counts divisible by three by chance is 10^`r ceiling(- pollenA$n_count * log10(3))`^.
-Given this very small probability, it seems reasonable to conclude that the archived data are not the original counts, but I have no idea how they were generated.
+Given this very small probability, it seems reasonable to conclude that the archived data are not the original counts.
 
-All the datasets, which are relatively recent, include information on the spike used to calculate pollen concentration, so cannot have been digitised.
-The four datasets have some assemblages with a greatest common divisor of two interspersed, sometimes regularly, amongst assemblages with the expected greatest common divisor of one.
-The assemblages with a greatest common divisor of one typically have several singletons (Table \@ref(tab:neotoma-table)).
+In datasets pollen2 and pollen3, presented in the same paper, # % and # % of assemblages do not have singletons and have a greatest common divisor greater than one.
+Both datasets match the published pollen stratigraphies.
+For most of both datasets, assemblages with and without singletons are arranged alternately.
+Samples without singletons are on the 10 cm intervals, and those with on the intervening 5 cm intervals. 
+Closer inspection reveals that the assemblages between two assemblages without singletons have counts that are the mean of their neighbours.
+On request, the authors sent the original count data. 
+Comparison of these with the archived data showed that the archived assemblages without singletons had had their counts multiplied by two.
+The intervening assemblages did not exist in the original data. 
+In the published and archived data, they had been interpolated from their neighbours (Fig. \@ref(fig:archived-original-plot-plot)).
+
+fig - plot of 1 or 2 mid-common taxa by depth in archived and original 
+
 
 ```{r neotoma-table}
 pollen1234$table %>% knitr::kable(caption = "The number of assemblages, median number of taxa, percent of assemblages with a greatest common divisor (GCD) of one, and the median number of singletons in assemblages with a greatest common divisor of one, in four pollen datasets")
 ```
 
-Assemblages with a greatest common divisor of one typically have a higher taxonomic richness than assemblages with a greatest common divisor of two (Fig. \@ref(fig:neotoma-plot)).
-In the datasets with a wide range of count sums, the richness of the assemblages with a greatest common divisor of two is comparable with the richness of the assemblages with a greatest common divisor of one that have a count sum that is half as large.
 
-```{r neotoma-plot, fig.height = 70/24.5, fig.width=80/24.5, fig.cap="Number of taxa in against count sum for assemblages in two pollen datasets with a greatest common divisor of one (red circles) or two (blue triangles). Lines are loess with a span of 1. All four pollen datasets show the same pattern, but it is clearest in datasets 1 and 2 which have the highest proportion of assemblages with a greatest common divisor of two.", message = FALSE}
-pollen1234$figure %>% print()
+```{r archived-original-plot, fig.height = 70/24.5, fig.width=80/24.5, fig.cap="Number of taxa in against count sum for assemblages in two pollen datasets with a greatest common divisor of one (red circles) or two (blue triangles). Lines are loess with a span of 1. All four pollen datasets show the same pattern, but it is clearest in datasets 1 and 2 which have the highest proportion of assemblages with a greatest common divisor of two.", message = FALSE}
+readd(archived_original_plot)
 ```
 
 One assemblage with a greatest common divisor of two has `r pollen1234$summ$max_richness` taxa. 
