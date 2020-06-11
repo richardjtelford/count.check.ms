@@ -189,8 +189,10 @@ Here I focus on five anonymised datasets.
 
 Dataset pollen1, published includes `r pollenA$n_samp` assemblages with a median richness of `r pollenA$taxa_median` taxa.
 Count sums vary between `r pollenA$count_min` and `r pollenA$count_max`.
-The greatest common divisor is three for all assemblages, that is all `r pollenA$n_count` counts in the dataset are divisible by three.
-
+The greatest common divisor is three for all assemblages: all `r pollenA$n_count` counts in the dataset are divisible by three. 
+Assuming (optimistically) the distribution of counts is (at least locally) uniform, the probability of _n_ counts being divisible by _k_ is $1/k^n$.
+For a dataset this large, the probability of having all counts divisible by three by chance is 10^`r ceiling(- pollenA$n_count * log10(3))`^.
+Given this very small probability, it seems reasonable to conclude that the archived data are not the original counts, but I have no idea how they were generated.
 
 All the datasets, which are relatively recent, include information on the spike used to calculate pollen concentration, so cannot have been digitised.
 The four datasets have some assemblages with a greatest common divisor of two interspersed, sometimes regularly, amongst assemblages with the expected greatest common divisor of one.
