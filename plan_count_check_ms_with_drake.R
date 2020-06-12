@@ -91,14 +91,14 @@ analyses <- drake_plan(
         mutate(taxon = fct_anon(factor(taxon), prefix = "diatom_")) %>%
         write_csv(path = "data_backup/diatom2.csv")
       
-      #pollen A. (suspect digitised)
+      #pollen A. (multiple 3)
       pollenA_data %>% 
         ungroup() %>% 
-        select(-datasetID) %>% 
         mutate(
-          sampleID = fct_anon(factor(sampleID), prefix = "pollen_"),
-          taxon = fct_anon(factor(taxa), prefix = "pollen_")) %>%
-      write_csv("data_backup/pollenA_data.csv")
+          datasetID = "pollen1",
+          sampleID = fct_anon(factor(sampleID), prefix = "sample_"),
+          taxa = fct_anon(factor(taxa), prefix = "pollen_")) %>%
+        write_csv("data_backup/pollenA_data.csv")
       
       }
     }
