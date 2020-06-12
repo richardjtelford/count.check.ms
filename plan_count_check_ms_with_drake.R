@@ -1,6 +1,7 @@
-#import package
+#import packages
 library("drake")
 library("tidyverse")
+library("patchwork")
 library("readxl")
 #remotes::install_github("richardjtelford/countSum")
 library("countSum")

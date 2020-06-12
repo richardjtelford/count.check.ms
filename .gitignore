@@ -61,6 +61,7 @@ output/
 #Bib backup
 *2.bib
 *bib.bak
+*.bib.sav
 
 #packrat library
 packrat/lib*/
