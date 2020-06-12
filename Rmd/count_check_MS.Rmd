@@ -195,15 +195,15 @@ Assuming (optimistically) the distribution of counts is (at least locally) unifo
 For a dataset this large, the probability of having all counts divisible by three by chance is 10^`r ceiling(- pollenA$n_count * log10(3))`^.
 Given this very small probability, it seems reasonable to conclude that the archived data are not the original counts.
 
-In datasets pollen2 and pollen3, presented in the same paper, # % and # % of assemblages do not have singletons and have a greatest common divisor greater than one (Table \@ref(tab:unexpected-table))).
-Both datasets match the published pollen stratigraphies.
-For most of both datasets, assemblages with and without singletons are arranged alternately.
+Many assemblages in datasets pollen2 and pollen3 lack singletons and have a greatest common divisor greater than one (Table \@ref(tab:unexpected-table))).
+For most of both datasets, which come from the same paper and match the published pollen stratigraphies, assemblages with and without singletons are arranged alternately.
 Samples without singletons are on the 10 cm intervals, and those with on the intervening 5 cm intervals. 
 Closer inspection reveals that the assemblages between two assemblages without singletons have counts that are the mean of their neighbours.
 On request, the authors sent the original count data. 
 Comparison of these with the archived data showed that the archived assemblages without singletons had had their counts multiplied by two.
 The intervening assemblages did not exist in the original data. 
 In the published and archived data, they had been interpolated from their neighbours (Fig. \@ref(fig:interpolated-plot)).
+The effect of these manipulations is to increase the resolution of the pollen stratigraphy.
 
 
 ```{r unexpected-table}

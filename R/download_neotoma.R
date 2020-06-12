@@ -2,6 +2,7 @@
 #source functions
 source("R/get_sites_meta.R")
 source("R/hershop_pollen_plan.R")
+source("R/unexpected_pollen_plan.R")
 
 #### drake plan ####
 neotoma_plan <- drake_plan(
@@ -70,79 +71,13 @@ neotoma_plan <- drake_plan(
   #ecological groups
   pollen_wanted = c("TRSH", "UPHE", "SUCC", "PALM", "MANG"),
   
-  
-  ##bad examples####
-  #presumed digitised dataset
-  pollenA_data = if(has_password){
-    datasetID <- neotoma_secrets %>% filter(dataset == "A") 
-    pollen %>% 
-      semi_join(datasetID)
-  } else {
-    read_csv("data_backup/pollenA_data.csv") %>% 
-      group_by(sampleID)
-  },
-  
-  pollenA_summ = pollenA_data %>% 
-    pollen_summarise() %>% 
-    ungroup() %>% 
-    assert(in_set(3), gcd),# check multiples of three
-    
-  pollenA = pollenA_summ %>% 
-    summarise(
-      n_samp = n(),
-      n_count = sum(n_taxa),
-      count_min = min(count_sum),
-      count_max = max(count_sum),
-      taxa_median = median(n_taxa)
-    ),
-  
-  ## unexpected gcd == 2
-  pollen1234 = {
-    datasets = neotoma_secrets %>% filter(dataset %in% 1:4) 
-    #check has spike
-    datasets %>% pull(datasetID) %>% map(process_rare_data, pollen_data = pollen_data)
-    
-    #table of results
-    table <- pollen_summ1 %>% 
-      inner_join(datasets, by  = "datasetID") %>% 
-      rename(Dataset = dataset) %>% 
-      group_by(Dataset) %>% 
-      summarise(`No. assemblages` = n(), 
-                `Median no. taxa` = median(n_taxa), 
-                `% GCD = 1` = mean(gcd == 1) * 100, 
-                `Median no. singletons (GCD = 1)` = median(n_singletons[gcd == 1])) 
-
-    #figure    
-    figure <- pollen_summ1 %>% 
-      inner_join(datasets, by = "datasetID") %>%
-      filter(dataset %in% 1:2) %>% 
-      mutate(gcd = factor(gcd)) %>% 
-      ggplot(aes(x = count_sum, y = n_taxa, colour = gcd, shape = gcd)) +
-      stat_smooth(geom = "line", se = FALSE, span = 1, show.legend = FALSE, alpha = 0.6, size = 1) +
-      geom_point(show.legend = FALSE) +
-      facet_wrap(~dataset) +
-      scale_color_brewer(palette = "Set1") +
-      labs(x = "Count sum", y = "Number of taxa") 
-    figure
-   # poll = pollen %>% semi_join(datasetID)
-    
-    summ <- tibble(
-      max_richness = pollen_summ1 %>% 
-        inner_join(datasets, by = "datasetID") %>%
-        filter(gcd == 2, dataset %in% 1:2) %>%
-        ungroup() %>% 
-        summarise(max = max(n_taxa)) %>% 
-        pull(max)
-    )
-    
-    list(table = table, figure = figure, summ = summ)
-  }
 )#end of drake plan
 
 # bind pollen plans
 
 pollen_plan <- bind_plans(
   neotoma_plan, 
-  hershop_plan
+  hershop_plan,
+  unexpected_pollen_plan
 ) 
 

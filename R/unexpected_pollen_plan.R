@@ -114,6 +114,8 @@ unexpected_pollen_plan <- drake_plan(
         `Median richness` = median(richness), 
         `Median countsum` = median(countsum),
         `Percent GCD > 1` = mean(gcd > 1) * 100
-                )
+                ) %>% 
+    mutate(datasetID = paste0("pollen", datasetID)) %>% 
+    rename(Dataset = datasetID)
 )#end of plan
 
