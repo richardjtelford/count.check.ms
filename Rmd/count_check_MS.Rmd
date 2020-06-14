@@ -188,14 +188,18 @@ readd(last_chance_plot)
 Some of the pollen datasets in the Neotoma database have an inexplicably high proportion of assemblages with a greatest common divisor greater than one. 
 Here I focus on five anonymised datasets. 
 
-Dataset pollen1, published includes `r pollenA$n_samp` assemblages with a median richness of `r pollenA$taxa_median` taxa.
-Count sums vary between `r pollenA$count_min` and `r pollenA$count_max`.
-The greatest common divisor is three for all assemblages: all `r pollenA$n_count` counts in the dataset are divisible by three. 
+One assemblage with a greatest common divisor of two has `r "pollen1234$summ$max_richness"` taxa. 
+Assuming the distribution of counts is (at least locally) uniform, the probability of _n_ counts being divisible by _k_ is $1/k^n$: for a single assemblage with this many taxa, the probability is 1 in 10^`r "floor(log10(2^pollen1234$summ$max_richness))"`^.
+The probability that these counts reflect the true nature of the pollen assemblages is exceedingly low; it is far more likely that the data have been mishandled at some stage in some way.
+
+Dataset pollen3, published includes `r pollen3$n_samp` assemblages with a median richness of `r pollen3$taxa_median` taxa.
+Count sums vary between `r pollen3$count_min` and `r pollen3$count_max`.
+The greatest common divisor is three for all assemblages: all `r pollen3$n_count` counts in the dataset are divisible by three. 
 Assuming (optimistically) the distribution of counts is (at least locally) uniform, the probability of _n_ counts being divisible by _k_ is $k^{-n}$.
-For a dataset this large, the probability of having all counts divisible by three by chance is 10^`r ceiling(- pollenA$n_count * log10(3))`^.
+For a dataset this large, the probability of having all counts divisible by three by chance is 10^`r ceiling(- pollen3$n_count * log10(3))`^.
 Given this very small probability, it seems reasonable to conclude that the archived data are not the original counts.
 
-Many assemblages in datasets pollen2 and pollen3 lack singletons and have a greatest common divisor greater than one (Table \@ref(tab:unexpected-table))).
+Many assemblages in datasets pollen4 and pollen5 lack singletons and have a greatest common divisor greater than one (Table \@ref(tab:unexpected-table))).
 For most of both datasets, which come from the same paper and match the published pollen stratigraphies, assemblages with and without singletons are arranged alternately.
 Samples without singletons are on the 10 cm intervals, and those with on the intervening 5 cm intervals. 
 Closer inspection reveals that the assemblages between two assemblages without singletons have counts that are the mean of their neighbours.
@@ -212,13 +216,8 @@ readd(unexpected_table) %>% knitr::kable(caption = "The number of assemblages, m
 
 
 ```{r interpolated-plot, warning = FALSE, fig.height = 100/24.5, fig.width=180/24.5, fig.cap="A) Plot of selected taxa by depth from dataset pollen2. Counts with blue triangles are from assemblages with a greatest common divisor of one. These appear to have been linearly interpolated between the adjacent counts from assemblages with a greatest common divisor of two (red circles). B) Percent of taxa in each assemblage where the count is the mean of the counts in the adjacent assemblages, excluding runs of zero counts. Most of the assemblages with a greatest common divisor of one are exactly linearly interpolated between adjacent assemblages. The main exception is the assemblage at 210 cm which has a single singleton and otherwise has a greatest common divisor of two, other exceptions have a few extra singletons not predicted from the adjacent assembages.", message = FALSE}
-readd(pollen23_plot)
+readd(pollen4_plot)
 ```
-
-One assemblage with a greatest common divisor of two has `r "pollen1234$summ$max_richness"` taxa. 
-Assuming the distribution of counts is (at least locally) uniform, the probability of _n_ counts being divisible by _k_ is $1/k^n$: for a single assemblage with this many taxa, the probability is 1 in 10^`r "floor(log10(2^pollen1234$summ$max_richness))"`^.
-The probability that these counts reflect the true nature of the pollen assemblages is exceedingly low; it is far more likely that the data have been mishandled at some stage in some way.
-
 
 ## Unexpected percent data
 ```{r line169}
