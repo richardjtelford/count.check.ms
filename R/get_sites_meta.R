@@ -42,8 +42,14 @@ process_rare_data <- function(ID, pollen_data){#browser()
 
 #dplyr function to summarise pollen counts
 pollen_summarise <- . %>% 
+  group_by(datasetID) %>% 
+  mutate(n_taxa_dataset = n_distinct(taxa)) %>% 
+  group_by(datasetID, sampleID) %>% 
   summarise(count_sum = sum(count),
             n_taxa = n(), 
             gcd = numbers::mGCD(count), 
             n_singletons = sum(count == 1), 
-            min = min(count))
+            min = min(count),
+            n_taxa_dataset = first(n_taxa_dataset),
+            has_zero = n_taxa_dataset > n_taxa
+            )

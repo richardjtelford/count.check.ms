@@ -34,27 +34,37 @@ neotoma_plan <- drake_plan(
     filter(sum(count) >= 50, n() > 1) %>%
     #round slightly to correct near-integers backtransformed? from percent
     mutate(count = round(count, 3)) %>% 
-    #filter out two datasets with probable percent data
-    filter(!datasetID %in% c(15059, 25609)) %>% 
-    mutate(count = ceiling(count)), 
+    #filter out four datasets with probable percent data
+    filter(!datasetID %in% c(15059, 25609, 16209, 16210)) %>% 
+    mutate(count = ceiling(count)) %>% 
+    #remove unnecessary columns
+    select(datasetID, sampleID, taxa, count) %>% 
+    # sometimes spikes have not been correctly identified
+    filter(!(datasetID == 252 & taxa == "Alnus")) %>% 
+    #remove duplicate dataset == 21903
+    filter(datasetID != 47543), 
+  
 
 
   #process
   pollen_summ = tibble(
-    n_datasets = n_distinct(pollen$datasetID),
-    n_assemblages = (floor(n_distinct(pollen$sampleID)/1000) * 1000) %>% format(big.mark = ","),
+    n_datasets = nrow(pollen_summ2),
+    n_assemblages = (floor(nrow(pollen_summ1)/1000) * 1000) %>% format(big.mark = ","),
     p_singletons = mean(pollen_summ1$n_singletons > 0) * 100,
     p_gcd1 = mean(pollen_summ1$gcd == 1) * 100,
     n_gcd1 = sum(pollen_summ1$gcd > 1),
-    threshold = 0.5, 
-    n_gcd1_high = pollen_summ1 %>% 
-      summarise(dgcd = mean(gcd == 1),  n = n()) %>% 
-      filter(dgcd < threshold) %>% 
-      summarise(n = sum(n)),
-    p_gcd1_high = n_gcd1_high/n_gcd1 * 100,
+    dataset_gcd1 = mean(pollen_summ2$gcd1 < 1) * 100
     
-    dataset_gcd1 = mean(pollen_summ2$gcd1 != 1) * 100,
-    dataset_gcd.5 = sum(pollen_summ2$gcd1 < threshold)
+  ) %>% bind_cols(#number of datasets needed to get half gcd > 1 assemblages
+    pollen_summ1 %>% 
+      group_by(datasetID) %>% 
+      summarise(gcd = sum(gcd > 1), no_singletons = sum(min > 1), threshold = 0.5) %>% 
+      ungroup() %>% 
+      summarise(
+        half_gcd = (1:n())[cumsum(sort(gcd, decreasing = TRUE)) >= threshold * sum(gcd)][1],
+        half_no_sing = (1:n())[cumsum(sort(no_singletons, decreasing = TRUE)) >= threshold * sum(no_singletons)][1]),
+    ## assemblage has zeros
+    has_zeros = mean(pollen_summ1$has_zero) 
     
   ),
   
@@ -65,7 +75,9 @@ neotoma_plan <- drake_plan(
   pollen_summ2 = pollen_summ1 %>% 
     summarise(n = n(), 
               gcd1 = mean(gcd == 1), 
-              nosingletons = mean(n_singletons > 0)),
+              nosingletons = mean(n_singletons > 0), 
+              n_taxa_dataset = first(n_taxa_dataset)
+              ),
   
 
   #ecological groups

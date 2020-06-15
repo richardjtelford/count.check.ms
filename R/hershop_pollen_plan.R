@@ -21,5 +21,23 @@ hershop_plan <- drake_plan(
     pollen_gt_200 = mean(pollen_count >= 200),
     pollen_spore_gt_200 = mean(pollen_spore_count >= 200),
     pollen_spore_200 = mean(pollen_spore_count == 200)
-    )
+    ),
+  
+  
+#### Wildhorse Lake ####  
+  wildhorse = pollen %>% filter(datasetID == 15894) %>% 
+  ungroup() %>% 
+  mutate(n_taxa_dataset = n_distinct(taxa)) %>% 
+  group_by(datasetID, sampleID) %>% 
+  summarise( #summarise samples
+    count_sum = sum(count), 
+    n_singletons = sum(count == 1), 
+    n_taxa = n(), 
+    n_taxa_dataset = first(n_taxa_dataset)) %>% 
+  summarise(#summarise dataset
+    n_assemblage = n(), 
+    median_count = median(count_sum), 
+    no_singletons = mean(n_singletons == 0), 
+    no_zeros = mean(n_taxa != n_taxa_dataset), 
+    n_taxa_dataset = first(n_taxa_dataset))
 )#end plan

@@ -39,7 +39,7 @@ options(digits = 2)
 loadd(bird_singleton_summary)
 loadd(testate_summ)
 loadd(last_chance_summ)
-loadd(pollen_summ, hershop_pollen_summ, pollenA, pollen1234)
+loadd(pollen_summ, hershop_pollen_summ, wildhorse, pollen_summ1, pollen_summ2, pollen3, pollen1234)
 loadd(owens_summ1, owens_summ, owens_est_summ)
 loadd(diatom1_summ, diatom2_summ, chironomid1_summ, marine1_summ, chironomid2_summ)
 
@@ -154,16 +154,11 @@ The `r testate_summ$n_assemblages` assemblages in the North American testate amo
 Of the `r testate_summ$n_gcd1 %>% words()` assemblages with a greatest common divisor above one, `r testate_summ$n_gcd2_low_div %>% words()` have fewer than five taxa; `r testate_summ$n_gcd2 %>% words()` have a greatest common divisor of two, and the other `r testate_summ$n_gcd3 %>% words()` has a greatest common divisor of three.
 
 The pollen data from the Neotoma database included over `r pollen_summ$n_assemblages` assemblages in `r pollen_summ$n_datasets %>% format()` datasets. 
-Nearly all assemblages have singletons (`r pollen_summ$p_singletons`%) and a greatest common divisor of one (`r pollen_summ$p_gcd1`%). 
-The assemblages with a greatest common divisor above one are not randomly distributed among the datasets: only `r pollen_summ$dataset_gcd1`% of the datasets have any such assemblages.
-Some datasets with a high proportion of assemblages with a greatest common divisor above one are older datasets which may, despite the available metadata, have been back-transformed from percent data or digitised with the loss of rare taxa and precision.
-For example, all but `r hershop_pollen_summ$has_singleton %>% word()` of the `r hershop_pollen_summ$n` assemblages in the archived pollen data from Hershop Bog, Texas have a greatest common divisor of two or more (the exception has a single singleton and is otherwise divisible by two). 
-The original data [@Patty1968] were counted to exactly 200 pollen grains and fern spores. 
-It seems likely that the data were converted to percent, rounded and then back-tranformed to counts.
-For most purposes, such back-transformed or digitised data are perfectly adequate.
-
-Excluding such datasets would further increase the proportion of assemblages with singletons. 
-Some other Neotoma datasets are discussed in section \@ref(unexpected-count-data) of this paper.  
+Conforming to expectations, nearly all assemblages have singletons (`r pollen_summ$p_singletons`%) and a greatest common divisor of one (`r pollen_summ$p_gcd1`%). 
+The assemblages without singletons or with a greatest common divisor above one are not randomly distributed among the datasets.
+Half of the assemblages without singletons are in `r pollen_summ$half_no_sing` datasets.
+`r Words(pollen_summ$half_gcd)` datasets contain half of the `r pollen_summ$n_gcd1` assemblages with a greatest common divisor above one and only `r pollen_summ$dataset_gcd1`% of the datasets have any such assemblages.
+Some Neotoma datasets are with a high proportion of assemblages without singletons or a with a greatest common divisor above one are discussed in section \@ref(unexpected-count-data) of this paper.  
 
 ## Estimating the percent sum
 
@@ -185,16 +180,29 @@ readd(last_chance_plot)
 
 ## Unexpected count data
 
-Some of the pollen datasets in the Neotoma database have an inexplicably high proportion of assemblages with a greatest common divisor greater than one. 
-Here I focus on five anonymised datasets. 
+This section explores some of the pollen datasets in the Neotoma database that have a high proportion of assemblages without singletons or with a greatest common divisor greater than one. 
+
+Some of these datasets are older datasets which may, despite the available metadata, have been back-transformed from percent data or digitised with the loss of rare taxa and precision.
+For example, all but `r hershop_pollen_summ$has_singleton %>% word()` of the `r hershop_pollen_summ$n` assemblages in the archived pollen data from Hershop Bog, Texas have a greatest common divisor of two or more (the exception has a single singleton and is otherwise divisible by two). 
+The original data [@Patty1968] were counted to exactly 200 pollen grains and fern spores. 
+It seems likely that the data were converted to percent, rounded and then back-transformed to counts.
+For most purposes, such back-transformed or digitised data are perfectly adequate.
+
+Some datasets with assemblages without singletons have few taxa.
+For example, the `r wildhorse$n_assemblage` assemblage dataset from Wildhorse Lake [@ref] includes only `r wildhorse$n_taxa_dataset` taxa (`r mean(pollen_summ2$n_taxa_dataset > wildhorse$n_taxa_dataset) * 100` % of neotoma pollen datasets have more than this), and relatively large count sums (median `r wildhorse$median_count`). 
+While `r wildhorse$no_singletons * 100`% of assemblages in this dataset lack singletons, even more assemblage (`r wildhorse$no_zeros * 100`%) lack taxa with zero counts. 
+This is in contrast to most (`r pollen_summ$has_zeros * 100`%) neotoma pollen assemblages which have zero counts.  
+These patterns could arise either when there is a high sampling effort in a low diversity site, or when the archived data do not include the entire pollen assemblage, instead focusing on the subset of abundant taxa of most interest to the authors.
+
+For some other datasets, the reason that assemblages lack singletons or have a greatest common divisor above one is less clear. 
+These are treated anonymously.
+
 
 One assemblage with a greatest common divisor of two has `r "pollen1234$summ$max_richness"` taxa. 
 Assuming the distribution of counts is (at least locally) uniform, the probability of _n_ counts being divisible by _k_ is $1/k^n$: for a single assemblage with this many taxa, the probability is 1 in 10^`r "floor(log10(2^pollen1234$summ$max_richness))"`^.
 The probability that these counts reflect the true nature of the pollen assemblages is exceedingly low; it is far more likely that the data have been mishandled at some stage in some way.
 
-Dataset pollen3, published includes `r pollen3$n_samp` assemblages with a median richness of `r pollen3$taxa_median` taxa.
-Count sums vary between `r pollen3$count_min` and `r pollen3$count_max`.
-The greatest common divisor is three for all assemblages: all `r pollen3$n_count` counts in the dataset are divisible by three. 
+In dataset pollen3, the greatest common divisor is three for all assemblages: all `r pollen3$n_count` counts in the dataset are divisible by three (Table \@ref(tab:unexpected-table))). 
 Assuming (optimistically) the distribution of counts is (at least locally) uniform, the probability of _n_ counts being divisible by _k_ is $k^{-n}$.
 For a dataset this large, the probability of having all counts divisible by three by chance is 10^`r ceiling(- pollen3$n_count * log10(3))`^.
 Given this very small probability, it seems reasonable to conclude that the archived data are not the original counts.
