@@ -20,8 +20,37 @@ unexpected_pollen_plan <- drake_plan(
     read_csv("data_backup/pollen_unexpected_data.csv") %>% 
       group_by(sampleID)
   },
-
-  #### multiples_plot ####
+  
+  pollen_unexpected_summ = pollen_unexpected_data %>% 
+    group_by(datasetID, sampleID) %>% 
+    pollen_summarise() %>% 
+    ungroup(),
+  
+  ####pollen1 ####
+  pollen1 = pollen_unexpected_summ %>% 
+      filter(datasetID == 1) %>% 
+      ungroup() %>% 
+      summarise(
+        min_taxa = min(n_taxa[gcd == 2]),
+        max_taxa = max(n_taxa[gcd == 2]),
+        n_sample = n(),
+        n_gcd2 = sum(gcd == 2)
+    ),
+  
+  #### multiples_plot - pollen 2####
+  pollen2 = pollen_unexpected_summ %>% 
+    filter(datasetID == 2) %>% 
+    ungroup() %>% 
+    summarise(
+      n_sample = n(),
+      min_taxa2 = min(n_taxa[gcd == 2]),
+      max_taxa2 = max(n_taxa[gcd == 2]),
+      min_taxa3 = min(n_taxa[gcd == 3]),
+      max_taxa3 = max(n_taxa[gcd == 3]),
+      n_gcd2 = sum(gcd == 2),
+      n_gcd3 = sum(gcd == 3),
+    ),
+  
   multiples_plot = {
     multiples = pollen_unexpected_data %>%
       group_by(depth) %>% 
@@ -79,21 +108,21 @@ unexpected_pollen_plan <- drake_plan(
   
   
   #### pollen 3 multiples ####  
-  pollen3_summ = pollen_unexpected_data %>% 
-    filter(datasetID == 3) %>% 
-    group_by(sampleID) %>% 
-    pollen_summarise() %>% 
-    ungroup() %>% 
-    assert(in_set(3), gcd),# check multiples of three
   
-  pollen3 = pollen3_summ %>% 
+  pollen3 = {
+    pollen3_summ <- pollen_unexpected_summ %>% 
+      filter(datasetID == 3) %>% 
+      assert(in_set(3), gcd)# check multiples of three
+    
+    pollen3_summ %>% 
     summarise(
       n_samp = n(),
       n_count = sum(n_taxa),
       count_min = min(count_sum),
       count_max = max(count_sum),
       taxa_median = median(n_taxa)
-    ),
+    )
+    },
   
   
   ## interpolated

@@ -39,7 +39,7 @@ options(digits = 2)
 loadd(bird_singleton_summary)
 loadd(testate_summ)
 loadd(last_chance_summ)
-loadd(pollen_summ, hershop_pollen_summ, wildhorse, pollen_summ1, pollen_summ2, pollen3, pollen1234)
+loadd(pollen_summ, hershop_pollen_summ, wildhorse, pollen_summ1, pollen_summ2, pollen3, pollen1, pollen2)
 loadd(owens_summ1, owens_summ, owens_est_summ)
 loadd(diatom1_summ, diatom2_summ, chironomid1_summ, marine1_summ, chironomid2_summ)
 
@@ -189,31 +189,36 @@ It seems likely that the data were converted to percent, rounded and then back-t
 For most purposes, such back-transformed or digitised data are perfectly adequate.
 
 Some datasets with assemblages without singletons have few taxa.
-For example, the `r wildhorse$n_assemblage` assemblage dataset from Wildhorse Lake [@ref] includes only `r wildhorse$n_taxa_dataset` taxa (`r mean(pollen_summ2$n_taxa_dataset > wildhorse$n_taxa_dataset) * 100` % of neotoma pollen datasets have more than this), and relatively large count sums (median `r wildhorse$median_count`). 
+For example, the `r wildhorse$n_assemblage` assemblage dataset from Wildhorse Lake [@Mehringer1985] includes only `r wildhorse$n_taxa_dataset` taxa (`r mean(pollen_summ2$n_taxa_dataset > wildhorse$n_taxa_dataset) * 100` % of Neotoma pollen datasets have more than this), and relatively large count sums (median `r wildhorse$median_count`). 
 While `r wildhorse$no_singletons * 100`% of assemblages in this dataset lack singletons, even more assemblage (`r wildhorse$no_zeros * 100`%) lack taxa with zero counts. 
-This is in contrast to most (`r pollen_summ$has_zeros * 100`%) neotoma pollen assemblages which have zero counts.  
+This is in contrast to most (`r pollen_summ$has_zeros * 100`%) Neotoma pollen assemblages which have zero counts.  
 These patterns could arise either when there is a high sampling effort in a low diversity site, or when the archived data do not include the entire pollen assemblage, instead focusing on the subset of abundant taxa of most interest to the authors.
 
 For some other datasets, the reason that assemblages lack singletons or have a greatest common divisor above one is less clear. 
 These are treated anonymously.
 
+`r Words(pollen1$n_gcd2)` of the `r pollen1$n_sample` assemblages in dataset pollen1 lack singletons and have a greatest common divisor of two.
+These assemblages have between `r pollen1$min_taxa` and `r pollen1$max_taxa` taxa.
+The probability of all _n_ counts being divisible by _k_ is $k^{-n}$, assuming the distribution of counts is locally uniform.
+That is, for _k_ = 2, odd counts are as common as even counts.
+For an assemblage with `r pollen1$min_taxa` or `r pollen1$max_taxa` taxa, the probability of having all counts divisible by two by chance are 10^`r ceiling(- pollen1$min_taxa * log10(2))`^ and 10^`r ceiling(- pollen1$max_taxa * log10(2))`^ respectively.
+These probabilities are not so small that it is unrealistic to expect to find assemblages like these in the Neotoma database, but to find so many in one dataset is unexpected.
+Furthermore, the assumption made here is optimistic, in reality for _k_ = 2, more odd counts are expected ones are expected than even ones in most datasets, as typical rank abundance curves have more singletons than doubletons and so on, which makes finding assemblages with a greatest common divisor above one even more unlikely.
 
-One assemblage with a greatest common divisor of two has `r "pollen1234$summ$max_richness"` taxa. 
-Assuming the distribution of counts is (at least locally) uniform, the probability of _n_ counts being divisible by _k_ is $1/k^n$: for a single assemblage with this many taxa, the probability is 1 in 10^`r "floor(log10(2^pollen1234$summ$max_richness))"`^.
-The probability that these counts reflect the true nature of the pollen assemblages is exceedingly low; it is far more likely that the data have been mishandled at some stage in some way.
-
-Dataset pollen2 (Fig. \@ref(fig:multiples-plot))
+Dataset pollen2 has `r pollen2$n_sample` assemblages, of which `r words(pollen2$n_gcd2)` have a greatest common divisor of two and a further `r words(pollen2$n_gcd3)` with a greatest common divisor of three, one of which has `r pollen2$max_taxa3` taxa.
+The probability of having all counts divisible by three in such a taxonomically rich assemblage is 10^`r ceiling(- pollen2$max_taxa3 * log10(3))`.
+In addition to the assemblages with a greatest common divisor above one, this dataset includes several assemblages that have a higher proportion of counts divisible by two or three than is typical in assemblages from Neotoma (Fig. \@ref(fig:multiples-plot)).
+It is unclear what processes could generate such counts.
 
 
 ```{r multiples-plot, warning = FALSE, fig.height = 100/24.5, fig.width=180/24.5, fig.cap = "A) Distribution of the percent of counts that are divisible by _k_ in each pollen assemblage with at least ten taxa. The vertical dashed line represents the 99.5% percentile. B) Percent of count in each assemblage in dataset pollen2 that are divisible by _k_ against depth. The dashed lines are the quantiles shown in part A. ", message = FALSE}
-multiples_plot
+readd(multiples_plot)
 ```
 
 
 
 In dataset pollen3, the greatest common divisor is three for all assemblages: all `r pollen3$n_count` counts in the dataset are divisible by three (Table \@ref(tab:unexpected-table))). 
-Assuming (optimistically) the distribution of counts is (at least locally) uniform, the probability of _n_ counts being divisible by _k_ is $k^{-n}$.
-For a dataset this large, the probability of having all counts divisible by three by chance is 10^`r ceiling(- pollen3$n_count * log10(3))`^.
+For a dataset this large, the probability of having all counts divisible by three by chance is 3^{-`r pollen3$n_count`}^ or 10^`r ceiling(- pollen3$n_count * log10(3))`^.
 Given this very small probability, it seems reasonable to conclude that the archived data are not the original counts.
 
 Many assemblages in datasets pollen4 and pollen5 lack singletons and have a greatest common divisor greater than one (Table \@ref(tab:unexpected-table))).
