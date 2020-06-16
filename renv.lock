@@ -233,16 +233,10 @@
     },
     "dplyr": {
       "Package": "dplyr",
-      "Version": "0.8.99.9002",
-      "Source": "GitHub",
-      "Remotes": "r-lib/rlang, r-lib/vctrs",
-      "RemoteType": "github",
-      "RemoteHost": "api.github.com",
-      "RemoteRepo": "dplyr",
-      "RemoteUsername": "tidyverse",
-      "RemoteRef": "master",
-      "RemoteSha": "35d3aced69c5243c7259112cff1cd0ed854b6318",
-      "Hash": "71a183734df08eb91f54ef589dca8f11"
+      "Version": "1.0.0",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Hash": "4011f62581a34080e44105d4aa05a97f"
     },
     "drake": {
       "Package": "drake",
@@ -585,6 +579,13 @@
       "Repository": "CRAN",
       "Hash": "49f7258fd86ebeaea1df24d9ded00478"
     },
+    "patchwork": {
+      "Package": "patchwork",
+      "Version": "1.0.0",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Hash": "16eee5b5edc41eec5af1149ccdc6b2c9"
+    },
     "permute": {
       "Package": "permute",
       "Version": "0.9-5",
@@ -739,15 +740,10 @@
     },
     "rlang": {
       "Package": "rlang",
-      "Version": "0.4.5.9000",
-      "Source": "GitHub",
-      "RemoteType": "github",
-      "RemoteHost": "api.github.com",
-      "RemoteRepo": "rlang",
-      "RemoteUsername": "tidyverse",
-      "RemoteRef": "master",
-      "RemoteSha": "a90b04b9d6a17f1aabadaed357784efc22116d2a",
-      "Hash": "c975e5178b0d5a5498f62f6dbbbc3dfd"
+      "Version": "0.4.6",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Hash": "aa263e3ce17b177c49e0daade2ee3cdc"
     },
     "rmarkdown": {
       "Package": "rmarkdown",
@@ -856,10 +852,10 @@
     },
     "tidyselect": {
       "Package": "tidyselect",
-      "Version": "1.0.0",
+      "Version": "1.1.0",
       "Source": "Repository",
       "Repository": "CRAN",
-      "Hash": "7d4b0f1ab542d8cb7a40c593a4de2f36"
+      "Hash": "6ea435c354e8448819627cf686f66e0a"
     },
     "tidyverse": {
       "Package": "tidyverse",
@@ -891,16 +887,10 @@
     },
     "vctrs": {
       "Package": "vctrs",
-      "Version": "0.2.99.9010",
-      "Source": "GitHub",
-      "Remotes": "r-lib/pillar",
-      "RemoteType": "github",
-      "RemoteHost": "api.github.com",
-      "RemoteRepo": "vctrs",
-      "RemoteUsername": "r-lib",
-      "RemoteRef": "master",
-      "RemoteSha": "c0848cff83425e8f3ea2d21f4ca61d6646d98a14",
-      "Hash": "11402ff7f20f8615391b8a4c56c102e5"
+      "Version": "0.3.1",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Hash": "1739235995f08583db4095a28c357207"
     },
     "vegan": {
       "Package": "vegan",

@@ -10,8 +10,6 @@ library("assertr")
 library("rjt.misc")
 library("english")
 library("neotoma")
-#remotes::install_github("richardjtelford/neotoma2tibble")
-library("neotoma2tibble")
 
 #extra packages required
 requireNamespace("visNetwork")
