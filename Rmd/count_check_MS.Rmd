@@ -121,7 +121,7 @@ All birds seen in point counts along ~40 km survey routes at the height of the b
 The very large number of routes, over `r format(floor(bird_singleton_summary$n_routes[1]/1000) * 1000, big.mark = ",")`, typically with large numbers of individuals, allows the ideas developed above to be tested: do most routes have singletons and is the greatest common divisor one, and identify circumstances for which they fail.
 This can be tested for the observed data, and by simulating smaller counts and lower richness.
 
-The vast majority of the bird routes have singletons at the species level (Table \@ref(tab:bird-table))).
+The vast majority of the bird routes have singletons at the species level (Table \@ref(tab:bird-table)).
 To explore the effect of taxonomic richness on the prevalence of singletons, I aggregate the birds routes to progressively lower taxonomic resolutions.
 As richness declines, the proportion of routes having singletons declines (Table \@ref(tab:bird-table)), reaching a moderate proportion at the order level, where most of the counts lacking singletons have fewer than five taxa.
 The vast majority of counts have a greatest common divisor of one, except when taxonomic richness is low.
@@ -130,7 +130,7 @@ The vast majority of counts have a greatest common divisor of one, except when t
 options(digits = 4)
 bird_singleton_summary %>%
   select(`Taxonomic level` = taxonomic_level, `Percent with singletons` = p_singletons, `Percent GCD = 1` = GCD1, `Median richness` = median_richness) %>%
-  knitr::kable(digits = c(0, 6, 6, 3), caption = "Percent of bird counts with singletons and of greatest common divisor (GCD) of one, at different taxonomic levels.")
+  knitr::kable(digits = c(0, 6, 6, 3), caption = "Percent of bird counts from the North American breeding bird survey with singletons and of greatest common divisor (GCD) of one, at different taxonomic levels to mimic the effect of taxonomic richness.")
 options(digits = 2)
 ```
 
@@ -139,7 +139,7 @@ At the order level, the proportion of counts with singletons increases steeply u
 The prevalence of counts with singletons is low for small counts because it is possible that only the common taxa are counted; with larger counts, the chance of counting a single individual of a rare taxon increases.
 With even larger counts the prevalence of routes with singletons decreases due to saturation as singletons become doubletons and few new taxa are found.
 
-```{r bird-recount, fig.cap="Effect of count sum on the proportion of bird counts without singleton at the order level. Results are the mean of ten trials, error bars are two standard errors.", fig.width = 80/25.4, fig.height = 70/25.4}
+```{r bird-recount, fig.cap="Effect of count sum on the proportion of bird counts from the North American breeding bird survey without singleton at the order level. Results are the mean of ten trials, error bars are two standard errors.", fig.width = 80/25.4, fig.height = 70/25.4}
 readd(bird_recount_singleton_plot)
 ```
 
@@ -215,15 +215,13 @@ It is unclear what processes could generate such counts.
 readd(multiples_plot)
 ```
 
-
-
-In dataset pollen3, the greatest common divisor is three for all assemblages: all `r pollen3$n_count` counts in the dataset are divisible by three (Table \@ref(tab:unexpected-table))). 
+In dataset pollen3, the greatest common divisor is three for all assemblages: all `r pollen3$n_count` counts in the dataset are divisible by three (Table \@ref(tab:unexpected-table)). 
 For a dataset this large, the probability of having all counts divisible by three by chance is 3^{-`r pollen3$n_count`}^ or 10^`r ceiling(- pollen3$n_count * log10(3))`^.
 Given this very small probability, it seems reasonable to conclude that the archived data are not the original counts.
 
-Many assemblages in datasets pollen4 and pollen5 lack singletons and have a greatest common divisor greater than one (Table \@ref(tab:unexpected-table))).
+Many assemblages in datasets pollen4 and pollen5 lack singletons and have a greatest common divisor greater than one (Table \@ref(tab:unexpected-table)).
 For most of both datasets, which come from the same paper and match the published pollen stratigraphies, assemblages with and without singletons are arranged alternately.
-Samples without singletons are on the 10 cm intervals, and those with on the intervening 5 cm intervals. 
+Assemblages without singletons are on the 10 cm intervals, and those with on the intervening 5 cm intervals. 
 Closer inspection reveals that the assemblages between two assemblages without singletons have counts that are the mean of their neighbours.
 On request, the authors sent the original count data. 
 Comparison of these with the archived data showed that the archived assemblages without singletons had had their counts multiplied by two.
@@ -233,7 +231,7 @@ The effect of these manipulations is to increase the resolution of the pollen st
 
 
 ```{r unexpected-table}
-readd(unexpected_table) %>% knitr::kable(caption = "The number of assemblages, median number of taxa, percent of assemblages with a greatest common divisor (GCD) of one, and the median number of singletons in assemblages with a greatest common divisor of one, in four pollen datasets")
+readd(unexpected_table) %>% knitr::kable(caption = "The number of assemblages, median number of taxa and count sum, percent of assemblages with a greatest common divisor (GCD) of one, in five anonymised pollen datasets.")
 ```
 
 
@@ -260,7 +258,7 @@ All the assemblages identified with possible low count sums are in this part of 
 
 ```
 
-The archived data include `r diatom1_summ$n_taxa` taxa that have a maximum abundance of at least 1.25%; this is about half of the 109 taxa reported in the paper.
+The archived data for diatom1 include `r diatom1_summ$n_taxa` taxa that have a maximum abundance of at least 1.25%; this is about half of the 109 taxa reported in the paper.
 This pruning of rare taxa will increase the risk of counts without singletons, which would cause the minimum percent method to fail, but will have little impact on the direct search method.
 
 Dataset diatom2 has `r diatom2_summ$nsamples` assemblages with a median richness of `r diatom2_summ$median_taxa` taxa.
@@ -297,10 +295,7 @@ It is also possible that the apparently low count sums are a false positive.
 However, as taxonomically diverse assemblages with a greatest common divisor greater than one are rare and all the datasets with apparently low count sums contained several such assemblages, this is unlikely. 
 
 These tests require the assemblage data which are often not archived. 
-However, if the count sums are very low it is possible to recognise this from a stratigraphic diagram. 
-For example, a chironomid stratigraphy had an assemblage where all five taxa had a relative abundance of about 20%, suggesting a count sum of five, far below the reported fifty chironomids. Another assemblage had six taxa with a relative abundance of just over 10% and a seventh with twice as much, suggesting a count sum of eight chironomids.
-On request, the authors sent the data. 
-None of the `r chironomid2_summ$n_samp` assemblages in the dataset had more that fifty chironomids: the count sums varied between `r chironomid2_summ$count_min` and  `r chironomid2_summ$count_max`. 
+However, if the count sums are very low (below about 20) it is possible to recognise this from a stratigraphic diagram. 
 
 ## Challenges
 
@@ -322,18 +317,20 @@ The results from Owen's Lake suggest that this is not an important problem, as m
 
 Small undercounts in a few assemblages will have minimal impact on the precision of any palaeoenvironmental reconstruction or other statistics derived from the assemblage.
 Substantial undercounts will potentially seriously effect the precision of the results.
-Such undercounts might constitute a data handling error, for example, if samples with low counts were supposed to be merged but that step was forgotten.
+Such undercounts might constitute a data handling error, for example, if assemblages with low counts were supposed to be merged or omitted but that step was forgotten.
 Substantial and pervasive under-counting could be construed as scientific misconduct due to either negligence or falsification, and action to correct the literature is probably required.
 
 Some papers do not report count sums.
 When this important quality metric is omitted, the reader should be able to assume that the standard minimum count sum for the taxonomic group has been used (i.e. 50 for chironomids, several hundred for pollen and diatoms).
-If the actual count sums are materially below this, then this potentially constitutes falsification by omission [@Fanelli2013].
+The methods in this paper may help estimate what the count sums are.
+If the actual count sums are materially below this, then action to correct the literature may be necessary, and if the omission is deliberate it 
+potentially constitutes misconduct [@Fanelli2013].
 
 # Conclusions
 
-A non-negligible fraction of the archived assemblage data includes counts that appear to have a count sum below that reported in the paper. 
+A small but non-negligible fraction of archived assemblage data includes counts that appear, using methods developed above, to have a count sum below that reported in the original paper. 
 Some of the apparent counts are small enough that the uncertainty of the count and derived statistics will be substantially larger than expected.
-These results highlight the importance of archiving both the raw data and the code required to process the data.
+These results highlight the importance of archiving both the raw microfossil count data and the code required to process the data.
 
 # Acknowledgements{-}
 
