@@ -20,7 +20,65 @@ unexpected_pollen_plan <- drake_plan(
     read_csv("data_backup/pollen_unexpected_data.csv") %>% 
       group_by(sampleID)
   },
+
+  #### multiples_plot ####
+  multiples_plot = {
+    multiples = pollen_unexpected_data %>%
+      group_by(depth) %>% 
+      filter(datasetID == 2) %>% 
+      summarise(n = n(), 
+                div_2 = mean(count %% 2 == 0),
+                div_3 = mean(count %% 3 == 0)) %>% 
+      pivot_longer(cols = starts_with("div"), names_to = "divisible", values_to = "prop") %>% 
+      mutate(
+        percent = prop * 100,
+        divisible = str_replace(string = divisible, pattern = ".*(\\d)", replacement = "italic(k)==\\1"))
+    
+    # null 
+    multiples_null <- pollen %>% 
+      filter(n() >= 10) %>% #remove low diversity assemb
+      summarise(
+        div_2 = mean(count %% 2 == 0),
+        div_3 = mean(count %% 3 == 0)
+      ) %>% 
+      pivot_longer(cols = starts_with("div"), names_to = "divisible", values_to = "prop")  %>% 
+      mutate(
+        percent = prop * 100,
+        divisible = str_replace(string = divisible, pattern = ".*(\\d)", replacement = "italic(k)==\\1"))
+    
+    multiples_99 <- multiples_null  %>% 
+      group_by(divisible) %>% 
+      summarise(q99 = quantile(percent, prob = 0.995)) 
+    
+    
+    div_null = ggplot(multiples_null, aes(x = percent, fill = divisible)) +
+      geom_histogram(boundary = 0) +
+      geom_vline(data = multiples_99, mapping = aes(xintercept = q99, colour = divisible), linetype = "dashed") +
+      scale_fill_brewer(palette = "Set1") +
+      scale_colour_brewer(palette = "Set1") +
+      scale_x_continuous(expand = c(0.02, 0)) +
+      facet_wrap(~divisible, ncol = 1, labeller = label_parsed) + 
+      labs(x = expression('%'~counts~divisible~by~italic(k)), y = "Frequency") +
+      theme(legend.position = "none")
+    
+    div_data = multiples %>% 
+      ggplot(aes(x = depth, y = percent, colour = divisible)) + 
+      geom_line() +
+      geom_point(size = 1) +
+      geom_hline(data = multiples_99, mapping = aes(yintercept = q99, colour = divisible), linetype = "dashed") +
+      scale_y_continuous(expand = c(0.02, 0)) +
+      scale_colour_brewer(palette = "Set1") +
+      labs(x = "Depth cm", y = expression('%'~counts~divisible~by~italic(k))) +
+      facet_wrap(~divisible, ncol = 1, labeller = label_parsed) +
+      theme(legend.position = "none")
+    
+    div_null + labs(tag = "A") +
+      div_data + labs(tag = "B") 
+  },
   
+  
+  
+  #### pollen 3 multiples ####  
   pollen3_summ = pollen_unexpected_data %>% 
     filter(datasetID == 3) %>% 
     group_by(sampleID) %>% 
@@ -51,9 +109,9 @@ unexpected_pollen_plan <- drake_plan(
       mutate(gcd = factor(numbers::mGCD(count))) 
 
     count_depth <- plot_data %>%
-      filter(taxa %in% c("Taxon 63",
-                         "Taxon 59",
-                         "Taxon 152")) %>% 
+      filter(taxa %in% c("Taxon 74",
+                         "Taxon 70",
+                         "Taxon 177")) %>% 
       mutate(
         taxa = fct_reorder(taxa, -count), 
         taxa = paste("Taxon", as.numeric(taxa))) %>% 
@@ -108,4 +166,5 @@ unexpected_pollen_plan <- drake_plan(
     mutate(datasetID = paste0("pollen", datasetID)) %>% 
     rename(Dataset = datasetID)
 )#end of plan
+
 
