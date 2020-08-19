@@ -5,30 +5,22 @@ testate_plan <- drake_plan(
   testate_datasets = get_dataset(datasettype = "testate amoebae surface sample"),
 
   #download_data
-  testate_data = testate_datasets %>% get_download(), #SLOW
+  testate_data = testate_datasets %>%
+    #zap two datasets with null submission date
+    discard(~is.null(.x$submission$submission.date)) %>% 
+    #keep only data from before 2019-05-01 - Amesbury's data
+    keep(~{lubridate::ymd(.x$submission$submission.date) < as.Date("2019-05-01")}) %>% 
+    map(get_download), #SLOW
   
-  #extract site information
-  testate_meta = testate_datasets %>% 
-    map("site.data") %>% 
-    map_df(as_tibble) %>% 
-    bind_cols(testate_datasets %>% 
-                map_df("dataset.meta")) %>% 
-    mutate(authors = testate_datasets %>% 
-             map("pi.data") %>% 
-             map("ContactName") %>% 
-             map_chr(paste, collapse = " "), 
-           submission = testate_datasets %>% 
-             map("submission") %>% 
-             map_chr("submission.date") %>% 
-             lubridate::ymd()),
-
   #some sites have only percent data
   testate_has_percent = testate_data %>%
+    map(1) %>% 
     map("taxon.list") %>%
     map_lgl(~any(.x$variable.units == "percent", na.rm = TRUE)),  
   
   #get counts
-  testate_counts = testate_data[!testate_has_percent & testate_meta$submission < lubridate::ymd("2019-05-01")] %>%#cut data without counts or recently added
+  testate_counts = testate_data[!testate_has_percent] %>%#cut data without counts
+    map(1) %>% #each element is a download_list - extract contents
     map(~({
       cnt <- counts(.x)
       tl <- .x$taxon.list %>% filter(variable.units == "NISP")
@@ -68,4 +60,4 @@ testate_plan <- drake_plan(
        n_gcd3 = sum(gcd == 3),
        n_gcd2_low_div = sum(gcd[n_taxa < 5] > 1)
      )
-)
+)#end of plan
