@@ -10,16 +10,10 @@ library("assertr")
 library("rjt.misc")
 library("english")
 library("neotoma")
-
-#extra packages required
-requireNamespace("visNetwork")
-requireNamespace("rticles")
+library("neotoma2tibble")
 
 #drake configuration
 pkgconfig::set_config("drake::strings_in_dots" = "literals")
-#set up parallel processing for drake
-options(future.fork.enable = TRUE)
-future::plan(future::multiprocess) 
 
 ## askpass
 options(askpass = function(x)readLines("pw.txt"))
@@ -31,6 +25,7 @@ source("R/download_chironomids.R")
 source("R/download_neotoma.R")
 source("R/download_diatoms.R")
 source("R/download_marine.R")
+source("R/download_neotoma_diatoms.R")
 
 
 #construct drake plan
@@ -54,7 +49,7 @@ analyses <- drake_plan(
   
   #add extra packages to bibliography
   biblio2 = package_citations(
-    packages = c("extraDistr", "countSum", "numbers", "neotoma", "drake", "tidyverse"), 
+    packages = c("extraDistr", "countSum", "numbers", "neotoma", "drake", "tidyverse", "bookdown", "renv"), 
     old_bib = file_in("Rmd/extra/countMS.bib"), 
     new_bib = file_out("Rmd/extra/countMS2.bib")),
   
@@ -108,12 +103,13 @@ plans <- bind_rows(
   pollen_plan,
   diatom_plan,
   marine_plan,
+  neotoma_diatoms_plan,
   analyses)
 
 #quick network plot
 plot(plans)
 
 #configure and make drake plan
-config <- drake_config(plans, jobs = 3, parallelism = "future", keep_going = TRUE)
+config <- drake_config(plans, keep_going = TRUE)
 
 config
