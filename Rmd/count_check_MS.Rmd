@@ -9,7 +9,7 @@ address:
   - code: University of Bergen
     address: Department of Biological Sciences, University of Bergen and Bjerknes Centre for Climate Research, Post Box 7803, N-5020 Bergen, Norway
 abstract: |
-  Microfossil counts are a key data type in palaeoecology. Recent work has raised the possibility that some authors might misreport an important quality control parameter, the counts sums, occasionally dramatically so. This paper explores the statistical properties of ecological and palaeoecological species counts and uses the findings to develop methods to flag count or percentage data with unexpected distributions. Several assemblage datasets that fail these tests, and potentially have misreported count sums, are identified.
+  Microfossil counts are a key data type in palaeoecology. Recent work has raised the possibility that some authors might misreport an important quality control parameter, the counts sums, occasionally dramatically so, and perhaps other aspects of the counts. This paper explores the statistical properties of ecological and palaeoecological species counts and uses the findings to develop methods to flag count or percentage data with unexpected distributions. Several assemblage datasets that fail these tests, and potentially have misreported counts or count sums, are identified.
 journal: "Journal of Quaternary Science"
 date: "`r format(Sys.Date(), '%d %B %Y')`"
 header-includes:
@@ -66,25 +66,26 @@ It could also happen knowingly, especially when microfossil preservation is poor
 This risk that count sums will be misreported is demonstrated by @Larocque-Tobler2016 who acknowledged that the chironomid count sums in @Larocque-Tobler2015 were not at least fifty head capsules as reported but as low as nineteen.
 @Telford2019 reports some other cases where count sums may be much lower than reported.
 
-If the genuine assemblage counts are archived for all taxa, it is trivial to identify undercounts.
-Unfortunately, count data might be falsified so that it appears to meet the reported count sum.
-A more common problem is that, regrettably, many palaeoecologists archive percent data without an indication of the count sum.
-This paper develops simple tests that can flag if the count data might have been misrepresented, or if the count sum of percent data is perhaps lower than reported.
+Given that count sums of percent data have been misreported, the possibility that other aspects of count data may be misreported needs to be considered.
+This paper aim to develop and test simple methods that can flag if the count data might have been misreported, or if the count sum of percent data is perhaps lower than reported.
 
-The key insight that allows inference about the count sum is that assemblage data are expected to follow the typical features of a rank abundance curve.
-In particular, because there are many rare taxa in most communities [@Darwin1859], most community or assemblage samples will include taxa represented by a single individual, hereafter singletons, unless the sampling effort is high relative to the taxonomic richness [@Coddington2009].
+The key insight that allows inference about community or assemblage count data is that they represent a species abundance distribution.
+The ubiquitous shape of species abundance distributions when plotted as as the number of species against abundance is a hyperbolic or hollow curve with many rare and few abundant species [@McGill_2007].
+This relationship is central to ecological theory. 
+Communities or assemblages data that differ markedly this expected relationship 
+
+
+For example, because there are many rare taxa in most communities [@Darwin1859], most community or assemblage samples will include taxa represented by a single individual, hereafter singletons, unless the sampling effort is high relative to the taxonomic richness [@Coddington2009].
+
 In the occasional assemblages without singletons, the greatest common divisor should usually be one, i.e. few assemblages should have all counts divisible by an integer larger than one, especially if species richness is high.
 
-In general, it is not possible to determine the sum from which percentages were calculated, but the properties of community and assemblage counts make it possible to estimate it.
-Given the expectation that the rarest taxon is a singleton, the count sum _N_ can be estimated as $1/p_{min} \times 100$ where _p~min~_ is the percent abundance of the rarest taxon.
-This method will fail for assemblages without singletons.
-It is also expected that the percent _p_ is calculated from integer counts, therefore there should be a count sum _N_ such that $p_i/100\times N$ is, within rounding error, an integer for all _i_ taxa.
-Possible values for _N_ can be found by a direct search algorithm over the range of plausible values of _N_.
-An infinite number of possible count sums that are consistent with the percent exist, but the lowest will give the correct value of _N_ except in cases where the greatest common divisor is greater than one.
-These tests are closely related to GRIM [@Brown2017], as all rely on the granularity of percentages calculated from integer data.
 
-This paper aims to test the methods presented above and present some cases with unexpected results.
+
 Some complications and caveats are discussed.
+
+<!-- If the genuine assemblage counts are archived for all taxa, it is trivial to identify undercounts. -->
+<!-- Unfortunately, count data might be falsified so that it appears to meet the reported count sum. -->
+<!-- A more common problem is that, regrettably, many palaeoecologists archive percent data without an indication of the count sum. -->
 
 # Methods
 
@@ -101,15 +102,31 @@ This paper does not attempt to be an exhaustive survey of all the data available
 
 For count data, the prevalence of counts without singletons and the 
 greatest common divisor of each count were calculated and related to the count sum.
-For percent data, the count sum was estimated using the minimum percent method and the direct search methods described above. 
+
+Generalised additive model proportion of explained deviance
+Proportion of taxa divisible by _k_ where $k > 1$ 
+
+
+In general, it is not possible to determine the sum from which percentages were calculated, but the properties of community and assemblage counts make it possible to estimate it.
+Given the expectation that the rarest taxon is a singleton, the count sum _N_ can be estimated as $1/p_{min} \times 100$ where _p~min~_ is the percent abundance of the rarest taxon.
+This method will fail for assemblages without singletons.
+It is also expected that the percent _p_ is calculated from integer counts, therefore there should be a count sum _N_ such that $p_i/100\times N$ is, within rounding error, an integer for all _i_ taxa.
+Possible values for _N_ can be found by a direct search algorithm over the range of plausible values of _N_.
+An infinite number of possible count sums that are consistent with the percent exist, but the lowest will give the correct value of _N_ except in cases where the greatest common divisor is greater than one.
+These tests are closely related to GRIM [@Brown2017], as all rely on the granularity of percentages calculated from integer data.
+
+
+
 
 All analyses were done in R v. `r getRversion()` [@R] and used the packages 
 extraDistr v. `r packageVersion("extraDistr")` [@extraDistr],
 numbers v. `r packageVersion("numbers")` [@numbers], 
 countSum v. `r packageVersion("countSum")` [@countSum], 
 neotoma v. `r packageVersion("neotoma")` [@neotoma], 
-drake v. `r packageVersion("drake")` [@drake], 
 and tidyverse v. `r packageVersion("tidyverse")` [@tidyverse].
+Packages drake v. `r packageVersion("drake")` [@drake], 
+bookdown `r packageVersion("bookdown")` [@bookdown] and
+renv v. `r packageVersion("renv")` [@renv] were used to ensure reproducibility.
 Code to replicate all the analyses is archived at [https://github.com/richardjtelford/count.check.ms](https://github.com/richardjtelford/count.check.ms).
 
 # Results
