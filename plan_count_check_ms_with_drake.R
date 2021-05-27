@@ -3,21 +3,20 @@ library("drake")
 library("tidyverse")
 library("patchwork")
 library("readxl")
-#remotes::install_github("richardjtelford/countSum")
 library("countSum")
 library("assertr")
-#remotes::install_github("richardjtelford/rjt.misc")
 library("rjt.misc")
 library("english")
 library("neotoma")
 library("neotoma2tibble")
 library("bbsAssistant")
+library("janitor")
 
 #drake configuration
 pkgconfig::set_config("drake::strings_in_dots" = "literals")
 
 ## askpass
-options(askpass = function(x)readLines("pw.txt"))
+options(askpass = function(x) readLines("pw.txt"))
 
 #import scripts
 source("R/download_birds.R")
@@ -27,6 +26,7 @@ source("R/download_neotoma.R")
 source("R/download_diatoms.R")
 source("R/download_marine.R")
 source("R/download_neotoma_diatoms.R")
+source("R/planktic_forams_plan.R")
 
 
 #construct drake plan
@@ -50,7 +50,7 @@ analyses <- drake_plan(
   
   #add extra packages to bibliography
   biblio2 = package_citations(
-    packages = c("extraDistr", "countSum", "numbers", "neotoma", "drake", "tidyverse", "bookdown", "renv"), 
+    packages = c("extraDistr", "countSum", "numbers", "neotoma", "drake", "tidyverse", "bookdown", "renv", "bbsAssistant"), 
     old_bib = file_in("Rmd/extra/countMS.bib"), 
     new_bib = file_out("Rmd/extra/countMS2.bib")),
   
@@ -105,6 +105,7 @@ plans <- bind_rows(
   diatom_plan,
   marine_plan,
   neotoma_diatoms_plan,
+  planktic_foram_plan,
   analyses)
 
 #quick network plot
