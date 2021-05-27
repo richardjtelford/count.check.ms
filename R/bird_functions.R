@@ -15,15 +15,14 @@ bird_process <- function(bird_data, bird_species) {
     left_join(bird_species, by = "AOU")
   
   out <- bind_rows(
-    species = joined %>% rename(taxon = Latin_name),
-    genus = joined %>% rename(taxon = Genus),
-    family = joined %>% rename(taxon = Family),
-    order = joined %>% rename(taxon = ORDER),
+    species = joined %>% rename(taxon = species),
+    genus = joined %>% rename(taxon = genus),
+    family = joined %>% rename(taxon = family),
+    order = joined %>% rename(taxon = order),
     .id = "taxonomic_level"
   ) %>%
-    group_by(RouteDataID, Year, taxonomic_level, taxon) %>%
-    summarise(count = sum(count)) %>%
-    group_by(RouteDataID, Year, taxonomic_level) %>%
+    group_by(RouteDataID, taxonomic_level, taxon) %>%
+    summarise(count = sum(SpeciesTotal), .groups = "drop_last") %>%
     summarise(
       n_taxa = n(),
       singletons = sum(count == 1),

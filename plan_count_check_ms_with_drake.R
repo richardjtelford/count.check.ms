@@ -11,6 +11,7 @@ library("rjt.misc")
 library("english")
 library("neotoma")
 library("neotoma2tibble")
+library("bbsAssistant")
 
 #drake configuration
 pkgconfig::set_config("drake::strings_in_dots" = "literals")

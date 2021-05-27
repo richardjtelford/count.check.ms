@@ -4,38 +4,20 @@ source("R/bird_functions.R")
 bird_plan <- drake_plan(
   #download data
   bird_download = {
-    URL <- "ftp://ftpext.usgs.gov/pub/er/md/laurel/BBS/DataFiles/50-StopData/1997ToPresent_SurveyWide/Fifty"
-    1:10 %>% 
-      map(
-        ~download.file(
-          url = paste0(URL, ., ".zip"), 
-          destfile = paste0("./data/birds/Fifty", ., ".zip")
-          )
-        )
-  },
-  ##species list
-  bird_species = read_lines("ftp://ftpext.usgs.gov/pub/er/md/laurel/BBS/DataFiles/SpeciesList.txt", skip = 8)[-2] %>% 
-    paste(collapse = "\n") %>% 
-    read_fwf(col_positions = fwf_widths(widths = c(6, 6, 51, 51, 51, 51, 51, 51, 51))) %>% 
-    set_names(slice(., 1)) %>% 
-    slice(-1) %>%
-    select(-French_Common_Name, -Species) %>%
-    rename(Latin_name = Spanish_Common_Name) %>% 
-    mutate(AOU = as.integer(AOU)),
-  
-  #extract bird data
-  bird_data = {
-    bird_download # force dependency
-    list.files(path = "data/birds/", pattern = "\\.zip$", full.names = TRUE) %>% 
-    map(read_csv) %>% 
-    map(rename_at, vars(matches("StateNum")), tolower) %>%   
-    map(mutate, statenum  = as.numeric(statenum)) %>% 
-    map(~mutate(., count = rowSums(select(., starts_with("Stop"))))) %>% 
-    map_df(select, -starts_with("Stop"))
+    bbs <- get_bbs_data(bbs_version = 2020, sb_dir = "data/birds2020")
+    #remove unneeded components
+    bbs$weather <- NULL
+    bbs$routes <- NULL
+    #select required columns
+    bbs$species_list <- bbs$species_list %>% 
+      select(order, family, genus, species, AOU)
+    bbs$observations <- bbs$observations %>% 
+      select(RouteDataID, AOU, SpeciesTotal)
+    bbs
     },
   
   #aggregate to different taxonomic levels
-  bird_singletons = bird_process(bird_data, bird_species),
+  bird_singletons = bird_process(bird_download$observations, bird_download$species_list),
 
   bird_singleton_summary = bird_singletons %>%
     group_by(taxonomic_level) %>%
@@ -54,20 +36,13 @@ bird_plan <- drake_plan(
     )) %>%
     arrange(taxonomic_level),
   
-  # #bird order GCD summary
-  # bird_order_GCD = bird_singletons %>% 
-  #   ungroup() %>% 
-  #   filter(singletons == 0, taxonomic_level == "order", !is.na(GCD)) %>%
-  #   group_by(n_taxa) %>% 
-  #   summarise(t = sum(GCD > 1, na.rm = TRUE), n = n()),
-  
   #simulate counts with mv hypergeometric
-  bird_recount_singletons = bird_data %>% 
+  bird_recount_singletons = bird_download$observations %>% 
     group_by(RouteDataID) %>% 
-    filter(sum(count) >= 400) %>% 
-    left_join(bird_species, by = "AOU") %>% 
-    group_by(RouteDataID, ORDER) %>% 
-    summarise(count = sum(count)) %>% 
+    filter(sum(SpeciesTotal) >= 400) %>% 
+    left_join(bird_download$species_list, by = "AOU") %>% 
+    group_by(RouteDataID, order) %>% 
+    summarise(count = sum(SpeciesTotal)) %>% 
     nest() %>% 
     mutate(recount = map(data, ~recount_singletons(counts = .$count, k = c(30, 50, 100, 200, 300, 400)))) %>% 
     unnest(recount) %>% 
@@ -87,9 +62,3 @@ bird_plan <- drake_plan(
     labs(x = "Count sum", y = "Percent with singletons")
   )#end of drake_plan
  
-
-# cf <- drake_config(bird_plan)
-# make(bird_plan, keep_going = TRUE)
-# vis_drake_graph(cf)
-
-
