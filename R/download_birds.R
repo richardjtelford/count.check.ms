@@ -5,19 +5,19 @@ bird_plan <- drake_plan(
   #download data
   bird_download = {
     bbs <- get_bbs_data(bbs_version = 2020, sb_dir = "data/birds2020")
-    #remove unneeded components
-    bbs$weather <- NULL
-    bbs$routes <- NULL
+
     #select required columns
-    bbs$species_list <- bbs$species_list %>% 
-      select(order, family, genus, species, AOU)
-    bbs$observations <- bbs$observations %>% 
+    bbs$observations %>% 
       select(RouteDataID, AOU, SpeciesTotal)
-    bbs
     },
   
+  bird_species = read_table("data/birds2020/SpeciesList.txt", skip = 9) %>% 
+    slice(-1) %>% # row of dashes
+    select(-Seq, -French_Common_Name, -English_Common_Name, -Species) %>% 
+    rename(Species = Spanish_Common_Name, Order = ORDER), 
+  
   #aggregate to different taxonomic levels
-  bird_singletons = bird_process(bird_download$observations, bird_download$species_list),
+  bird_singletons = bird_process(bird_download, bird_species),
 
   bird_singleton_summary = bird_singletons %>%
     group_by(taxonomic_level) %>%
@@ -28,7 +28,8 @@ bird_plan <- drake_plan(
       n_routes = n(),
       GCD1 = mean(GCD == 1, na.rm = TRUE) * 100,
       GCD2plus = mean(GCD > 1, na.rm = TRUE) * 100,
-      GCD_max = max(GCD, na.rm = TRUE)
+      GCD_max = max(GCD, na.rm = TRUE), 
+      .groups = "drop_last"
     ) %>%
     mutate(taxonomic_level = factor(
       taxonomic_level,
@@ -36,20 +37,26 @@ bird_plan <- drake_plan(
     )) %>%
     arrange(taxonomic_level),
   
+  bird_summ = list(
+    n_without_singletons = bird_singletons %>% filter(taxonomic_level == "species", singletons == 0) %>% nrow(),
+    n_GCD_gt1 = bird_singletons %>% filter(taxonomic_level == "species", GCD > 1 | is.na(GCD))
+    
+  ),
+  
   #simulate counts with mv hypergeometric
-  bird_recount_singletons = bird_download$observations %>% 
+  bird_recount_singletons = bird_download %>% 
     group_by(RouteDataID) %>% 
     filter(sum(SpeciesTotal) >= 400) %>% 
-    left_join(bird_download$species_list, by = "AOU") %>% 
-    group_by(RouteDataID, order) %>% 
-    summarise(count = sum(SpeciesTotal)) %>% 
+    left_join(bird_species, by = "AOU") %>% 
+    group_by(RouteDataID, Order) %>% 
+    summarise(count = sum(SpeciesTotal), .groups = "drop_last") %>% 
     nest() %>% 
     mutate(recount = map(data, ~recount_singletons(counts = .$count, k = c(30, 50, 100, 200, 300, 400)))) %>% 
-    unnest(recount) %>% 
+    unnest(cols = recount) %>% 
     mutate(new_count_sum = as.numeric(new_count_sum)) %>% 
     group_by(new_count_sum, rep) %>% 
-    summarise(m = mean(no_singletons > 0) * 100) %>% 
-    summarise(m_no_singletons = mean(m), sd = sd(m), se = sd/sqrt(n())),
+    summarise(m = mean(no_singletons > 0) * 100, .groups = "drop_last") %>% 
+    summarise(m_no_singletons = mean(m), sd = sd(m), se = sd/sqrt(n()), .groups = "drop_last"),
   
   bird_recount_singleton_plot = ggplot(
       data = bird_recount_singletons, 
