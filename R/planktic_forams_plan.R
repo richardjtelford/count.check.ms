@@ -17,10 +17,27 @@ planktic_foram_plan <- drake_plan(
               n_singletons = sum(count == 1), 
               min = min(count)),
   
-  foram_summary = list(
-    n_samples = n_distinct(foram_data$sampleID),
-    n_taxa = n_distinct(foram_data$taxon)
+  
+  # 
+  count_summary = bind_rows(
+    `Planktic foraminifera` = foram_summ %>% 
+      summarise(
+        `No. Samples` = n(),
+        `Median count sum` = median(count_sum),
+        `Median richness` = median(n_taxa),
+        `Singletons %` = mean(n_singletons >= 1) * 100,
+        `GCD1 %` = mean(gcd == 1) * 100
+      ), 
+    `Testate amoebae` = testate_summ1 %>% 
+      summarise(
+        `No. Samples` = n(),
+        `Median count sum` = median(count_sum),
+        `Median richness` = median(n_taxa),
+        `Singletons %` = mean(n_singletons >= 1) * 100,
+        `GCD1 %` = mean(gcd == 1) * 100
+      ), 
     
+    .id = "Dataset"
   )
   
 )# end of plan
