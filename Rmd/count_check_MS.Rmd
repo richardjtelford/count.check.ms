@@ -32,11 +32,16 @@ csl: extra/elsevier-harvard_rjt.csl
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE, include = TRUE, warning = TRUE, message = TRUE, error = TRUE)
 
+library(drake)
+library(tidyverse)
+library(english)
+library(rjt.misc)
+
 #set ggplot theme
 theme_set(theme_bw(base_size = 12))
 options(digits = 2)
 
-loadd(bird_singleton_summary)
+loadd(bird_singleton_summary, bird_summ)
 loadd(testate_summ)
 loadd(last_chance_summ)
 loadd(pollen_summ, hershop_pollen_summ, wildhorse, pollen_summ1, pollen_summ2, pollen3, pollen1, pollen2)
@@ -67,45 +72,56 @@ This risk that count sums will be misreported is demonstrated by @Larocque-Toble
 @Telford2019 reports some other cases where count sums may be much lower than reported.
 
 Given that count sums of percent data have been misreported, the possibility that other aspects of count data may be misreported needs to be considered.
-This paper aim to develop and test simple methods that can flag if the count data might have been misreported, or if the count sum of percent data is perhaps lower than reported.
 
 The key insight that allows inference about community or assemblage count data is that they represent a species abundance distribution.
-The ubiquitous shape of species abundance distributions when plotted as as the number of species against abundance is a hyperbolic or hollow curve with many rare and few abundant species [@McGill_2007].
-This relationship is central to ecological theory. 
-Communities or assemblages data that differ markedly this expected relationship 
+The ubiquitous shape of species abundance distributions when plotted as the number of species against abundance is a hyperbolic or hollow curve with many rare and few abundant species and is central to ecological theory [@McGill_2007].
+From this, two predictions can be made: that counts of an entire community or assemblage should have many rare taxa, and that the distribution of abundances should be smooth.
+Count data that differ markedly from these predictions might not accurately reflect the original community or assemblage.
 
+This paper aims to develop and test simple methods to test the abundance of rare taxa and the smoothness of the species abundance distribution that can  use to flag cases if the count data might have been misreported.
+Next, as, regrettably, many palaeoecological data sets are archived as percent data, these tests are then extended to identify percent data where the count sum might be lower than reported.
+Finally, some complications and caveats are discussed.
 
-For example, because there are many rare taxa in most communities [@Darwin1859], most community or assemblage samples will include taxa represented by a single individual, hereafter singletons, unless the sampling effort is high relative to the taxonomic richness [@Coddington2009].
+<!-- For example, because there are many rare taxa in most communities [@Darwin1859], most community or assemblage samples will include taxa represented by a single individual, hereafter singletons, unless the sampling effort is high relative to the taxonomic richness [@Coddington2009]. -->
 
-In the occasional assemblages without singletons, the greatest common divisor should usually be one, i.e. few assemblages should have all counts divisible by an integer larger than one, especially if species richness is high.
-
-
-
-Some complications and caveats are discussed.
-
-<!-- If the genuine assemblage counts are archived for all taxa, it is trivial to identify undercounts. -->
-<!-- Unfortunately, count data might be falsified so that it appears to meet the reported count sum. -->
-<!-- A more common problem is that, regrettably, many palaeoecologists archive percent data without an indication of the count sum. -->
+<!-- In the occasional assemblages without singletons, the greatest common divisor should usually be one, i.e. few assemblages should have all counts divisible by an integer larger than one, especially if species richness is high. -->
 
 # Methods
 
 ## Data
+
 Publicly available datasets were downloaded from the Palaeodata Center, Neotoma, Pangaea, and other sources.
 A range of ecological and palaeoecological data were sought to allow for differences in typical count sums and species richness.
-Fossil pollen assemblage in the Neotoma database [@neotoma_2018] (downloaded `r readd(pollen_download_date)`) with small count sums (< 50), that appeared to be percentages, or were documented as back-transformed from digitised data were excluded. 
-Datasets with percent data where the minimum count sum was not reported in the associated paper were excluded.
+
+Count data analysed include the North American Breeding Bird survey [@bbsAssistant2]; 
+the Brown University planktic foraminiferal database [@Prell1999];
+the MOLTEN diatom database [@Elinor]; 
+the North American testate amoeba training set [@AMESBURY2018];
+and fossil pollen assemblage from the Neotoma database [@neotoma_2018]. 
+Pollen data were downloaded on `r readd(pollen_download_date)`, samples with with small count sums (< 50), that appeared to be percentages, or were documented as back-transformed from digitised data were excluded. 
+
+Examples of percent data where the minimum count sum was reported in the associated paper were sought.
 Datasets discussed by @Telford2019 as possibly having misreported the minimum count sum were also excluded to avoid double reporting.
-Datasets with possible misreporting are anonymised, but no attempt is made to diagnose whether errors or misconduct are responsible.
+Datasets with possible misreporting are anonymised; no attempt is made to diagnose whether errors or misconduct are responsible.
 This paper does not attempt to be an exhaustive survey of all the data available.
 
 ## Numerical methods
 
-For count data, the prevalence of counts without singletons and the 
-greatest common divisor of each count were calculated and related to the count sum.
+### Test for count data
 
-Generalised additive model proportion of explained deviance
-Proportion of taxa divisible by _k_ where $k > 1$ 
+To test for rare taxa, the prevalence of samples without singletons was calculated for each data set.
 
+To test if the species abundance distribution is smooth, I used two tests.
+First, for each assemblage or community with at least ` word(min_richness)` taxa, the proportion of taxa with counts divisible by $k$ where $k$ is a small integer larger than one is calculated.
+Samples where this proportion is high have a saw-toothed pattern of counts. 
+In extreme cases, where all taxa have counts divisible by $k$, the sample has a greatest common divisor of $k$.
+Data sets with a many samples with a greatest common divisor greater than one or an unusually high proportion, relative to the majority of pollen data set in the Neotoma database, of counts divisible by $k$ were flagged for closer inspection.
+
+The second test of smoothness is to fit a generalised additive model with Poisson errors to the counts aggregated over samples in each data set. 
+Only counts of ` word(gam_max)` or fewer were considered due to low power in the relatively infrequent larger counts.
+Data sets where the proportion of explained deviance is low relative to the majority of pollen data set in the Neotoma database were flagged for closer inspection.
+
+### Test for percent data
 
 In general, it is not possible to determine the sum from which percentages were calculated, but the properties of community and assemblage counts make it possible to estimate it.
 Given the expectation that the rarest taxon is a singleton, the count sum _N_ can be estimated as $1/p_{min} \times 100$ where _p~min~_ is the percent abundance of the rarest taxon.
@@ -113,33 +129,36 @@ This method will fail for assemblages without singletons.
 It is also expected that the percent _p_ is calculated from integer counts, therefore there should be a count sum _N_ such that $p_i/100\times N$ is, within rounding error, an integer for all _i_ taxa.
 Possible values for _N_ can be found by a direct search algorithm over the range of plausible values of _N_.
 An infinite number of possible count sums that are consistent with the percent exist, but the lowest will give the correct value of _N_ except in cases where the greatest common divisor is greater than one.
-These tests are closely related to GRIM [@Brown2017], as all rely on the granularity of percentages calculated from integer data.
+These tests for percent data are closely related to GRIM [@Brown2017], as all rely on the granularity of percentages calculated from integer data.
 
-
-
+### Software
 
 All analyses were done in R v. `r getRversion()` [@R] and used the packages 
 extraDistr v. `r packageVersion("extraDistr")` [@extraDistr],
 numbers v. `r packageVersion("numbers")` [@numbers], 
 countSum v. `r packageVersion("countSum")` [@countSum], 
 neotoma v. `r packageVersion("neotoma")` [@neotoma], 
+bbsAssistant v. `r packageVersion("bbsAssistant")` [@bbsAssistant1], 
 and tidyverse v. `r packageVersion("tidyverse")` [@tidyverse].
 Packages drake v. `r packageVersion("drake")` [@drake], 
-bookdown `r packageVersion("bookdown")` [@bookdown] and
+bookdown `r packageVersion("bookdown")` [@bookdown1] and
 renv v. `r packageVersion("renv")` [@renv] were used to ensure reproducibility.
-Code to replicate all the analyses is archived at [https://github.com/richardjtelford/count.check.ms](https://github.com/richardjtelford/count.check.ms).
+Code to reproduce all the analyses is archived at [https://github.com/richardjtelford/count.check.ms](https://github.com/richardjtelford/count.check.ms) and [zenodo.org](zenodo.org).
+All issues identified in the Neotoma database were reported to the maintainers.
 
 # Results
 
 ## Prevalence of singletons
 
-The North American breeding bird survey is a very large, annual monitoring programme to track the status of North American bird populations [@NAmerican_Breeding_Bird2018].
+The North American breeding bird survey is a very large, annual monitoring programme to track the status of North American bird populations [@bbsAssistant2].
 All birds seen in point counts along ~40 km survey routes at the height of the breeding season are counted.
 The very large number of routes, over `r format(floor(bird_singleton_summary$n_routes[1]/1000) * 1000, big.mark = ",")`, typically with large numbers of individuals, allows the ideas developed above to be tested: do most routes have singletons and is the greatest common divisor one, and identify circumstances for which they fail.
 This can be tested for the observed data, and by simulating smaller counts and lower richness.
 
-The vast majority of the bird routes have singletons at the species level (Table \@ref(tab:bird-table)).
-To explore the effect of taxonomic richness on the prevalence of singletons, I aggregate the birds routes to progressively lower taxonomic resolutions.
+The vast majority of the bird routes have singletons at the species level.
+Only `r bird_summ$n_without_singletons` routes do not have singletons, of these only `r bird_summ$n_GCD_gt1 %>% nrow() %>% words()`, all with very low richness, have a greatest common divisor greater than one.
+
+To explore the effect of taxonomic richness on the prevalence of singletons, I aggregate the data to progressively lower taxonomic resolutions.
 As richness declines, the proportion of routes having singletons declines (Table \@ref(tab:bird-table)), reaching a moderate proportion at the order level, where most of the counts lacking singletons have fewer than five taxa.
 The vast majority of counts have a greatest common divisor of one, except when taxonomic richness is low.
 
@@ -151,7 +170,7 @@ bird_singleton_summary %>%
 options(digits = 2)
 ```
 
-To test the sensitivity of the prevalence of routes without singletons to the count sum, I resample the routes with 400 or more observations to smaller count sums using a multivariate hypergeometric distribution.
+To test the sensitivity of the prevalence of routes without singletons to the count sum, I resample the routes with 400 or more individuals to smaller count sums using a multivariate hypergeometric distribution.
 At the order level, the proportion of counts with singletons increases steeply until it reaches a maximum at about 200, thereafter is declines slowly (Fig. \@ref(fig:bird-recount)).
 The prevalence of counts with singletons is low for small counts because it is possible that only the common taxa are counted; with larger counts, the chance of counting a single individual of a rare taxon increases.
 With even larger counts the prevalence of routes with singletons decreases due to saturation as singletons become doubletons and few new taxa are found.
@@ -160,15 +179,23 @@ With even larger counts the prevalence of routes with singletons decreases due t
 readd(bird_recount_singleton_plot)
 ```
 
-The `r nrow(owens_summ1)` diatom counts from Owen's Lake span a wide range of count sums (`r min(owens_summ1$count_sum)` -- `r max(owens_summ1$count_sum)`) because, if concentrations were low, the requirement that at least 300 valves were counted was replaced by a minimum area of slide to count [@Platt1997].
-Discounting the `r sum(owens_summ1$n_taxa == 1)` mono-specific assemblages (all with very low count sums`r max(owens_summ1$count_sum[owens_summ1$n_taxa == 1]) %>% insist(. <= 10) %>% invisible()`), `r owens_summ$p_singletons`% of assemblages have singletons with a median number of singletons per assemblage of `r owens_summ$median_sing %>% words()`.
-Assemblages with count sums above 50 have a higher chance of having singletons (`r owens_summ$no_single_gt_50`% vs `r owens_summ$no_single50_`%).
-`r owens_summ$gcd2`% of assemblages have a greatest common divisor of one, the remainder have a greatest common divisor of `r owens_summ$gcd_max %>% words()`.
-Assemblages with a greatest common divisor above one all have low taxonomic richness`r owens_summ1 %>% filter(gcd > 1) %>% pull(n_taxa) %>% max() %>% insist(. <= 6) %>% invisible()`.
+The ` nrow(owens_summ1)` diatom counts from Owen's Lake span a wide range of count sums (` min(owens_summ1$count_sum)` -- ` max(owens_summ1$count_sum)`) because, if concentrations were low, the requirement that at least 300 valves were counted was replaced by a minimum area of slide to count [@Platt1997].
+Discounting the ` sum(owens_summ1$n_taxa == 1)` mono-specific assemblages (all with very low count sums ` max(owens_summ1$count_sum[owens_summ1$n_taxa == 1]) %>% insist(. <= 10) %>% invisible()`), ` owens_summ$p_singletons`% of assemblages have singletons with a median number of singletons per assemblage of ` owens_summ$median_sing %>% words()`.
+Assemblages with count sums above 50 have a higher chance of having singletons (` owens_summ$no_single_gt_50`% vs ` owens_summ$no_single50_`%).
+` owens_summ$gcd2`% of assemblages have a greatest common divisor of one, the remainder have a greatest common divisor of ` owens_summ$gcd_max %>% words()`.
+Assemblages with a greatest common divisor above one all have low taxonomic richness` owens_summ1 %>% filter(gcd > 1) %>% pull(n_taxa) %>% max() %>% insist(. <= 6) %>% invisible()`.
 
 The `r testate_summ$n_assemblages` assemblages in the North American testate amoeba training set with available count data [@AMESBURY2018] have count sums between `r testate_summ$count_min` and `r testate_summ$count_max` tests (median = `r testate_summ$count_median`), and taxonomic richness ranges between `r testate_summ$tax_min` and `r testate_summ$tax_max` (median = `r testate_summ$tax_median`) taxa.
 `r testate_summ$p_singletons`% of the assemblages have at least one singleton (median `r testate_summ$median_singletons`) and `r testate_summ$p_gcd1`% of assemblages have a greatest common divisor of one.
 Of the `r testate_summ$n_gcd1 %>% words()` assemblages with a greatest common divisor above one, `r testate_summ$n_gcd2_low_div %>% words()` have fewer than five taxa; `r testate_summ$n_gcd2 %>% words()` have a greatest common divisor of two, and the other `r testate_summ$n_gcd3 %>% words()` has a greatest common divisor of three.
+
+```{r multitaxa}
+options(digits = 4)
+readd(count_summary) %>% 
+  knitr::kable(caption = "Properties of different data sets")
+options(digits = 2)
+```
+
 
 The pollen data from the Neotoma database included over `r pollen_summ$n_assemblages` assemblages in `r pollen_summ$n_datasets %>% format()` datasets. 
 Conforming to expectations, nearly all assemblages have singletons (`r pollen_summ$p_singletons`%) and a greatest common divisor of one (`r pollen_summ$p_gcd1`%). 
@@ -179,7 +206,7 @@ Some Neotoma datasets are with a high proportion of assemblages without singleto
 
 ## Estimating the percent sum
 
-The Owen's Lake dataset [@Platt1997] includes percentages for each taxa, allowing the count sums estimated from the percent data to be verified. Excluding mono-specific assemblages, for which no meaningful estimate of the count sum is possible, the minimum percent method and the direct search method correctly estimate the count sum for, respectively, `r owens_est_summ$minpc`% and `r owens_est_summ$direct`% of the assemblages. 
+The Owen's Lake dataset [@Platt1997] includes percentages for each taxa, allowing the count sums estimated from the percent data to be verified. Excluding mono-specific assemblages, for which no meaningful estimate of the count sum is possible, the minimum percent method and the direct search method correctly estimate the count sum for, respectively, ` owens_est_summ$minpc`% and ` owens_est_summ$direct`% of the assemblages. 
 The few assemblages that fail the direct search method are species poor and have low count sums.
 
 The `r last_chance_summ$nsamples` chironomid head capsule assemblage dataset from Last Chance Lake [@Axford2017] also includes both the count sums and the percentage of each taxa.
