@@ -14,20 +14,24 @@ bird_process <- function(bird_data, bird_species) {
   joined <- bird_data %>%
     left_join(bird_species, by = "AOU")
   
+  agg_taxa <- . %>% 
+    group_by(RouteDataID, taxon) %>%
+    summarise(count = sum(SpeciesTotal), .groups = "drop_last") 
+  
   out <- bind_rows(
-    species = joined %>% rename(taxon = species),
-    genus = joined %>% rename(taxon = genus),
-    family = joined %>% rename(taxon = family),
-    order = joined %>% rename(taxon = order),
+    species = joined %>% select(RouteDataID, taxon = Species, count = SpeciesTotal),  # no need to aggregate
+    genus = joined %>% rename(taxon = Genus) %>% agg_taxa,
+    family = joined %>% rename(taxon = Family) %>% agg_taxa,
+    order = joined %>% rename(taxon = Order) %>% agg_taxa,
     .id = "taxonomic_level"
   ) %>%
-    group_by(RouteDataID, taxonomic_level, taxon) %>%
-    summarise(count = sum(SpeciesTotal), .groups = "drop_last") %>%
+    group_by(RouteDataID, taxonomic_level) %>%
     summarise(
       n_taxa = n(),
       singletons = sum(count == 1),
       count_sum = sum(count), 
-      GCD = ifelse(n_taxa > 1, numbers::mGCD(count), NA)#only find GCD where no singletons for speed ( and > 1 taxa). Using ifelse as it doesn't run TRUE code when it would crash
+      GCD = ifelse(n_taxa > 1, numbers::mGCD(count), NA),#only find GCD where no singletons for speed ( and > 1 taxa). Using ifelse as it doesn't run TRUE code when it would crash
+      .groups = "drop_last"
     )
   return(out)
 }
