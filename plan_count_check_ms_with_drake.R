@@ -6,11 +6,11 @@ library("readxl")
 library("countSum")
 library("assertr")
 library("rjt.misc")
-library("english")
 library("neotoma")
 library("neotoma2tibble")
 library("bbsAssistant")
 library("janitor")
+library("glue")
 
 #drake configuration
 pkgconfig::set_config("drake::strings_in_dots" = "literals")
@@ -25,9 +25,13 @@ source("R/download_chironomids.R")
 source("R/download_neotoma.R")
 source("R/download_diatoms.R")
 source("R/download_marine.R")
-source("R/download_neotoma_diatoms.R")
+#source("R/download_neotoma_diatoms.R")
 source("R/planktic_forams_plan.R")
+source("R/percent_rounding_plan.R")
 
+
+# Import functions
+source("R/functions/general_functions.R")
 
 #construct drake plan
 analyses <- drake_plan(
@@ -50,7 +54,8 @@ analyses <- drake_plan(
   
   #add extra packages to bibliography
   biblio2 = package_citations(
-    packages = c("extraDistr", "countSum", "numbers", "neotoma", "drake", "tidyverse", "bookdown", "renv", "bbsAssistant"), 
+    packages = c("extraDistr", "countSum", "numbers", "neotoma", "bbsAssistant",
+                 "drake", "tidyverse", "bookdown", "renv"), 
     old_bib = file_in("Rmd/extra/countMS.bib"), 
     new_bib = file_out("Rmd/extra/countMS2.bib")),
   
@@ -104,8 +109,9 @@ plans <- bind_rows(
   pollen_plan,
   diatom_plan,
   marine_plan,
-  neotoma_diatoms_plan,
+#  neotoma_diatoms_plan,
   planktic_foram_plan,
+  percent_rounding_plan,
   analyses)
 
 #quick network plot
