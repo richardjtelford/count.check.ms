@@ -26,13 +26,8 @@ bird_process <- function(bird_data, bird_species) {
     .id = "taxonomic_level"
   ) %>%
     group_by(RouteDataID, taxonomic_level) %>%
-    summarise(
-      n_taxa = n(),
-      singletons = sum(count == 1),
-      count_sum = sum(count), 
-      GCD = ifelse(n_taxa > 1, numbers::mGCD(count), NA),#only find GCD where no singletons for speed ( and > 1 taxa). Using ifelse as it doesn't run TRUE code when it would crash
-      .groups = "drop_last"
-    )
+    summarise_counts()
+
   return(out)
 }
 

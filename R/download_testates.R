@@ -35,11 +35,7 @@ testate_plan <- drake_plan(
   
   #run analyses
   testate_summ1 = testate_counts %>% 
-    summarise(count_sum = sum(count), 
-              n_taxa = n(), 
-              gcd = numbers::mGCD(count), 
-              n_singletons = sum(count == 1), 
-              min = min(count)) %>% 
+    summarise_counts() %>% 
     assert(within_bounds(1, 3), gcd),
 
  

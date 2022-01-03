@@ -22,13 +22,13 @@ bird_plan <- drake_plan(
   bird_singleton_summary = bird_singletons %>%
     group_by(taxonomic_level) %>%
     summarise(
-      p_singletons = mean(singletons > 0) * 100,
-      n_singletons = sum(singletons == 0),
+      p_singletons = mean(n_singletons > 0) * 100,
+      n_singletons = sum(n_singletons == 0),
       median_richness = median(n_taxa),
       n_routes = n(),
-      GCD1 = mean(GCD == 1, na.rm = TRUE) * 100,
-      GCD2plus = mean(GCD > 1, na.rm = TRUE) * 100,
-      GCD_max = max(GCD, na.rm = TRUE), 
+      GCD1 = mean(gcd == 1, na.rm = TRUE) * 100,
+      GCD2plus = mean(gcd > 1, na.rm = TRUE) * 100,
+      GCD_max = max(gcd, na.rm = TRUE), 
       .groups = "drop_last"
     ) %>%
     mutate(taxonomic_level = factor(
@@ -38,8 +38,8 @@ bird_plan <- drake_plan(
     arrange(taxonomic_level),
   
   bird_summ = list(
-    n_without_singletons = bird_singletons %>% filter(taxonomic_level == "species", singletons == 0) %>% nrow(),
-    n_GCD_gt1 = bird_singletons %>% filter(taxonomic_level == "species", GCD > 1 | is.na(GCD))
+    n_without_singletons = bird_singletons %>% filter(taxonomic_level == "species", n_singletons == 0) %>% nrow(),
+    n_GCD_gt1 = bird_singletons %>% filter(taxonomic_level == "species", gcd > 1 | is.na(gcd))
     
   ),
   
