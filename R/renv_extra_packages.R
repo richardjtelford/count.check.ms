@@ -2,3 +2,4 @@
 requireNamespace("visNetwork")
 requireNamespace("rticles")
 requireNamespace("curl")
+requireNamespace("RSQLite")
