@@ -4,3 +4,7 @@ Authors@R: c(person(given = c("Richard", "J."), family = "Telford",
                     role = c("aut", "cre"),
                     email = "richard.telford@uib.no",
 		    comment = c(ORCID = "0000-0001-9826-3076"))
+Imports:
+ visNetwork
+ curl
+ RSQLite
