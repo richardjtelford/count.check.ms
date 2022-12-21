@@ -55,17 +55,17 @@ bird_plan <- drake_plan(
     unnest(cols = recount) %>% 
     mutate(new_count_sum = as.numeric(new_count_sum)) %>% 
     group_by(new_count_sum, rep) %>% 
-    summarise(m = mean(no_singletons > 0) * 100, .groups = "drop_last") %>% 
+    summarise(m = mean(no_singletons == 0) * 100, .groups = "drop_last") %>% 
     summarise(m_no_singletons = mean(m), sd = sd(m), se = sd/sqrt(n()), .groups = "drop_last"),
   
   bird_recount_singleton_plot = ggplot(
       data = bird_recount_singletons, 
       aes(x = new_count_sum, y = m_no_singletons, 
           ymin = m_no_singletons - 1.96 * se, 
-          ymax = m_no_singletons + 2 * se)
+          ymax = m_no_singletons + 1.96 * se)
     ) + 
     geom_errorbar() + 
     geom_point(size = 0.5) +
-    labs(x = "Count sum", y = "Percent with singletons")
+    labs(x = "Count sum", y = "Percent without singletons")
   )#end of drake_plan
  
