@@ -33,7 +33,7 @@ estimate_marine1_n <- function(marine1) {
 }
 
   #summarise
-summarise_marine1 <- function(marine1_est_n){
+summarise_marine1 <- function(marine1, marine1_est_n){
   list(
     nsamples = nrow(marine1),
     median_taxa = median(marine1_est_n$n_taxa),
