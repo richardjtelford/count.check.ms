@@ -10,7 +10,7 @@ library("tarchetypes")
 # Set target options:
 tar_option_set(
   packages = c("tidyverse", "patchwork", "readxl", "countSum", "assertr"), 
-  impports = "countSum"
+  imports = "countSum",
   format = "rds" # default storage format
   # Set other options as needed.
 )
@@ -59,11 +59,11 @@ list(
   ),
   tar_target(
     name = secrets,
-    command = get_secrets(secrets_file, has_passord)
+    command = get_secrets(secrets_file, has_password)
   ),
   tar_target(
     name = neotoma_secrets,
-    command = get_neotoma_secrets(neotoma_secrets_file, has_passord)
+    command = get_neotoma_secrets(neotoma_secrets_file, has_password)
   ),
   
   # birds ####
@@ -140,6 +140,39 @@ list(
     command = summarise_counts(molten_data)
   ),
 
+ ## diatoms ####
+## diatom1
+  tar_target(
+    # download and import
+    name = diatom1,
+    command = download_diatom1(has_password, secrets)
+  ),
+  tar_target(
+    # estimate n
+    name = diatom1_est_n,
+    command = estimate_diatom_n(diatom1, digits = 2)
+  ),
+  tar_target(
+    #summarise diatom1
+    name = diatom1_summ,
+    command = summarise_diatom(diatom1_est_n, diatom1),
+  ),
+  ## diatom2
+  tar_target(
+    # download and import
+    name = diatom2,
+    command = download_diatom2(has_password, secrets)
+  ),
+  tar_target(
+    # estimate n
+    name = diatom2_est_n,
+    command = estimate_diatom_n(diatom2, digits = 2)
+  ),
+  tar_target(
+    #summarise diatom1
+    name = diatom2_summ,
+    command = summarise_diatom(diatom2_est_n, diatom2),
+  ),
   # last chance chronomids ####
   tar_target(
    # download and import last chance
@@ -173,9 +206,21 @@ list(
   ),
   tar_target(
     name = marine1_summ,
-    command = summarise_marine1(marine1_est_n)
+    command = summarise_marine1(marine1, marine1_est_n)
   ),
-
+## chironomid1 ####
+  tar_target(
+    name = chironomid1,
+    command = download_chironomid1(has_password, secrets)
+  ),
+  tar_target(
+    name = chironomid1_est_n,
+    command = estimate_chironomid1_n(chironomid1)
+  ),
+  tar_target(
+    name = chironomid1_summ,
+    command = summarise_chironomid1(chironomid1, chironomid1_est_n)
+  ),
 
 
   ## manuscript
