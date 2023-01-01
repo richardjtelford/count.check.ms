@@ -10,10 +10,13 @@ library("tarchetypes")
 # Set target options:
 tar_option_set(
   packages = c("tidyverse", "patchwork", "readxl", "countSum", "assertr"), 
+  impports = "countSum"
   format = "rds" # default storage format
   # Set other options as needed.
 )
 
+## askpass
+options(askpass = function(x) readLines("pw.txt"))
 
 # ,
 # "rjt.misc",
@@ -30,22 +33,41 @@ options(clustermq.scheduler = "multicore")
 
 # Run the R scripts in the R/ folder with your custom functions:
 tar_source()
-# tar_source("R/download_birds.R")
-# tar_source("R/download_testates.R")
-# tar_source("R/download_chironomids.R")
-# tar_source("R/download_neotoma.R")
-# tar_source("R/download_diatoms.R")
-# tar_source("R/download_marine.R")
-# #tar_source("R/download_neotoma_diatoms.R")
-# tar_source("R/planktic_forams_plan.R")
-# tar_source("R/percent_rounding_plan.R")
 
-#source("R/functions/general_functions.R") # Source other scripts as needed. # nolint
 
-# Replace the target list below with your own:
+#### target list ####
 list(
+  ## encryption ####
   tar_target(
-    #aggregate to different taxonomic levels
+    name = password_file,
+    command =  "pw.txt",
+    format = "file"
+  ),
+  tar_target(
+    name = secrets_file,
+    command =  "data/secrets.RDS",
+    format = "file"
+  ),
+  tar_target(
+    name = neotoma_secrets_file,
+    command =  "data/neotoma_secrets.RDS",
+    format = "file"
+  ),
+  tar_target(
+    name = has_password,
+    command =  fs::file_exists(password_file)
+  ),
+  tar_target(
+    name = secrets,
+    command = get_secrets(secrets_file, has_passord)
+  ),
+  tar_target(
+    name = neotoma_secrets,
+    command = get_neotoma_secrets(neotoma_secrets_file, has_passord)
+  ),
+  
+  # birds ####
+  tar_target(
     name = bird_download,
     command = download_bird()
   ),
@@ -66,23 +88,99 @@ list(
   tar_target(
     name = summarised_bird_singletons,
     command = summarise_bird_singletons(bird_singletons)
-),
+  ),
 
 
-tar_target(
-  name = recounted_bird_singletons,
-  command = recount_bird_singletons(bird_download, bird_species)
-),
+  tar_target(
+    name = recounted_bird_singletons,
+    command = recount_bird_singletons(bird_download, bird_species)
+  ),
+  
+  tar_target(
+    #aggregate to different taxonomic levels
+    name = summarised_bird,
+    command = summarise_bird(bird_singletons)
+  ),
+  tar_target(
+    #aggregate to different taxonomic levels
+    name = recounted_bird_singletons_plot,
+    command = plot_bird_recount_singleton_plot(recounted_bird_singletons)
+    ),
+ # simulate rounding on bird data
+  tar_target(
+    #aggregate to different taxonomic levels
+    name = percent_rounding_sim,
+    command = simulate_percent_rounding(bird_download)
+  ),
+  tar_target(
+    #aggregate to different taxonomic levels
+    name = percent_rounding_plot,
+    command = plot_percent_rounding(percent_rounding_sim)
+  ),
 
 
-tar_target(
-  #aggregate to different taxonomic levels
-  name = summarised_bird,
-  command = summarise_bird(bird_singletons)
-),
-tar_target(
-  #aggregate to different taxonomic levels
-  name = recounted_bird_singletons_plot,
-  command = plot_bird_recount_singleton_plot(recounted_bird_singletons)
-)
+  # Diatoms - molten ####
+
+  tar_target(
+    # download molten data
+    name = molten_file,
+    command = download_molten(),
+    format = "file" 
+  ), 
+
+  tar_target(
+    # import molten data
+    name = molten_data,
+    command = load_molten_data(molten_file)
+  ),
+
+  tar_target(
+    # summarise molten counts
+    name = molten_singletons,
+    command = summarise_counts(molten_data)
+  ),
+
+  # last chance chronomids ####
+  tar_target(
+   # download and import last chance
+    name = last_chance_data,
+    command = download_last_chance()
+  ),
+
+  tar_target(
+    # estimate n
+    name = last_chance_estimate_n,
+    command = estimate_last_chance_n(last_chance_data)
+  ),
+  tar_target(
+    name = last_chance_direct_search_plot,
+    command = plot_last_chance_direct_search(last_chance_estimate_n)
+  ),
+  
+  tar_target(
+    name = last_chance_plot,
+    command = plot_last_chance(last_chance_estimate_n)
+  ),
+
+  ## marine1
+  tar_target(
+    name = marine1,
+    command = download_marine1(has_password, secrets)
+  ),
+  tar_target(
+    name = marine1_est_n,
+    command = estimate_marine1_n(marine1)
+  ),
+  tar_target(
+    name = marine1_summ,
+    command = summarise_marine1(marine1_est_n)
+  ),
+
+
+
+  ## manuscript
+  tar_quarto(
+    name = manuscript,
+    path = "manuscript/count_check_MS.qmd"
+  )
 )
