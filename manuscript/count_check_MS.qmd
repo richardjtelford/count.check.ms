@@ -22,6 +22,9 @@ documentclass: article
 classoption: a4paper
 bibliography: extra/countMS2.bib
 csl: extra/elsevier-harvard_rjt.csl
+execute: 
+  echo: false
+  error: false
 ---
 
 ```{r}
@@ -30,7 +33,7 @@ csl: extra/elsevier-harvard_rjt.csl
 
 # Packages loaded for convenience when knitting without running r_make
 library("tidyverse")
-library("rjt.misc")
+#library("rjt.misc")
 
 #packages only loaded in this file
 library("kableExtra")
@@ -40,12 +43,26 @@ library("english")
 theme_set(theme_bw(base_size = 12))
 options(digits = 2)
 
-tar_load(bird_singleton_summary, bird_summ)
-tar_load(testate_summ)
-tar_load(last_chance_summ)
-tar_load(pollen_summ, hershop_pollen_summ, wildhorse, pollen_summ1, pollen_summ2, pollen3, pollen1, pollen2)
-tar_load(owens_summ1, owens_summ, owens_est_summ)
-tar_load(diatom1_summ, diatom2_summ, chironomid1_summ, marine1_summ, chironomid2_summ)
+tar_load("summarised_bird_singletons")
+tar_load("summarised_bird")
+tar_load("testate_summ")
+tar_load("last_chance_summ")
+tar_load("pollen_summ")
+tar_load("hershop_pollen_summ")
+tar_load("wildhorse")
+tar_load("pollen_summ1")
+tar_load("pollen_summ2")
+tar_load("pollen3")
+tar_load("pollen1")
+tar_load("pollen2")
+tar_load("owens_summ1")
+tar_load("owens_summ")
+tar_load("owens_est_summ")
+tar_load("diatom1_summ")
+tar_load("diatom2_summ")
+tar_load("chironomid1_summ")
+tar_load("marine1_summ")
+tar_load("chironomid2_summ")
 
 ```
 
@@ -200,7 +217,7 @@ The latter effect may largely be an artefact as in the simulation, the list of p
 #|   of ten trials with 95% confidence interval.
 #| fig.width: !expr 80/25.4
 #| fig.height: !expr 70/25.4
-tar_read(bird_recount_singleton_plot)
+tar_read(recounted_bird_singletons_plot)
 ```
 
 
@@ -360,7 +377,7 @@ The direct search and minimum percent methods agree, within rounding error, `r d
 This means that for the assemblage where the minimum percent is `r diatom2_summ$maxpc`, which has `r diatom2_summ$rich_maxpc |> words()` taxa, all counts would need to be multiples of `r diatom2_summ$integer_mult` for the count sum to be at least 100.
 
 Dataset chironomid1 has `r chironomid1_summ$nsamples` assemblages.
-Although the associated paper reports that assemblages with count sums below 50 were discarded, the direct search method estimates that `r chironomid1_summ$n_below50 |> words` assemblages have count sums between `r chironomid1_summ$min_below50` and `r chironomid1_summ$max_below50`.
+Although the associated paper reports that assemblages with count sums below 50 were discarded, the direct search method estimates that `r chironomid1_summ$n_below50 |> words()` assemblages have count sums between `r chironomid1_summ$min_below50` and `r chironomid1_summ$max_below50`.
 These assemblages are diverse (richness between `r chironomid1_summ$richness |> paste(collapse = " and ")` taxa), so it is unlikely that the true counts are double that estimated here and the greatest common divisor is two.
 
 Palaeoceanographic dataset marine1 has `r marine1_summ$nsamples` assemblages with a median taxonomic richness of `r marine1_summ$median_taxa` taxa.
