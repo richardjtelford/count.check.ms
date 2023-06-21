@@ -41,8 +41,8 @@ vignettes/*.pdf
 *cache/
 *_files/
 
-#drake cache
-.drake/
+# targets cache
+_targets
 
 #output
 output/
@@ -56,16 +56,15 @@ output/
 *.csv
 *.txt
 !chironomid2.csv
+*.sqlite
+data/birds*/
 
 
 #Bib backup
 *2.bib
 *bib.bak
 *.bib.sav
-
-#packrat library
-packrat/lib*/
-packrat/src/
+*.bib.sav.tmp
 
 #old folder
 GRIM/
