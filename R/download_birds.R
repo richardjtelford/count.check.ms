@@ -2,10 +2,25 @@
 
 # download data
 download_bird <- function() {
-  bbs <- bbsAssistant::grab_bbs_data(
-    sb_id = "625f151ed34e85fa62b7f926",
-    bbs_dir = "data/birds2022"
+  sb_id <- "625f151ed34e85fa62b7f926"
+  bbs_dir <- "data/birds2022"
+  
+  bbsAssistant::download_bbs_data(
+    sb_id = sb_id,
+    bbs_dir = bbs_dir, 
+    overwrite = TRUE
   )
+  # remove 3 lines from species list to 
+  # work around bug in read_fwf
+
+  sp_path <- file.path(bbs_dir, "SpeciesList.txt")
+  fs::file_copy(sp_path,  paste0(sp_path, 2), overwrite = TRUE)
+  sp_list <- readLines(sp_path)
+  write_lines(sp_list[-(1:3)], sp_path)
+  
+  bbs <- bbsAssistant::import_bbs_data(bbs_dir = bbs_dir, sb_id = sb_id)
+  #replace original
+  fs::file_copy(paste0(sp_path, 2), sp_path, overwrite = TRUE)
 
   # select required columns
   bbs$observations |>
@@ -18,9 +33,13 @@ download_bird <- function() {
 
 # load taxonomic data
 load_bird_species <- function(){ 
-  bbsAssistant::import_species_list("data/birds2022") |> 
+  read_fwf("data/birds2022/SpeciesList.txt2", skip = 12) |> 
+    janitor::row_to_names(1) |> 
+    slice(-1) |> 
     select(AOU, Order = ORDER, Family, Genus, Species) |> 
-    mutate(Species = paste(Genus, Species))
+    mutate(
+      AOU = as.integer(AOU),
+      Species = paste(Genus, Species))
 }
 
 
