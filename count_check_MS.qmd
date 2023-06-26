@@ -20,8 +20,8 @@ header-includes:
 format: pdf
 documentclass: article
 classoption: a4paper
-bibliography: extra/countMS2.bib
-csl: extra/elsevier-harvard_rjt.csl
+bibliography: manuscript_extra/countMS2.bib
+csl: manuscript_extra/elsevier-harvard_rjt.csl
 execute: 
   echo: false
   error: false
@@ -31,38 +31,38 @@ execute:
 #| label: setup
 #| include: false
 
-# Packages loaded for convenience when knitting without running r_make
+# Packages loading
+library("targets")
 library("tidyverse")
 #library("rjt.misc")
 
-#packages only loaded in this file
-library("kableExtra")
+library("gt")
 library("english")
 
 #set ggplot theme
 theme_set(theme_bw(base_size = 12))
 options(digits = 2)
 
-tar_load("summarised_bird_singletons")
-tar_load("summarised_bird")
-tar_load("testate_summ")
-tar_load("last_chance_summ")
-tar_load("pollen_summ")
-tar_load("hershop_pollen_summ")
-tar_load("wildhorse")
-tar_load("pollen_summ1")
-tar_load("pollen_summ2")
-tar_load("pollen3")
-tar_load("pollen1")
-tar_load("pollen2")
-tar_load("owens_summ1")
-tar_load("owens_summ")
-tar_load("owens_est_summ")
-tar_load("diatom1_summ")
-tar_load("diatom2_summ")
-tar_load("chironomid1_summ")
-tar_load("marine1_summ")
-tar_load("chironomid2_summ")
+# tar_load("summarised_bird_singletons")
+# tar_load("summarised_bird")
+# tar_load("testate_summ")
+ tar_load("last_chance_summ")
+# tar_load("pollen_assem_res")
+# tar_load("pollen_dataset_res")
+ tar_load("pollen_results")
+ tar_load("hershop_pollen_summ")
+ tar_load("wildhorse")
+ tar_load("pollen3")
+ tar_load("pollen1")
+ tar_load("pollen2")
+# tar_load("owens_summ1")
+# tar_load("owens_summ")
+# tar_load("owens_est_summ")
+ tar_load("diatom1_summ")
+ tar_load("diatom2_summ")
+ tar_load("chironomid1_summ")
+ tar_load("marine1_summ")
+# tar_load("chironomid2_summ")
 
 ```
 
@@ -115,7 +115,7 @@ The survey reports all birds seen in point counts along ~40 km survey routes at 
 2) The Brown University planktic foraminiferal database [@Prell1999].
 3) The MOLTEN diatom database of modern coastal diatom assemblages [@Clarke2006].
 4) The North American testate amoeba training set [@AMESBURY2018].
-5) Fossil pollen assemblage from the Neotoma database [@neotoma_2018] downloaded on `r tar_read(pollen_download_date)`.
+5) Fossil pollen assemblage from the Neotoma database [@neotoma_2018] downloaded on `r targets::tar_meta(pollen_data) |> pull(time) |> format("%d %B %Y")`.
 
 Counts with with small count sums (< 50), that appeared to be percentages, or were documented as back-transformed from digitised data were excluded from all datasets.
 
@@ -153,11 +153,11 @@ All analyses were done in R v. `r getRversion()` [@R] and used the packages
 extraDistr v. `r packageVersion("extraDistr")` [@extraDistr],
 numbers v. `r packageVersion("numbers")` [@numbers], 
 countSum v. `r packageVersion("countSum")` [@countSum], 
-neotoma v. `r packageVersion("neotoma")` [@neotoma], 
+neotoma2 v. `r packageVersion("neotoma2")` [@neotoma2], 
 bbsAssistant v. `r packageVersion("bbsAssistant")` [@bbsAssistant1], 
 and tidyverse v. `r packageVersion("tidyverse")` [@tidyverse].
-Packages drake v. `r packageVersion("drake")` [@drake], 
-bookdown v. `r packageVersion("bookdown")` [@bookdown1] and
+Packages targets v. `r packageVersion("targets")` [@targets], 
+quarto v. `r packageVersion("quarto")` [@bookdown1] and
 renv v. `r packageVersion("renv")` [@renv] were used to ensure reproducibility.
 Code to reproduce all the analyses is archived at [https://github.com/richardjtelford/count.check.ms](https://github.com/richardjtelford/count.check.ms) and [zenodo.org](zenodo.org).
 All issues identified in the Neotoma database were reported to the maintainers.
@@ -169,9 +169,9 @@ All issues identified in the Neotoma database were reported to the maintainers.
 Across all the datasets, only a small minority of samples lack singletons, and even fewer have a greatest common divisor larger than one (@tbl-multitaxa).
 Most of the samples without singletons, or with a greatest common divisor larger than one, have low richness (@fig-richness-singleton-plot).
 
-Although the proportion of pollen assemblages that lack singletons or have a greatest common divisor of one are low, such assemblages are not randomly distributed among the `r pollen_summ$n_datasets |> format()` pollen datasets. 
-Half of the assemblages without singletons are in just `r pollen_summ$half_no_sing` datasets.
-`r Words(pollen_summ$half_gcd)` datasets contain half of the assemblages with a greatest common divisor above one and only `r pollen_summ$dataset_gcd1`% of the datasets have any such assemblages.
+Although the proportion of pollen assemblages that lack singletons or have a greatest common divisor of one are low, such assemblages are not randomly distributed among the `r pollen_results$n_datasets |> format()` pollen datasets. 
+Half of the assemblages without singletons are in just `r pollen_results$half_no_sing` datasets.
+`r Words(pollen_results$half_gcd)` datasets contain half of the assemblages with a greatest common divisor above one and only `r pollen_results$dataset_gcd1`% of the datasets have any such assemblages.
 Some pollen datasets with unexpected properties are discussed in section @sec-unexpected-count-data.  
 
 ```{r}
@@ -180,10 +180,11 @@ Some pollen datasets with unexpected properties are discussed in section @sec-un
 tar_read(count_summary) |> 
   #manually escape % as cannot use kbl(escape = TRUE) with linebreak
   mutate(across(where(is.character), str_replace, pattern = "%", replacement = "\\\\%")) |> 
-  kbl(x = ., booktabs = TRUE, escape = FALSE,
-      col.names = linebreak(str_wrap(names(.), width = 10))
-    ) |> 
-  kable_styling(latex_options = c("basic", "hold_position"))
+  gt(x = _)
+# , booktabs = TRUE, escape = FALSE,
+#       col.names = linebreak(str_wrap(names(.), width = 10))
+#     ) |> 
+#   kable_styling(latex_options = c("basic", "hold_position"))
 ```
 
 ```{r}
