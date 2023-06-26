@@ -1,6 +1,18 @@
+# Download neotoma data in batches
+
+get_download_batch <- function(datasets, offset = 50) {
+  starts <- seq(1, length(datasets), offset)
+  downloads <- map(starts, \(x) {
+    get_downloads(datasets[x:min(x + offset - 1, length(datasets))])
+  })
+  reduce(downloads, .f = c)
+}
+
+
+
 ##  calculate GCD and singleton data per sample
 
-summarise_counts <- function(df){
+summarise_counts <- function(df) {
   df |> 
   summarise(
     count_sum = sum(count), 
@@ -15,7 +27,7 @@ summarise_counts <- function(df){
 
 #only find GCD where no singletons for speed
 # When n_taxa == 1, mGCD will give an error, so return min
-fast_mGCD <- function(n_taxa, count, n_singletons, min){
+fast_mGCD <- function(n_taxa, count, n_singletons, min) {
   if (n_taxa == 1){# mGCD will crash. Result is trivially min
     return(min)
   }
@@ -29,7 +41,7 @@ fast_mGCD <- function(n_taxa, count, n_singletons, min){
 
 ## summarise GCD and singleton data per data set
 
-summarise_singletons <- function(df){
+summarise_singletons <- function(df) {
   df |> 
   filter(count_sum >= 50, n_taxa > 1) |> 
   summarise(
@@ -43,3 +55,8 @@ summarise_singletons <- function(df){
   mutate(across(c(`Without singletons`, `GCD > 1`), as.character))
 
 }
+
+floor1000 <- function(x, base = 1000) {
+  floor(x / base) * base
+}
+
