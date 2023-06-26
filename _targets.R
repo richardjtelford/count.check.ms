@@ -9,11 +9,13 @@ library("tarchetypes")
 
 # Set target options:
 tar_option_set(
-  packages = c("tidyverse", "patchwork", "readxl", "countSum", "assertr"), 
+  packages = c("tidyverse", "patchwork", "readxl", "countSum", "assertr", "neotoma2", "conflicted", "glue"), 
   imports = "countSum",
   format = "rds" # default storage format
   # Set other options as needed.
 )
+
+conflicted::conflict_prefer_all(winner = "dplyr", quiet = TRUE)
 
 ## askpass
 options(askpass = function(x) readLines("pw.txt"))
@@ -222,10 +224,65 @@ list(
     command = summarise_chironomid1(chironomid1, chironomid1_est_n)
   ),
 
+### pollen ####
+  tar_target(
+    name = pollen_datasets,
+    command = neotoma2::get_datasets(
+      datasettype = "pollen", 
+      all_data = TRUE)
+  ),
+  tar_target(
+    name = pollen_data,
+    command = get_download_batch(pollen_datasets)
+  ),
+  tar_target(
+    name = pollen,
+    command = get_pollen_table(pollen_data)
+  ),
+  tar_target(
+    name = pollen_assem_res,
+    command = summarise_counts(pollen)
+  ),
+  tar_target(
+    name = pollen_dataset_res,
+    command = summarise_singletons(pollen_assem_res)
+  ),
+  tar_target(
+    name = pollen_results,
+    command = make_pollen_results(pollen_assem_res, pollen_dataset_res)
+  ),
+  
+### forams ####
+  tar_target(
+    name = forams,
+    command = import_forams()
+  ),
+  tar_target(
+    name = foram_assem_res,
+    command = summarise_counts(forams)
+  ),
+   
+## testate ####
+  tar_target(
+    name = testate_datasets,
+    command = neotoma2::get_datasets(
+      datasettype = "testate amoebae surface sample", 
+      all_data = TRUE)
+  ),
+  tar_target(
+    name = testate_data,
+    command = get_download_batch(testate_datasets, offset = 10)
+  ),
+  tar_target(
+    name = testate,
+    command = get_testate_table(testate_data)
+  ),
+
+
 
   ## manuscript
   tar_quarto(
     name = manuscript,
-    path = "manuscript/count_check_MS.qmd"
+    path = "count_check_MS.qmd"
   )
 )
