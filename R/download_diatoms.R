@@ -95,7 +95,7 @@ summarise_diatom <- function(est_n, data){
       filter(dataset == "diatom2") |>
       pull(secret)
     read_delim(target, delim = "\t", skip = 217) |>
-      select(-(Latitude:`Depth [m]`)) |>
+      select(-(Latitude:`Depth sed [m]`)) |>
       rename(sampleID = Event) |> 
       pivot_longer(cols = -sampleID, names_to = "taxon", values_to = "percent") |>
       filter(percent > 0)
