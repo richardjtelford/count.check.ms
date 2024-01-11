@@ -8,7 +8,18 @@ get_download_batch <- function(datasets, offset = 50) {
   reduce(downloads, .f = c)
 }
 
+## extract one pollen dataset
 
+extract_dataset <- function(sites, datasetid) {
+  siteid <- getids(sites) |> 
+    filter(datasetid == {{datasetid}}) |> 
+    pull(siteid)
+  
+  
+  sites[which(map_int(sites@sites, "siteid") == siteid)] |> 
+    samples() |> 
+    select(age, units, count = value, element, variablename, ecologicalgroup, sampleid, depth, datasetid, siteid, sitename)
+}
 
 ##  calculate GCD and singleton data per sample
 

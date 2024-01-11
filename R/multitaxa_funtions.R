@@ -1,4 +1,4 @@
-summarise_all_counts = function(bird_singletons, molten_singletons, foram_summ, foram_assem_res, pollen_assem_res){
+summarise_all_counts <- function(bird_singletons, molten_singletons, foram_summ, foram_assem_res, testate_assem_res, pollen_assem_res) {
   bind_rows(
     `Birds - species` = bird_singletons |> 
       ungroup() |>
@@ -20,7 +20,7 @@ summarise_all_counts = function(bird_singletons, molten_singletons, foram_summ, 
       summarise_singletons(),
     `Planktic foraminifera` = foram_assem_res |> 
       summarise_singletons(), 
-    `Testate amoebae` = testate_summ1 |> 
+    `Testate amoebae` = testate_assem_res |> 
       summarise_singletons(), 
     `Pollen` = pollen_assem_res |> 
       ungroup() |> 
@@ -30,7 +30,7 @@ summarise_all_counts = function(bird_singletons, molten_singletons, foram_summ, 
 }
 
 
-make_richness_singleton_plot = function(bird_singletons, molten_singletons, foram_assem_res, testate_summ1, pollen_assem_res) {
+make_richness_singleton_plot  <- function(bird_singletons, molten_singletons, foram_assem_res, testate_assem_res, pollen_assem_res) {
   bind_rows(
   `Birds - species` = bird_singletons |> 
     ungroup() |>
@@ -40,7 +40,7 @@ make_richness_singleton_plot = function(bird_singletons, molten_singletons, fora
     filter(taxonomic_level == "order"),
   `Coastal diatoms` = molten_singletons,
   `Planktic foraminifera` = foram_assem_res, 
-  `Testate amoebae` = testate_summ1, 
+  `Testate amoebae` = testate_assem_res |> ungroup(), 
   `Pollen` = pollen_assem_res |> ungroup(),
   .id = "dataset"
 )  |> 
