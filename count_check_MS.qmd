@@ -50,7 +50,7 @@ options(digits = 2)
 # tar_load("pollen_assem_res")
 # tar_load("pollen_dataset_res")
  tar_load("pollen_results")
- tar_load("hershop_pollen_summ")
+ tar_load("hershop_pollen")
  tar_load("wildhorse")
  tar_load("pollen3")
  tar_load("pollen1")
@@ -178,13 +178,7 @@ Some pollen datasets with unexpected properties are discussed in section @sec-un
 #| label: tbl-multitaxa
 #| tbl-cap: Properties of different data sets.
 tar_read(count_summary) |> 
-  #manually escape % as cannot use kbl(escape = TRUE) with linebreak
-  mutate(across(where(is.character), str_replace, pattern = "%", replacement = "\\\\%")) |> 
-  gt(x = _)
-# , booktabs = TRUE, escape = FALSE,
-#       col.names = linebreak(str_wrap(names(.), width = 10))
-#     ) |> 
-#   kable_styling(latex_options = c("basic", "hold_position"))
+  gt()
 ```
 
 ```{r}
@@ -264,10 +258,10 @@ tar_read(percent_rounding_plot)
 This section explores some of the pollen datasets in the Neotoma database that have a high proportion of assemblages without singletons or with a greatest common divisor greater than one. 
 
 Some of these datasets are older datasets which may, despite the available metadata, have been back-transformed from percent data or digitised with the loss of rare taxa and precision.
-For example, all but `r hershop_pollen_summ$has_singleton |> word()` of the `r hershop_pollen_summ$n` assemblages in the archived pollen data from Hershop Bog, Texas have a greatest common divisor of two or more (the exception has a single singleton and is otherwise divisible by two). 
+For example, all but `r hershop_pollen$has_singleton |> word()` of the `r hershop_pollen$n` assemblages in the archived pollen data from Hershop Bog, Texas have a greatest common divisor of two or more (the exception has a single singleton and is otherwise divisible by two). 
 The original data [@Patty1968] were counted to exactly 200 pollen grains and fern spores. 
 It seems likely that the data were converted to percent, rounded and then back-transformed to counts.
-For most purposes, such back-transformed or digitised data are perfectly adequate, but the Chao 1 richness estimator calculated using the number of singletons and doubletons, would fail [@Chao1987].
+For most purposes, such back-transformed or digitised data are perfectly adequate, but the Chao 1 richness estimator [@Chao1987] calculated using the number of singletons and doubletons, would fail.
 
 Some datasets with assemblages without singletons have few taxa.
 For example, the `r wildhorse$n_assemblage` assemblage dataset from Wildhorse Lake [@Mehringer1985] includes only `r wildhorse$n_taxa_dataset` taxa (`r mean(pollen_summ2$n_taxa_dataset > wildhorse$n_taxa_dataset) * 100` % of Neotoma pollen datasets have more than this), and relatively large count sums (median `r wildhorse$median_count`). 
