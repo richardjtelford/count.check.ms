@@ -195,6 +195,10 @@ list(
   tar_target(
     name = last_chance_plot,
     command = plot_last_chance(last_chance_estimate_n)
+  ),  
+  tar_target(
+    name = last_chance_summ,
+    command = summarise_last_chance(last_chance_data)
   ),
 
   ## marine1
@@ -251,6 +255,12 @@ list(
     name = pollen_results,
     command = make_pollen_results(pollen_assem_res, pollen_dataset_res)
   ),
+
+## hershop
+  tar_target(
+    name = hershop_pollen,
+    command = process_hershop_pollen(pollen_data)
+  ),
   
 ### forams ####
   tar_target(
@@ -277,7 +287,24 @@ list(
     name = testate,
     command = get_testate_table(testate_data)
   ),
+  tar_target(
+    name = testate_assem_res,
+    command = summarise_counts(testate)
+  ),
 
+## multi taxa tables/figures
+  tar_target(
+    name = count_summary,
+    command = summarise_all_counts(bird_singletons, molten_singletons,
+                                   foram_summ, foram_assem_res,
+                                   testate_assem_res, pollen_assem_res) 
+  ),
+  tar_target(
+    name = richness_singleton_plot,
+    command = make_richness_singleton_plot(bird_singletons, molten_singletons,
+                                           foram_assem_res, testate_assem_res,
+                                           pollen_assem_res)
+  ),
 
 
   ## manuscript
