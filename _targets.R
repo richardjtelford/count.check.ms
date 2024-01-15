@@ -9,7 +9,7 @@ library("tarchetypes")
 
 # Set target options:
 tar_option_set(
-  packages = c("tidyverse", "patchwork", "readxl", "countSum", "assertr", "neotoma2", "conflicted", "glue"), 
+  packages = c("tidyverse", "patchwork", "readxl", "countSum", "assertr", "conflicted", "glue"), 
   imports = "countSum",
   format = "rds" # default storage format
   # Set other options as needed.
@@ -231,7 +231,7 @@ list(
 ### pollen ####
   tar_target(
     name = pollen_datasets,
-    command = neotoma2::get_datasets(
+    command = get_datasets(
       datasettype = "pollen", 
       all_data = TRUE)
   ),
@@ -275,7 +275,7 @@ list(
 ## testate ####
   tar_target(
     name = testate_datasets,
-    command = neotoma2::get_datasets(
+    command = get_datasets(
       datasettype = "testate amoebae surface sample", 
       all_data = TRUE)
   ),

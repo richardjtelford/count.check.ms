@@ -8,7 +8,7 @@ get_pollen_table <- function(pollen_data) {
   map(start, \(x){
     pd <- pollen_data[[x:min(x + offset - 1, length(pollen_data))]] 
     pd <- pd |> 
-      neotoma2::filter(!datasetid %in% c(
+      filter(!datasetid %in% c( ##!neotoma2::
         55055, 15059, 25609, 39474, 54508, # percent 
         16209, 16210, 15696 # possible percent (not counts anyway)
       ))

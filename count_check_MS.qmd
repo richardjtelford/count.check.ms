@@ -153,7 +153,7 @@ All analyses were done in R v. `r getRversion()` [@R] and used the packages
 extraDistr v. `r packageVersion("extraDistr")` [@extraDistr],
 numbers v. `r packageVersion("numbers")` [@numbers], 
 countSum v. `r packageVersion("countSum")` [@countSum], 
-neotoma2 v. `r packageVersion("neotoma2")` [@neotoma2], 
+<!-- neotoma2 v. `r packageVersion("neotoma2")` [@neotoma2],  -->
 bbsAssistant v. `r packageVersion("bbsAssistant")` [@bbsAssistant1], 
 and tidyverse v. `r packageVersion("tidyverse")` [@tidyverse].
 Packages targets v. `r packageVersion("targets")` [@targets], 

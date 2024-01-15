@@ -12,7 +12,7 @@ targets::tar_make()
 
 targets::tar_visnetwork()
 
-if(length(drake_errored()) == 0){
+if(TRUE){
   fs::file_show("manuscript/count_check_MS.pdf") # display pdf is no errors
 }
 
