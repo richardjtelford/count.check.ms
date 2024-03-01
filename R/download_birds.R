@@ -2,44 +2,44 @@
 
 # download data
 download_bird <- function() {
-  sb_id <- "625f151ed34e85fa62b7f926"
-  bbs_dir <- "data/birds2022"
+  sb_id <- "64ad9c3dd34e70357a292cee"
+  bbs_dir <- "data/birds2023"
+  
+  # make dir if
+  if (!fs::dir_exists(bbs_dir)) {
+    fs::dir_create(bbs_dir)
+  }
   
   bbsAssistant::download_bbs_data(
     sb_id = sb_id,
     bbs_dir = bbs_dir, 
-    overwrite = TRUE
+    overwrite = FALSE
   )
-  # remove 3 lines from species list to 
-  # work around bug in read_fwf
 
-  sp_path <- file.path(bbs_dir, "SpeciesList.txt")
-  fs::file_copy(sp_path,  paste0(sp_path, 2), overwrite = TRUE)
-  sp_list <- readLines(sp_path)
-  write_lines(sp_list[-(1:3)], sp_path)
-  
-  bbs <- bbsAssistant::import_bbs_data(bbs_dir = bbs_dir, sb_id = sb_id)
-  #replace original
-  fs::file_copy(paste0(sp_path, 2), sp_path, overwrite = TRUE)
+  bbs <- read_csv(file.path(bbs_dir, "50-StopData.zip"))
+
 
   # select required columns
-  bbs$observations |>
+  bbs |>
     (\(x){
       mutate(x, SpeciesTotal = rowSums(select(x, matches("^Stop\\d{1,2}"))))
     })() |> 
+    mutate(AOU = as.integer(AOU)) |> 
     select(RouteDataID, AOU, Year, SpeciesTotal)
 }
   
 
 # load taxonomic data
 load_bird_species <- function(){ 
-  read_fwf("data/birds2022/SpeciesList.txt2", skip = 12) |> 
+  read_fwf("data/birds2023/SpeciesList.txt", skip = 10) |> 
     janitor::row_to_names(1) |> 
     slice(-1) |> 
     select(AOU, Order = ORDER, Family, Genus, Species) |> 
     mutate(
       AOU = as.integer(AOU),
-      Species = paste(Genus, Species))
+      Species = paste(Genus, Species)) |> 
+    # Add Northwestern Crow - now merged with American Crow but in data
+    add_row(AOU = 4890L, Order = "Passeriformes", Family = "Corvidae", Genus =  "Corvus", Species = "Corvus brachyrhynchos caurinus")
 }
 
 
