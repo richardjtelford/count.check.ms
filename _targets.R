@@ -308,6 +308,26 @@ list(
 
 
   ## manuscript
+
+
+  tar_target(
+    # bibliography
+    name = raw_bibliography,
+    command = "manuscript_extra/countMS.bib",
+    format = "file" 
+  ), 
+  tar_target(
+    # bibliography
+    name = bibliography,
+    command = package_citations(
+          packages = c("extraDistr", "countSum", "numbers", "bbsAssistant",
+                       "targets", "tidyverse", "quarto", "renv"),
+          old_bib = raw_bibliography,
+          new_bib = "manuscript_extra/countMS2.bib"),
+    format = "file" 
+  ), 
+
+ 
   tar_quarto(
     name = manuscript,
     path = "count_check_MS.qmd"
