@@ -1,5 +1,5 @@
 ---
-title: "Tools for identifying unexpectedly low microfossil count sums"
+title: "Using the species abundance distribution to validate ecological and palaeoecological data"
 author:
   - name: Richard J. Telford
     email: richard.telford@uib.no
@@ -9,7 +9,16 @@ address:
   - code: University of Bergen
     address: Department of Biological Sciences, University of Bergen and Bjerknes Centre for Climate Research, Post Box 7803, N-5020 Bergen, Norway
 abstract: |
-  Microfossil counts are a key data type in palaeoecology. Recent work has raised the possibility that some authors might misreport an important quality control parameter, the counts sums, occasionally dramatically so, and perhaps other aspects of the counts. This paper explores the statistical properties of ecological and palaeoecological species counts and uses the findings to develop methods to flag count or percentage data with unexpected distributions. Several assemblage datasets that fail these tests, and potentially have misreported counts or count sums, are identified.
+  
+  Species community or assemblage counts are a key data type in ecology and palaeoecology. 
+  Sometimes, the data are archived as percentages.
+  Unfortunately, necessary metadata such as the count sum are not always archived with the percentages.
+  This paper uses insights from the ubiquitous shape of specied abundance distributions to develop methods to estimate the count sum of percentage data when it is missing.
+  The methods are demonstrated on a collection of archived percent data.   
+  The assumptions of the methods are tested using a large collection of ecological and palaeoecological count data.
+  Several datasets that fail the tests. 
+  These potentially have misreported data.
+  The consequences of misreported data for different types of analyses is discussed.
 date: today
 header-includes:
    - \usepackage{lineno}
@@ -25,6 +34,9 @@ csl: manuscript_extra/elsevier-harvard_rjt.csl
 execute: 
   echo: false
   error: false
+editor: 
+  markdown: 
+    wrap: sentence
 ---
 
 ```{r}
@@ -55,9 +67,6 @@ options(digits = 2)
  tar_load("pollen3")
  tar_load("pollen1")
  tar_load("pollen2")
-# tar_load("owens_summ1")
-# tar_load("owens_summ")
-# tar_load("owens_est_summ")
  tar_load("diatom1_summ")
  tar_load("diatom2_summ")
  tar_load("chironomid1_summ")
@@ -70,34 +79,40 @@ options(digits = 2)
 
 # Introduction
 
-Six percent of papers published in _Molecular and Cellular Biology_ show evidence of inappropriate image duplication [@Bik2018] either due to error or, more rarely, misconduct.
-It would, especially after the spate of retractions in behavioural ecology [@Pennisi2021], be reckless to assume that the ecological and palaeoecological literature is devoid of errors and misconduct. 
-The low rate of retractions in the ecological and geological literature [@Grieneisen2012] may partially reflect our limited ability to detect errors and misconduct rather than their prevalence.
+Counts of organisms are a key data type for ecology and palaeoecology.
+The sum of the counts is an important metric of data quality: larger count sums are associated with smaller uncertainties, both in relative abundance of taxa and any derived statistics such as transfer function reconstructions [@Heiri2001; @Payne2009].
+For raw count data, the count sum can be easily calculated, but some of the considerable amount of archived count data are only available as percentages.
+For some percent datasets, the count sum has not been archived and we might want to estimate it.
 
-Several numerical tools have been developed to identify questionable data.
-Deviations from the distribution of digits expected from the Newcomb-Benford law have been used to detect issues with scientific and financial data [@Barabesi2017].
-@Carlisle2017 identified papers where the baseline differences in means for different treatments were surprisingly high or low given the variance of the data.
-@Brown2017 developed the granularity-related inconsistency of means (GRIM) test which assesses whether means of integer data are consistent with the reported sample size.
-However none of these tests are directly applicable to microfossil assemblage data, one of the most common types of palaeoecological data.
+While it is, in general, not possible to calculate the denominator used to calculate percentages, this paper aims to show that it is possible to estimate it for community or assemblage count data.
+Two insights make this possible.
+The first is that the raw counts are typically integers, giving a granularity [@Brown2017] to the percentage data. The second is that the raw counts can be represented by a species abundance distribution. The ubiquitous shape of species abundance distributions when plotted as the number of species against abundance is a hyperbolic curve with many rare and few abundant species [@McGill_2007].
+From this shape, which is central to ecological theory [@McGill_2007], two predictions can be made: that counts of an entire community or assemblage should have many rare taxa, typically including taxa occuring only once (hereafter singletons) and that the distribution of abundances should have a smooth and monotonic decline.
 
-A common assertion in papers reporting microfossil assemblage data is that a minimum of _N_ microfossils were counted, where _N_ is often fifty for chironomids and several hundred for pollen and diatoms.
-This is important because larger count sums are associated with smaller uncertainties, both in relative abundance of taxa and derived statistics such as transfer function reconstructions [@Heiri2001; @Payne2009].
-There is a risk that count sums will be misreported.
-This could happen by mistake, especially with the use of secondary data.
-It could also happen knowingly, especially when microfossil preservation is poor or concentrations are low.
-This risk that count sums could be misreported is demonstrated by @Larocque-Tobler2016 who acknowledged that the chironomid count sums in @Larocque-Tobler2015 were not at least fifty head capsules as reported but as low as nineteen.
-@Telford2019 reports some other cases where count sums may be much lower than reported.
+This paper will use these insights to develop methods for estimating the count sum from percent data, and demonstrate them with some percent data.
+Then the paper tests the assumptions of the methods with a large collection of ecological and palaeoecological count data.
+This reveals that a some datasets have count data that differ markedly from the predictions based on species abundance distributions.
+These datasets might not accurately reflect the original community or assemblage.
 
-Given that count sums have been misreported, the possibility that other aspects of count data may be misreported needs to be considered.
+<!-- Six percent of papers published in *Molecular and Cellular Biology* show evidence of inappropriate image duplication [@Bik2018] either due to error or, more rarely, misconduct. -->
+<!-- It would, especially after the spate of retractions in behavioural ecology [@Pennisi2021], be reckless to assume that the ecological and palaeoecological literature is devoid of errors and misconduct. -->
+<!-- The low rate of retractions in the ecological and geological literature [@Grieneisen2012] may partially reflect our limited ability to detect errors and misconduct rather than their prevalence. -->
 
-The key insight that allows inference about community or assemblage count data is that they can be represented by a species abundance distribution.
-The ubiquitous shape of species abundance distributions when plotted as the number of species against abundance is a hyperbolic curve with many rare and few abundant species and is central to ecological theory [@McGill_2007].
-From this, two predictions can be made: that counts of an entire community or assemblage should have many rare taxa, and that the distribution of abundances should have a smooth and monotonic decline.
-Count data that differ markedly from these predictions might not accurately reflect the original community or assemblage.
+<!-- Several numerical tools have been developed to identify questionable data. -->
+<!-- Deviations from the distribution of digits expected from the Newcomb-Benford law have been used to detect issues with scientific and financial data [@Barabesi2017]. -->
+<!-- @Carlisle2017 identified papers where the baseline differences in means for different treatments were surprisingly high or low given the variance of the data. -->
+<!-- @Brown2017 developed the granularity-related inconsistency of means (GRIM) test which assesses whether means of integer data are consistent with the reported sample size. -->
+<!-- However none of these tests are directly applicable to microfossil assemblage data, one of the most common types of palaeoecological data. -->
 
-This paper aims to develop simple methods to test the abundance of rare taxa and the smoothness of the species abundance distribution that can be used to flag cases where the count data might have been misreported.
-Next, as, regrettably, many palaeoecological data sets are archived as percent data, these tests are then extended to identify percent data where the count sum might be lower than reported.
-Finally, some complications and caveats are discussed.
+<!-- A common assertion in papers reporting microfossil assemblage data is that a minimum of *N* microfossils were counted, where *N* is often fifty for chironomids and several hundred for pollen and diatoms. -->
+
+<!-- There is a risk that count sums will be misreported. -->
+<!-- This could happen by mistake, especially with the use of secondary data. -->
+<!-- It could also happen knowingly, especially when microfossil preservation is poor or concentrations are low. -->
+<!-- This risk that count sums could be misreported is demonstrated by @Larocque-Tobler2016 who acknowledged that the chironomid count sums in @Larocque-Tobler2015 were not at least fifty head capsules as reported but as low as nineteen. -->
+<!-- @Telford2019 reports some other cases where count sums may be much lower than reported. -->
+
+<!-- Given that count sums have been misreported, the possibility that other aspects of count data may be misreported needs to be considered. -->
 
 <!-- For example, because there are many rare taxa in most communities [@Darwin1859], most community or assemblage samples will  unless the sampling effort is high relative to the taxonomic richness [@Coddington2009]. -->
 
@@ -107,17 +122,25 @@ Finally, some complications and caveats are discussed.
 
 ## Data
 
+```{r}
+neotoma_date <- list.files("data/neotoma/", pattern = "sql$") |> 
+  str_extract("\\d{4}-\\d{1,2}-\\d{1,2}") |> 
+  ymd() |> 
+  max() |> 
+  format("%d %B %Y")
+```
+
 Publicly available datasets were downloaded from the Palaeodata Center, Neotoma, Pangaea, and other sources.
-A range of ecological and palaeoecological data were sought to allow for differences in typical count sums and species richness.
+A range of ecological and palaeoecological data were sought to allow for differences in typical count sums and species richness, and possible differences in species abundance distributions between taxonomic groups.
 
 Count data analysed include the 1) North American Breeding Bird survey [@bbsAssistant2], a very large, annual monitoring programme to track the status of North American bird populations.
-The survey reports all birds seen in point counts along ~40 km survey routes at the height of the breeding season. 
+The survey reports all birds seen in point counts along \~40 km survey routes at the height of the breeding season.
 2) The Brown University planktic foraminiferal database [@Prell1999].
 3) The MOLTEN diatom database of modern coastal diatom assemblages [@Clarke2006].
 4) The North American testate amoeba training set [@AMESBURY2018].
-5) Fossil pollen assemblage from the Neotoma database [@neotoma_2018] downloaded on `r targets::tar_meta(pollen_data) |> pull(time) |> format("%d %B %Y")`.
+5) Fossil pollen assemblage from the Neotoma database (`r neotoma_date` snapshot) [@neotoma_2018].
 
-Counts with with small count sums (< 50), that appeared to be percentages, or were documented as back-transformed from digitised data were excluded from all datasets.
+Counts with with small count sums (\< 50), that appeared to be percentages, or were documented as back-transformed from digitised data were excluded from all datasets.
 
 Examples of percent data where the minimum count sum was reported in the associated paper were sought.
 Datasets discussed by @Telford2019 as possibly having misreported the minimum count sum were also excluded to avoid double reporting.
@@ -130,36 +153,29 @@ This paper does not attempt to be an exhaustive survey of all the data available
 
 Following the assumptions derived from the shape of species abundance distributions that there should be many rare taxa, I test for the presence of taxa represented by a single individual, hereafter singletons, in each sample.
 
-Following the assumption that the species abundance distribution should show a smooth monotonic decline, I use two related tests. 
-First, I calculate the greatest common divisor greater for each sample. 
+Following the assumption that the species abundance distribution should show a smooth monotonic decline, I use two related tests.
+First, I calculate the greatest common divisor greater for each sample.
 The greatest common divisor is expected to be one, but would be two if all counts can be divided by two, giving a saw-toothed species abundance distribution.
-The second test is a relaxed version of the first. Rather than finding samples where all the counts have a greatest common divisor greater than one, it finds the the proportion of taxa with counts divisible by $k$ where $k$ is a small integer larger than one is calculated.
+The second test is a relaxed version of the first.
+Rather than finding samples where all the counts have a greatest common divisor greater than one, it finds the the proportion of taxa with counts divisible by $k$ where $k$ is a small integer larger than one is calculated.
 
-Data sets with a many samples without singletons, a greatest common divisor greater than one, or an unusually high proportion, relative to the majority of pollen data set in the Neotoma database, of counts divisible by $k$ were flagged for closer inspection.
+Data sets with a many samples without singletons, a greatest common divisor greater than one, or an unusually high proportion of counts divisible by $k$, relative to the majority of pollen data set in the Neotoma database, were flagged for closer inspection.
 
 ### Test for percent data
 
 In general, it is not possible to determine the sum from which percentages were calculated, but the properties of community and assemblage counts make it possible to estimate it.
-Given the expectation that the rarest taxon is a singleton, the count sum _N_ can be estimated as $1/p_{min} \times 100$ where _p~min~_ is the percent abundance of the rarest taxon.
+Given the expectation that the rarest taxon is a singleton, the count sum *N* can be estimated as $1/p_{min} \times 100$ where *p~min~* is the percent abundance of the rarest taxon.
 This method will fail for assemblages without singletons.
-It is also expected that the percent _p_ is calculated from integer counts, therefore there should be a count sum _N_ such that $p_i/100\times N$ is, within rounding error, an integer for all _i_ taxa.
-Possible values for _N_ can be found by a direct search over the range of plausible values of _N_.
-An infinite number of possible count sums that are consistent with the percent exist, but the lowest will give the correct value of _N_ except in cases where the greatest common divisor is greater than one.
+It is also expected that the percent *p* is calculated from integer counts, therefore there should be a count sum *N* such that $p_i/100\times N$ is, within rounding error, an integer for all *i* taxa.
+Possible values for *N* can be found by a direct search over the range of plausible values of *N*.
+An infinite number of possible count sums that are consistent with the percent exist, but the lowest will give the correct value of *N* except in cases where the greatest common divisor is greater than one.
 These tests for percent data are closely related to GRIM [@Brown2017], as all rely on the granularity of percentages calculated from integer data.
 
 ### Software
 
-All analyses were done in R v. `r getRversion()` [@R] and used the packages 
-extraDistr v. `r packageVersion("extraDistr")` [@extraDistr],
-numbers v. `r packageVersion("numbers")` [@numbers], 
-countSum v. `r packageVersion("countSum")` [@countSum], 
-<!-- neotoma2 v. `r packageVersion("neotoma2")` [@neotoma2],  -->
-bbsAssistant v. `r packageVersion("bbsAssistant")` [@bbsAssistant1], 
-and tidyverse v. `r packageVersion("tidyverse")` [@tidyverse].
-Packages targets v. `r packageVersion("targets")` [@targets], 
-quarto v. `r packageVersion("quarto")` [@bookdown1] and
-renv v. `r packageVersion("renv")` [@renv] were used to ensure reproducibility.
-Code to reproduce all the analyses is archived at [https://github.com/richardjtelford/count.check.ms](https://github.com/richardjtelford/count.check.ms) and [zenodo.org](zenodo.org).
+All analyses were done in R v. `r getRversion()` [@R] and used the packages extraDistr v. `r packageVersion("extraDistr")` [@extraDistr], numbers v. `r packageVersion("numbers")` [@numbers], countSum v. `r packageVersion("countSum")` [@countSum], bbsAssistant v. `r packageVersion("bbsAssistant")` [@bbsAssistant1], and tidyverse v. `r packageVersion("tidyverse")` [@tidyverse].
+Packages targets v. `r packageVersion("targets")` [@targets], quarto v. `r packageVersion("quarto")` [@quarto] and renv v. `r packageVersion("renv")` [@renv] were used to ensure reproducibility.
+Code to reproduce all the analyses is archived at <https://github.com/richardjtelford/count.check.ms> and [zenodo.org](zenodo.org).
 All issues identified in the Neotoma database were reported to the maintainers.
 
 # Results
@@ -169,10 +185,10 @@ All issues identified in the Neotoma database were reported to the maintainers.
 Across all the datasets, only a small minority of samples lack singletons, and even fewer have a greatest common divisor larger than one (@tbl-multitaxa).
 Most of the samples without singletons, or with a greatest common divisor larger than one, have low richness (@fig-richness-singleton-plot).
 
-Although the proportion of pollen assemblages that lack singletons or have a greatest common divisor of one are low, such assemblages are not randomly distributed among the `r pollen_results$n_datasets |> format()` pollen datasets. 
+Although the proportion of pollen assemblages that lack singletons or have a greatest common divisor of one are low, such assemblages are not randomly distributed among the `r pollen_results$n_datasets |> format()` pollen datasets.
 Half of the assemblages without singletons are in just `r pollen_results$half_no_sing` datasets.
 `r Words(pollen_results$half_gcd)` datasets contain half of the assemblages with a greatest common divisor above one and only `r pollen_results$dataset_gcd1`% of the datasets have any such assemblages.
-Some pollen datasets with unexpected properties are discussed in section @sec-unexpected-count-data.  
+Some pollen datasets with unexpected properties are discussed in section @sec-unexpected-count-data.
 
 ```{r}
 #| label: tbl-multitaxa
@@ -203,7 +219,7 @@ To test the sensitivity of the prevalence of counts without singletons to the co
 At the order level, the proportion of counts without singletons decreases steeply until it reaches a minimum at when the count sum is about 200, thereafter it increases slowly (@fig-bird-recount).
 The prevalence of counts without singletons is high for small counts because it is possible that only the common taxa are counted; with larger counts, the chance of counting a single individual of a rare taxon increases.
 With even larger counts the prevalence of routes without singletons increases due to saturation as singletons become doubletons and few new taxa are found.
-The latter effect may largely be an artefact as in the simulation, the list of possible taxa to sample is short, whereas in the wild, there are many rare taxa which might be observed.  
+The latter effect may largely be an artefact as in the simulation, the list of possible taxa to sample is short, whereas in the wild, there are many rare taxa which might be observed.
 
 ```{r}
 #| label: fig-bird-recount
@@ -214,7 +230,6 @@ The latter effect may largely be an artefact as in the simulation, the list of p
 #| fig.height: !expr 70/25.4
 tar_read(recounted_bird_singletons_plot)
 ```
-
 
 ## Estimating the count sum from percent
 
@@ -237,8 +252,8 @@ tar_read(last_chance_plot)
 ```
 
 The precision of both methods for estimating the count sum from percent data depend on count sum and on the precision to which the percent are recorded (@fig-percent-est-plot).
-In general, the direct search method is more precise and can give useful estimates when the assemblages have no singletons. 
-It can fail if data have been incorrectly rounded, for example by truncation. 
+In general, the direct search method is more precise and can give useful estimates when the assemblages have no singletons.
+It can fail if data have been incorrectly rounded, for example by truncation.
 If many digits are given, ignoring the last can solve this.
 
 ```{r}
@@ -252,39 +267,37 @@ If many digits are given, ignoring the last can solve this.
 tar_read(percent_rounding_plot)
 ```
 
-
 ## Unexpected count data
 
-This section explores some of the pollen datasets in the Neotoma database that have a high proportion of assemblages without singletons or with a greatest common divisor greater than one. 
+This section explores some of the pollen datasets in the Neotoma database that have a high proportion of assemblages without singletons or with a greatest common divisor greater than one.
 
 Some of these datasets are older datasets which may, despite the available metadata, have been back-transformed from percent data or digitised with the loss of rare taxa and precision.
-For example, all but `r hershop_pollen$has_singleton |> word()` of the `r hershop_pollen$n` assemblages in the archived pollen data from Hershop Bog, Texas have a greatest common divisor of two or more (the exception has a single singleton and is otherwise divisible by two). 
-The original data [@Patty1968] were counted to exactly 200 pollen grains and fern spores. 
+For example, all but `r hershop_pollen$has_singleton |> word()` of the `r hershop_pollen$n` assemblages in the archived pollen data from Hershop Bog, Texas have a greatest common divisor of two or more (the exception has a single singleton and is otherwise divisible by two).
+The original data [@Patty1968] were counted to exactly 200 pollen grains and fern spores.
 It seems likely that the data were converted to percent, rounded and then back-transformed to counts.
 For most purposes, such back-transformed or digitised data are perfectly adequate, but the Chao 1 richness estimator [@Chao1987] calculated using the number of singletons and doubletons, would fail.
 
 Some datasets with assemblages without singletons have few taxa.
-For example, the `r wildhorse$n_assemblage` assemblage dataset from Wildhorse Lake [@Mehringer1985] includes only `r wildhorse$n_taxa_dataset` taxa (`r mean(pollen_summ2$n_taxa_dataset > wildhorse$n_taxa_dataset) * 100` % of Neotoma pollen datasets have more than this), and relatively large count sums (median `r wildhorse$median_count`). 
-While `r wildhorse$no_singletons * 100`% of assemblages in this dataset lack singletons, even more assemblage (`r wildhorse$no_zeros * 100`%) lack taxa with zero counts. 
-This is in contrast to most (`r pollen_summ$has_zeros * 100`%) Neotoma pollen assemblages which have zero counts.  
+For example, the `r wildhorse$n_assemblage` assemblage dataset from Wildhorse Lake [@Mehringer1985] includes only `r wildhorse$n_taxa_dataset` taxa (`r mean(pollen_summ2$n_taxa_dataset > wildhorse$n_taxa_dataset) * 100` % of Neotoma pollen datasets have more than this), and relatively large count sums (median `r wildhorse$median_count`).
+While `r wildhorse$no_singletons * 100`% of assemblages in this dataset lack singletons, even more assemblage (`r wildhorse$no_zeros * 100`%) lack taxa with zero counts.
+This is in contrast to most (`r pollen_summ$has_zeros * 100`%) Neotoma pollen assemblages which have zero counts.\
 These patterns could arise either when there is a high sampling effort in a low diversity site, or when the archived data do not include the entire pollen assemblage, instead focusing on the subset of abundant taxa of most interest to the authors.
 
-For some other datasets, the reason that assemblages lack singletons or have a greatest common divisor above one is less clear. 
+For some other datasets, the reason that assemblages lack singletons or have a greatest common divisor above one is less clear.
 These are treated anonymously.
 
 `r Words(pollen1$n_gcd2)` of the `r pollen1$n_sample` assemblages in dataset pollen1 lack singletons and have a greatest common divisor of two.
 These assemblages have between `r pollen1$min_taxa` and `r pollen1$max_taxa` taxa.
-The probability of all _n_ counts being divisible by _k_ is $k^{-n}$, assuming the distribution of counts is locally uniform.
-That is, for _k_ = 2, odd counts are as common as even counts.
+The probability of all *n* counts being divisible by *k* is $k^{-n}$, assuming the distribution of counts is locally uniform.
+That is, for *k* = 2, odd counts are as common as even counts.
 For an assemblage with `r pollen1$min_taxa` or `r pollen1$max_taxa` taxa, the probability of having all counts divisible by two by chance are 10^`r ceiling(- pollen1$min_taxa * log10(2))`^ and 10^`r ceiling(- pollen1$max_taxa * log10(2))`^ respectively.
 These probabilities are not so small that it is unrealistic to expect to find assemblages like these in the Neotoma database, but to find so many in one dataset is unexpected.
-Furthermore, the assumption made here is optimistic, in reality for _k_ = 2, more odd counts are expected ones are expected than even ones in most datasets, as typical rank abundance curves have more singletons than doubletons and so on, which makes finding assemblages with a greatest common divisor above one even more unlikely.
+Furthermore, the assumption made here is optimistic, in reality for *k* = 2, more odd counts are expected ones are expected than even ones in most datasets, as typical rank abundance curves have more singletons than doubletons and so on, which makes finding assemblages with a greatest common divisor above one even more unlikely.
 
 Dataset pollen2 has `r pollen2$n_sample` assemblages, of which `r words(pollen2$n_gcd2)` have a greatest common divisor of two and a further `r words(pollen2$n_gcd3)` with a greatest common divisor of three, one of which has `r pollen2$max_taxa3` taxa.
-The probability of having all counts divisible by three in such a taxonomically rich assemblage is 10^`r ceiling(- pollen2$max_taxa3 * log10(3))`.
+The probability of having all counts divisible by three in such a taxonomically rich assemblage is 10\^`r ceiling(- pollen2$max_taxa3 * log10(3))`.
 In addition to the assemblages with a greatest common divisor above one, this dataset includes several assemblages that have a higher proportion of counts divisible by two or three than is typical in assemblages from Neotoma (@fig-multiples-plot).
 It is unclear what processes could generate such counts.
-
 
 ```{r}
 #| label: fig-multiples-plot
@@ -300,27 +313,25 @@ It is unclear what processes could generate such counts.
 tar_read(multiples_plot)
 ```
 
-In dataset pollen3, the greatest common divisor is three for all assemblages: all `r pollen3$n_count` counts in the dataset are divisible by three (@tbl-unexpected-table). 
+In dataset pollen3, the greatest common divisor is three for all assemblages: all `r pollen3$n_count` counts in the dataset are divisible by three (@tbl-unexpected-table).
 For a dataset this large, the probability of having all counts divisible by three by chance is 3^{-`r pollen3$n_count`}^ or 10^`r ceiling(- pollen3$n_count * log10(3))`^.
 Given this very small probability, it seems reasonable to conclude that the archived data are not the original counts.
 
 Many assemblages in datasets pollen4 and pollen5 lack singletons and have a greatest common divisor greater than one (@tbl-unexpected-table).
 For most of both datasets, which come from the same paper and match the published pollen stratigraphies, assemblages with and without singletons are arranged alternately.
-Assemblages without singletons are on the 10 cm intervals, and those with on the intervening 5 cm intervals. 
+Assemblages without singletons are on the 10 cm intervals, and those with on the intervening 5 cm intervals.
 Closer inspection reveals that the assemblages between two assemblages without singletons have counts that are the mean of their neighbours.
-On request, the authors sent the original count data. 
+On request, the authors sent the original count data.
 Comparison of these with the archived data showed that the archived assemblages without singletons had had their counts multiplied by two.
-The intervening assemblages did not exist in the original data. 
+The intervening assemblages did not exist in the original data.
 In the published and archived data, they had been interpolated from their neighbours (@fig-interpolated-plot).
 The effect of these manipulations is to increase the resolution of the pollen stratigraphy.
-
 
 ```{r}
 #| label: tbl-unexpected-table
 #| tbl-cap: The number of assemblages, median number of taxa and count sum, percent of assemblages with a greatest common divisor (GCD) of one, in five anonymised pollen datasets.
 tar_read(unexpected_table) |> knitr::kable()
 ```
-
 
 ```{r}
 #| label: fig-interpolated-plot
@@ -342,6 +353,7 @@ tar_read(pollen4_plot)
 ```
 
 ## Unexpected percent data
+
 ```{r}
 #| label: line169
 
@@ -353,7 +365,7 @@ However, the rarest taxon in two assemblages have a relative abundance of `r dia
 If the count sums actually are at least 400, this would imply that each species count in these assemblages is an integer multiple of at least `r diatom1_summ$integer_mult`.
 This seems unlikely.
 Alternatively, the actual count sum for these assemblages could be as low as `r diatom1_summ$low_n` valves.
-In total, `r diatom1_summ$n_low_n |> words()` assemblages appear to have a count sum below 400 valves. 
+In total, `r diatom1_summ$n_low_n |> words()` assemblages appear to have a count sum below 400 valves.
 The results section of the paper acknowledges that counts were below the standard 400 valves for part of the Late Glacial.
 All the assemblages identified with possible low count sums are in this part of the stratigraphy, demonstrating the utility of the method.
 
@@ -384,7 +396,7 @@ The most extreme divergences appear to be data entry errors with incorrect round
 
 # Discussion
 
-Analysis of the breeding bird, Owen's Lake diatom, testate amoeba and pollen datasets has shown that, as expected, the vast majority of community and assemblage counts have singletons, and an even larger proportion have a greatest common divisor of one. 
+Analysis of the breeding bird, Owen's Lake diatom, testate amoeba and pollen datasets has shown that, as expected, the vast majority of community and assemblage counts have singletons, and an even larger proportion have a greatest common divisor of one.
 Therefore, these characteristics are potentially useful for identifying data where the count sum is misreported.
 
 My search through archived microfossil data found several datasets where count sums are, or appear to be, smaller than that reported.
@@ -395,26 +407,26 @@ It is possible in some cases that the assemblages with low counts were omitted o
 Care was taken to identify any such cases by, for example, examining stratigraphic diagrams to see if the low count assemblages were included.
 In some cases, the assemblages with low apparent counts can be seen in the published stratigraphic diagrams.
 
-It is also possible that the apparently low count sums are a false positive. 
-However, as taxonomically diverse assemblages with a greatest common divisor greater than one are rare and all the datasets with apparently low count sums contained several such assemblages, this is unlikely. 
+It is also possible that the apparently low count sums are a false positive.
+However, as taxonomically diverse assemblages with a greatest common divisor greater than one are rare and all the datasets with apparently low count sums contained several such assemblages, this is unlikely.
 
-These tests require the assemblage data which are often not archived. 
-However, if the count sums are very low (below about 20) it is possible to recognise this from a stratigraphic diagram. 
+These tests require the assemblage data which are often not archived.
+However, if the count sums are very low (below about 20) it is possible to recognise this from a stratigraphic diagram.
 
 ## Challenges
 
-Microfossil percent data are often given to two decimal places. 
-This is sufficient precision for the direct search method to have utility with counts sums of several thousand. 
+Microfossil percent data are often given to two decimal places.
+This is sufficient precision for the direct search method to have utility with counts sums of several thousand.
 Some data are only given to the nearest percent, which means that neither method has utility with count sums above 100.
 
-The direct search method will fail if the dataset includes taxa calculated with different count sums, for example pollen sums of trees, shrubs and upland herbs and a pollen and spore sum that also includes pteridiophytes. 
-It should be possible to identify such cases from the meta-data and knowledge of usual practice with different proxies. 
+The direct search method will fail if the dataset includes taxa calculated with different count sums, for example pollen sums of trees, shrubs and upland herbs and a pollen and spore sum that also includes pteridiophytes.
+It should be possible to identify such cases from the meta-data and knowledge of usual practice with different proxies.
 It will also fail, as shown by dataset marine1, if percentages are incorrectly calculated or rounded.
 
 Some taxonomic groups have microfossils that often come in groups of attached individuals.
 For example, each diatom cell has two valves which are the counting unit.
-These valves usually separate during processing, but paired valves are often found, and some taxa such as _Aulacoseira_ produce long chains of strongly bound valves.
-This might make singletons slightly less likely. 
+These valves usually separate during processing, but paired valves are often found, and some taxa such as *Aulacoseira* produce long chains of strongly bound valves.
+This might make singletons slightly less likely.
 The results from Owen's Lake suggest that this is not an important problem, as most assemblages have many singletons.
 
 ## Consequences
@@ -427,17 +439,17 @@ Substantial and pervasive under-counting could be construed as scientific miscon
 Some papers do not report count sums.
 When this important quality metric is omitted, the reader should be able to assume that the standard minimum count sum for the taxonomic group has been used (i.e. 50 for chironomids, several hundred for pollen and diatoms).
 The methods in this paper may help estimate what the count sums are.
-If the actual count sums are materially below this, then action to correct the literature may be necessary, and if the omission is deliberate it 
-potentially constitutes misconduct [@Fanelli2013].
+If the actual count sums are materially below this, then action to correct the literature may be necessary, and if the omission is deliberate it potentially constitutes misconduct [@Fanelli2013].
 
 # Conclusions
 
-A small but non-negligible fraction of archived assemblage data includes counts that appear, using methods developed above, to have a count sum below that reported in the original paper. 
+A small but non-negligible fraction of archived assemblage data includes counts that appear, using methods developed above, to have a count sum below that reported in the original paper.
 Some of the apparent counts are small enough that the uncertainty of the count and derived statistics will be substantially larger than expected.
 These results highlight the importance of archiving both the raw microfossil count data and the code required to process the data.
 
-# Acknowledgements{-}
+# Acknowledgements {.unnumbered}
 
-Some data were obtained from the Neotoma Paleoecology Database (http://www.neotomadb.org), and the work of the data contributors and the Neotoma community is gratefully acknowledged. This work was partly supported by Norwegian Research Council project PalaeoDrivers (213607).
+Some data were obtained from the Neotoma Paleoecology Database (http://www.neotomadb.org), and the work of the data contributors and the Neotoma community is gratefully acknowledged.
+This work was partly supported by Norwegian Research Council project PalaeoDrivers (213607).
 
-# References{-}
+# References {.unnumbered}
