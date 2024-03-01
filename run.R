@@ -16,4 +16,4 @@ if(TRUE){
   fs::file_show("manuscript/count_check_MS.pdf") # display pdf is no errors
 }
 
-targets::tar_renv(extras = c("visNetwork"))
+targets::tar_renv(extras = c("quarto", "visNetwork"))
